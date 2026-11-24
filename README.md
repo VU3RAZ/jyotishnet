@@ -21,12 +21,13 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Dashas | Vimshottari (3 levels), Ashtottari (3 levels, with applicability check), Yogini (2 levels), Chara (K. N. Rao, 2 levels, two cycles; Jaimini rasi drishti and co-lord rules); configurable year length |
 | Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
 | Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik, Yuddha (planetary war, BPHS); rupas and required minimums. Matches Jagannatha Hora on 23 charts to its printed precision except Yuddha and Cheshta (decided differences) |
+| Bhava bala | The twelve houses: lord's Shadbala, Bhava dig bala (by sign class) and Bhava drik bala (aspects on the house middle; Jupiter and Mercury in full), as Jagannatha Hora 8.0 computes them (read from its code); Dig and Drik match JHora on 23 charts (`src/jyotishnet_engine/bhavabala.py`) |
 | Vimshopaka bala | Shadvarga, Saptavarga, Dashavarga and Shodashavarga schemes for the nine grahas; Saptavarga weights per BPHS by default, JHora's as an option; with that option matches Jagannatha Hora on all 31 golden charts (`docs/DECISIONS.md`) |
 | Rectification helpers | 12 event types in YAML (`rules/btr_events.yaml`, cited, draft) with governing vargas and karakas; event check table (dasha lords linked by lordship, occupancy or karaka in D1 and the event varga, Jupiter-Saturn double transit, score and verdict), fit curve over the birth window with best fit, indicative periods for marriage, children, career and relocation. Death and illness are check-only, never predicted |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
 | Yogas | 56 rules in YAML (`src/jyotishnet_engine/rules/yogas/`), each citing text and section, with evidence and cancellation: Pancha Mahapurusha, Chandra, Surya, Raja, Viparita, Neecha Bhanga, Parivartana, Dhana, Lakshmi, Amala, Saraswati, Parvata, Kahala, Kartari, Nabhasa (Sankhya, Ashraya, Dala, Akriti). All `draft` pending expert review |
-| API | FastAPI: `/v1/chart`, `/v1/dasha` (vimshottari, ashtottari, yogini, chara), `/v1/ashtakavarga`, `/v1/shadbala` (lists planetary wars), `/v1/vimshopaka`, `/v1/birth/warnings` (historical Indian time zones), `/v1/yogas`, `/v1/boundaries`, `/v1/btr/events|check|curve|indicative`; CORS via `JYOTISHNET_CORS` |
-| Workbench UI | Next.js app in `web/`: North and South Indian charts for any varga; time ribbon for birth-time rectification (±30 min by default, ±20 min or ±2 h, with Lagna-change marks) and transits (±3 days to ±12 years); sign changes flash; positions table; Vimshottari periods on an event date; life events with the event check table, a fit curve and "jump to best fit" on the ribbon, and indicative periods; analysis tabs for yogas (with evidence and citations), Ashtakavarga (by reduction stage, with pindas), Shadbala (components and strength ratios) and a lifetime dasha timeline (Vimshottari, Ashtottari, Yogini, Chara) with antar and pratyantar drill-down; the 8 JHora charts as presets. See [web/README.md](web/README.md) |
+| API | FastAPI: `/v1/chart`, `/v1/dasha` (vimshottari, ashtottari, yogini, chara), `/v1/ashtakavarga`, `/v1/shadbala` (with planetary wars and Bhava bala), `/v1/vimshopaka`, `/v1/birth/warnings` (historical Indian time zones), `/v1/yogas`, `/v1/boundaries`, `/v1/btr/events|check|curve|indicative`; CORS via `JYOTISHNET_CORS` |
+| Workbench UI | Next.js app in `web/`: North and South Indian charts for any varga; time ribbon for birth-time rectification (±30 min by default, ±20 min or ±2 h, with Lagna-change marks) and transits (±3 days to ±12 years); sign changes flash; positions table; Vimshottari periods on an event date; life events with the event check table, a fit curve and "jump to best fit" on the ribbon, and indicative periods; analysis tabs for yogas (with evidence and citations), Ashtakavarga (by reduction stage, with pindas), Shadbala (components, strength ratios and Bhava bala) and a lifetime dasha timeline (Vimshottari, Ashtottari, Yogini, Chara) with antar and pratyantar drill-down; the 8 JHora charts as presets. See [web/README.md](web/README.md) |
 
 A full chart with all 16 vargas takes about 8 ms; the D1 + one varga request
 behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
@@ -78,7 +79,8 @@ behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
   grahas, JHora's Saptavarga weights) within 0.005. Shadbala against JHora's
   breakdown (23 charts): every component and every Kala part
   (`tests/golden/jhora_shadbala/kala/`) to JHora's printed precision, except
-  Yuddha (BPHS, which JHora omits) and Cheshta (#16). Kept in
+  Yuddha (BPHS, which JHora omits) and Cheshta (#16). Bhava bala (23 charts):
+  Dig exact, Drik within 0.025 virupa. Kept in
   `tests/golden/pending/`: two future charts (2050, 2100) that differ by Delta T
   (decided, #22).
 

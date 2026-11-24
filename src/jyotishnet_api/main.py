@@ -204,7 +204,11 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
     from jyotishnet_engine.shadbala import planetary_wars
     wars = [{"planets": [a, b], "separation_deg": d} for a, b, d in planetary_wars(
         {p: c.grahas[p].longitude for p in ("Ma", "Me", "Ju", "Ve", "Sa")})]
-    return {"planets": out, "wars": wars}
+    from jyotishnet_engine.bhavabala import bhava_bala
+    houses = [{"house": h.house, "sign": h.sign, "lord": h.lord, "lord_virupas": h.adhipati,
+               "dig": h.dig, "drik": h.drik, "total_virupas": h.total, "rupas": h.rupas}
+              for h in bhava_bala(c, birth, cfg)]
+    return {"planets": out, "wars": wars, "houses": houses}
 
 
 class VimshopakaRequest(ChartRequest):

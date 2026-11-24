@@ -119,6 +119,10 @@ export type PlanetStrength = {
 export type Shadbala = {
   planets: Record<string, PlanetStrength>;
   wars: { planets: string[]; separation_deg: number }[];
+  houses: {
+    house: number; sign: number; lord: string; lord_virupas: number; dig: number; drik: number;
+    total_virupas: number; rupas: number;
+  }[];
 };
 export type DashaSystem = "vimshottari" | "ashtottari" | "yogini" | "chara";
 export type DashaPeriod = {

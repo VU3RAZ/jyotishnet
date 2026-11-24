@@ -49,9 +49,11 @@ to 2100, births at sunrise and sunset, a Mercury station and a nakshatra change;
 (planets, Lagna, special lagnas, Navamsa, Ashtakavarga and pindas, Vimshottari,
 Vimshopaka). Shadbala totals stay expected failures (Cheshta, #16).
 `jhora_shadbala/` holds JHora's Shadbala breakdowns of the first three charts
-and of 5, 6, 17-25, 32, 37, 41-43, 47 and 49, and `jhora_shadbala/kala/` their
+and of 5, 6, 17-25, 32, 37, 41-43 and 47-50, and `jhora_shadbala/kala/` their
 Kaala Bala tables, which `tests/test_jhora_shadbala.py` checks part by part;
-all 21 pass.
+all 23 pass. `jhora_bhavabala/` holds JHora's Bhava balas table for the same 23
+charts (`tests/test_jhora_bhavabala.py`): Dig bala exact, Drik bala within 0.025
+virupa (the Lagna's 17"), lord's bala equal to the lord's Shadbala total.
 
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:

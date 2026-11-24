@@ -2,7 +2,7 @@
 "use client";
 
 import { Shadbala } from "@/lib/api";
-import { GRAHA_NAME } from "@/lib/jyotish";
+import { GRAHA_NAME, SIGNS } from "@/lib/jyotish";
 
 const GRAHAS7 = ["Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"];
 const sum = (o: Record<string, number>) => Object.values(o).reduce((a, b) => a + b, 0);
@@ -69,8 +69,31 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
       {sb.wars.length > 0 && (
         <p>Planetary war: {sb.wars.map((w) => `${w.planets.map((x) => GRAHA_NAME[x]).join(" and ")} ${w.separation_deg.toFixed(2)}° apart`).join("; ")}.</p>
       )}
+      <h3>Bhava bala</h3>
+      <div className="table-wrap">
+        <table className="grid-table">
+          <caption className="visually-hidden">Bhava bala of the twelve houses in rupas</caption>
+          <thead>
+            <tr>
+              <th scope="col">House</th><th scope="col">Sign</th><th scope="col">Lord</th>
+              <th scope="col" className="num">Lord&apos;s bala</th><th scope="col" className="num">Dig</th>
+              <th scope="col" className="num">Drik</th><th scope="col" className="num">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sb.houses.map((h) => (
+              <tr key={h.house}>
+                <th scope="row">{h.house}</th><td>{SIGNS[h.sign]}</td><td>{GRAHA_NAME[h.lord]}</td>
+                <td className="num">{r1(h.lord_virupas)}</td><td className="num">{r1(h.dig)}</td>
+                <td className="num">{r1(h.drik)}</td><td className="num total">{h.rupas.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <p className="rules-note">Cheshta bala uses astronomical mean motions rather than Jagannatha
-        Hora&apos;s tables, so totals can differ from JHora by a few tenths of a rupa.</p>
+        Hora&apos;s tables, so totals can differ from JHora by a few tenths of a rupa. A house&apos;s
+        Bhava bala is its lord&apos;s Shadbala plus its Dig and Drik bala (BPHS ch. 27).</p>
     </div>
   );
 }

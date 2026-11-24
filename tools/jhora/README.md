@@ -39,7 +39,8 @@ not touched.
 
 Shadbala tables (the `jhora_shadbala` format) come from the Strengths tab >
 Other strengths: right-click the Shadbala table, pick "Shadbala Break-up" or
-"Sthana Bala" or "Kaala Bala", then "Copy to clipboard".
+"Sthana Bala" or "Kaala Bala" (or "Bhava balas" for `jhora_bhavabala`), then
+"Copy to clipboard".
 
 `xdrive.py` also takes screenshots (`xdrive.py shot out.png`) for finding new
 menu positions.
