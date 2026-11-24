@@ -8,7 +8,7 @@ Run: uvicorn jyotishnet_api.main:app --reload
 from __future__ import annotations
 
 import os
-from datetime import datetime
+from datetime import date as date_type, datetime
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -204,3 +204,68 @@ def yogas_endpoint(req: YogaRequest) -> dict:
         "yogas": [asdict(y) for y in ys],
         "note": "Rules are drafts pending expert review; see each rule's source and status.",
     }
+
+
+# ------------------------------------------------------------------ rectification helpers
+
+class EventIn(BaseModel):
+    type: str
+    date: date_type
+
+
+class BtrRequest(BaseModel):
+    birth: BirthIn
+    config: ConfigIn = ConfigIn()
+    events: list[EventIn] = Field(default_factory=list, max_length=20)
+
+
+class BtrCurveRequest(BtrRequest):
+    window_min: float = Field(30.0, gt=0, le=120)
+    step_s: int = Field(30, ge=10, le=600)
+
+
+def _events(req: BtrRequest) -> list[tuple[str, date_type]]:
+    from jyotishnet_engine.btr import event_rules
+    rules = event_rules()
+    bad = [e.type for e in req.events if e.type not in rules]
+    if bad:
+        raise HTTPException(422, f"Unknown event type(s): {', '.join(bad)}. Known: {', '.join(rules)}")
+    return [(e.type, e.date) for e in req.events]
+
+
+@app.get("/v1/btr/events")
+def btr_event_types() -> dict:
+    """Event types the rectification helpers understand."""
+    from dataclasses import asdict
+    from jyotishnet_engine.btr import event_rules
+    return {"events": [asdict(r) for r in event_rules().values()]}
+
+
+@app.post("/v1/btr/check")
+def btr_check(req: BtrRequest) -> dict:
+    """Event check table for the birth time given."""
+    from dataclasses import asdict
+    from jyotishnet_engine.btr import check_events
+    return {"checks": [asdict(c) for c in check_events(req.birth.to_birth(), _events(req),
+                                                       req.config.to_config())]}
+
+
+@app.post("/v1/btr/curve")
+def btr_curve(req: BtrCurveRequest) -> dict:
+    """Total event score for candidate birth times around the recorded one."""
+    from jyotishnet_engine.btr import fit_curve
+    if not req.events:
+        return {"points": [], "best": None, "helps_decide": [], "max_score": 0}
+    return fit_curve(req.birth.to_birth(), _events(req), req.window_min, req.step_s,
+                     req.config.to_config())
+
+
+@app.post("/v1/btr/indicative")
+def btr_indicative(req: BtrRequest) -> dict:
+    """Antardashas whose lords both link to marriage, children, career or relocation.
+    Death and illness are never offered as indicative periods."""
+    from jyotishnet_engine.btr import indicative_periods
+    out = indicative_periods(req.birth.to_birth(), req.config.to_config())
+    return {"periods": {k: [{**{x: v for x, v in r.items() if not x.endswith("_jd")},
+                             "start": _iso(r["start_jd"]), "end": _iso(r["end_jd"])} for r in rows]
+                        for k, rows in out.items()}}

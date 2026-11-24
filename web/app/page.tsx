@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BirthForm } from "@/components/BirthForm";
 import { ChartCard } from "@/components/ChartCard";
 import { DashaPanel } from "@/components/DashaPanel";
 import { PlanetTable } from "@/components/PlanetTable";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
-import { api, Birth, Chart } from "@/lib/api";
+import { api, Birth, btr, Chart, EventRule, LifeEvent } from "@/lib/api";
+import { EventPanel } from "@/components/EventPanel";
+import { IndicativePanel } from "@/components/IndicativePanel";
 import { GRAHA_ORDER, placements } from "@/lib/jyotish";
 import { PRESETS } from "@/lib/presets";
 import { formatLocal, parseLocal, prettyDate, prettyLocal, toUtcIso } from "@/lib/time";
@@ -30,6 +32,20 @@ export default function Workbench() {
   const [style, setStyle] = useState<ChartStyle>("north");
   const [transitBase, setTransitBase] = useState(() => Date.now());
   const [eventDate, setEventDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [rules, setRules] = useState<EventRule[]>([]);
+  const [events, setEvents] = useState<LifeEvent[]>([]);
+
+  useEffect(() => { btr.events().then((r) => setRules(r.events)).catch(() => {}); }, []);
+  // Events belong to one person: keep them per chart in this browser.
+  const storeKey = `jyotishnet.events.${name}.${birth.local_datetime}`;
+  useEffect(() => {
+    try { setEvents(JSON.parse(localStorage.getItem(storeKey) ?? "[]")); } catch { setEvents([]); }
+  }, [storeKey]);
+  function saveEvents(next: LifeEvent[]) {
+    const sorted = [...next].sort((a, b) => a.date.localeCompare(b.date));
+    setEvents(sorted);
+    try { localStorage.setItem(storeKey, JSON.stringify(sorted)); } catch { /* storage unavailable */ }
+  }
 
   const baseMs = mode === "rectify"
     ? parseLocal(birth.local_datetime)
@@ -45,6 +61,15 @@ export default function Workbench() {
     () => api.runningDasha(mode === "rectify" ? moving : birth, dashaAt), 250);
   const bounds = useLive(mode === "rectify" ? JSON.stringify([birth, varga]) : null,
     () => api.boundaries(birth, 120, [1, varga]));
+
+  const rectify = mode === "rectify";
+  const evKey = JSON.stringify(events);
+  const checks = useLive(rectify && events.length ? JSON.stringify([moving, evKey]) : null,
+    () => btr.check(moving, events), 120);
+  const windowMin = Math.min(range.seconds / 60, 120);
+  const curve = useLive(rectify && events.length ? JSON.stringify([birth, evKey, windowMin]) : null,
+    () => btr.curve(birth, events, windowMin, windowMin <= 30 ? 30 : 60), 300);
+  const indicative = useLive(rectify ? JSON.stringify(moving) : null, () => btr.indicative(moving), 250);
 
   function switchMode(m: Mode) {
     setMode(m);
@@ -113,7 +138,8 @@ export default function Workbench() {
           ? [{ key: "D1.lagna", label: "the Lagna", strong: true },
              { key: `D${varga}.lagna`, label: `the D${varga} Lagna`, strong: false }]
           : []}
-        nudges={nudges} zeroLabel={mode === "rectify" ? "recorded time" : "now"} />
+        nudges={nudges} zeroLabel={mode === "rectify" ? "recorded time" : "now"}
+        curve={rectify && events.length ? curve.data : null} />
 
       {error && (
         <p className="service-error" role="alert">
@@ -140,6 +166,14 @@ export default function Workbench() {
         {!left && !error && <p className="muted">Casting the chart…</p>}
       </section>
 
+      {rectify && (
+        <EventPanel rules={rules} events={events} loading={checks.loading || curve.loading}
+          checks={events.length ? checks.data?.checks ?? null : null}
+          helps={events.length ? curve.data?.helps_decide ?? null : null}
+          onAdd={(e) => saveEvents([...events, e])}
+          onRemove={(i) => saveEvents(events.filter((_, j) => j !== i))} />
+      )}
+
       <section className="details">
         {chart && (
           <div className="table-wrap">
@@ -151,6 +185,7 @@ export default function Workbench() {
           date={mode === "rectify" ? eventDate : dashaAt.slice(0, 10)}
           onDate={mode === "rectify" ? setEventDate : undefined} />
       </section>
+      {rectify && <IndicativePanel periods={indicative.data?.periods ?? null} loading={indicative.loading} />}
     </main>
   );
 }

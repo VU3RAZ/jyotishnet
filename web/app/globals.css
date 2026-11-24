@@ -253,3 +253,46 @@ button, input, select { font: inherit; color: inherit; }
 
 .dasha-date input { width: 11rem; }
 .dasha-on { margin: 0; }
+
+/* Rectification helpers ---------------------------------------------------- */
+.fit-curve { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fit-curve polygon { fill: rgba(227, 155, 18, 0.16); }
+.fit-curve polyline { fill: none; stroke: rgba(248, 249, 245, 0.85); stroke-width: 1.5; }
+.fit-curve .best { stroke: var(--leaf); stroke-width: 2; filter: brightness(1.6); }
+.ribbon .best-fit { border-color: rgba(248, 249, 245, 0.7); }
+
+.events { display: grid; gap: 1rem; }
+.events-head { display: grid; gap: 0.25rem; }
+.events-head p { margin: 0; max-width: 72ch; }
+.event-form { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: end; }
+.event-form .primary {
+  background: var(--ink); color: var(--surface); border: 0; border-radius: 4px;
+  padding: 0.45rem 1rem; cursor: pointer;
+}
+.event-table { width: 100%; border-collapse: collapse; }
+.event-table th, .event-table td {
+  text-align: left; vertical-align: top; padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.event-table thead th { color: var(--muted); font-weight: 500; font-size: var(--step--1); }
+.event-table tbody th { font-weight: 600; }
+.event-date { display: block; font-weight: 400; color: var(--muted); font-size: var(--step--1); }
+.event-table .links span { display: block; font-size: var(--step--1); }
+.verdict { font-weight: 600; white-space: nowrap; }
+.verdict.strong { color: var(--leaf); }
+.verdict.partial { color: var(--ink); }
+.verdict.weak { color: var(--muted); font-weight: 500; }
+.helps { display: block; font-size: var(--step--1); color: var(--line); }
+.link-button { background: none; border: 0; color: var(--line); text-decoration: underline; cursor: pointer; padding: 0; }
+.rules-note { margin: 0; color: var(--muted); font-size: var(--step--1); max-width: 80ch; }
+
+.indicative { display: grid; gap: 0.75rem; }
+.indicative > p { margin: 0; max-width: 72ch; }
+.indicative-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+.indicative h3 { font-family: var(--serif); font-size: var(--step-0); margin: 0 0 0.25rem; }
+.indicative ul { list-style: none; margin: 0; padding: 0; }
+.indicative li {
+  display: flex; justify-content: space-between; gap: 1rem; padding: 0.2rem 0;
+  border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums;
+}
+.indicative .years { color: var(--muted); }

@@ -13,6 +13,7 @@
 | 17 | Yuddha bala: winner and orb | BPHS: within 1 deg; the planet with more Sthana + Dig + Kala (to Hora) wins; amount = difference / disc-diameter difference. Surya Siddhanta instead picks the more northerly planet. Not in the golden set (no wars in the 8 charts) | Phase 1, expert + a JHora chart with a war |
 | 18 | Yoga definitions | 56 rules marked `draft`; variant readings in each rule's `notes`. Not yet checked: strong Lagna lord (Lakshmi, Kahala), Gajakesari's extra conditions | Expert review of `rules/yogas/*.yaml` |
 | 19 | Chara dasha: Mercury in Virgo | Counted as exalted (BPHS), so +1 year where it is the counted lord outside its own sign; PyJHora treats it as own sign | With #3 |
+| 20 | Rectification event rules | 12 event types (design table), draft. A dasha lord is linked if, in D1 or the event's varga, it lords or occupies an event house or is the karaka; D2 and D30 add no house links; Rahu and Ketu link only by occupancy (no dispositor rule yet); double transit = Jupiter and Saturn both occupy or aspect an event house in D1 | Expert review of `rules/btr_events.yaml` |
 
 ## Decided
 

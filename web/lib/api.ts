@@ -61,3 +61,36 @@ export const api = {
     post<{ changes: Boundary[] }>("/v1/boundaries",
       { birth, window_min: windowMin, step_s: 10, vargas }, signal),
 };
+
+// --- Rectification helpers ---------------------------------------------------
+
+export type EventRule = {
+  id: string; name: string; d1_houses: number[]; varga: number; varga_houses: number[];
+  karaka: string; check_only: boolean; indicative: boolean;
+};
+export type LifeEvent = { type: string; date: string };
+export type EventCheck = {
+  event: string; name: string; date: string; mahadasha: string | null; antardasha: string | null;
+  maha_links: string[]; antar_links: string[]; double_transit_houses: number[];
+  score: number; verdict: "strong" | "partial" | "weak"; check_only: boolean;
+};
+export type FitCurve = {
+  points: { offset_s: number; score: number }[];
+  best: { offset_s: number; score: number } | null;
+  helps_decide: boolean[];
+  max_score: number;
+};
+export type IndicativePeriod = {
+  mahadasha: string; antardasha: string; start: string; end: string;
+  maha_links: string[]; antar_links: string[];
+};
+
+export const btr = {
+  events: () => fetch("/api/v1/btr/events").then((r) => r.json() as Promise<{ events: EventRule[] }>),
+  check: (birth: Birth, events: LifeEvent[]) =>
+    post<{ checks: EventCheck[] }>("/v1/btr/check", { birth, events }),
+  curve: (birth: Birth, events: LifeEvent[], windowMin: number, stepS: number) =>
+    post<FitCurve>("/v1/btr/curve", { birth, events, window_min: windowMin, step_s: stepS }),
+  indicative: (birth: Birth) =>
+    post<{ periods: Record<string, IndicativePeriod[]> }>("/v1/btr/indicative", { birth }),
+};

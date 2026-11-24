@@ -80,3 +80,17 @@ def test_chara_api():
     assert r.status_code == 200
     ps = r.json()["periods"]
     assert len(ps) >= 12 and ps[0]["name"] and len(ps[0]["children"]) == 12
+
+
+def test_btr_endpoints():
+    ev = [{"type": "marriage", "date": "1995-02-10"}, {"type": "career", "date": "2001-07-01"}]
+    r = client.get("/v1/btr/events")
+    assert r.status_code == 200 and len(r.json()["events"]) == 12
+    r = client.post("/v1/btr/check", json={"birth": BIRTH, "events": ev})
+    assert r.status_code == 200 and len(r.json()["checks"]) == 2
+    r = client.post("/v1/btr/curve", json={"birth": BIRTH, "events": ev, "window_min": 5, "step_s": 60})
+    assert r.status_code == 200 and len(r.json()["points"]) == 11
+    r = client.post("/v1/btr/indicative", json={"birth": BIRTH})
+    assert set(r.json()["periods"]) == {"marriage", "child", "career", "relocation"}
+    r = client.post("/v1/btr/check", json={"birth": BIRTH, "events": [{"type": "lottery", "date": "2000-01-01"}]})
+    assert r.status_code == 422

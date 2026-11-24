@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 "use client";
 
-import { Boundary } from "@/lib/api";
+import { Boundary, FitCurve } from "@/lib/api";
 import { describeOffset, prettyLocal } from "@/lib/time";
 
 export type RibbonRange = { id: string; label: string; seconds: number; step: number };
@@ -32,10 +32,11 @@ type Props = {
   highlightKeys: { key: string; label: string; strong: boolean }[];
   nudges: number[];
   zeroLabel: string;
+  curve?: FitCurve | null;
 };
 
 export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, boundaries,
-  highlightKeys, nudges, zeroLabel }: Props) {
+  highlightKeys, nudges, zeroLabel, curve }: Props) {
   const span = range.seconds * 2;
   const pct = (sec: number) => ((sec + range.seconds) / span) * 100;
   const keyMap = new Map(highlightKeys.map((k) => [k.key, k]));
@@ -43,6 +44,11 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
     .filter((b) => keyMap.has(b.key) && Math.abs(b.offset_min * 60) <= range.seconds)
     .map((b) => ({ ...b, ...keyMap.get(b.key)! }));
   const clamp = (v: number) => Math.max(-range.seconds, Math.min(range.seconds, v));
+  const pts = curve && curve.max_score > 0
+    ? curve.points.filter((p) => Math.abs(p.offset_s) <= range.seconds) : [];
+  const yOf = (s: number) => 52 - (s / (curve?.max_score || 1)) * 44;
+  const line = pts.map((p) => `${pct(p.offset_s).toFixed(3)},${yOf(p.score).toFixed(2)}`).join(" ");
+  const best = curve?.best && Math.abs(curve.best.offset_s) <= range.seconds ? curve.best : null;
 
   return (
     <section className="ribbon">
@@ -58,6 +64,14 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
       </div>
 
       <div className="ribbon-track">
+        {pts.length > 1 && (
+          <svg className="fit-curve" viewBox="0 0 100 56" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points={`${pct(pts[0].offset_s)},56 ${line} ${pct(pts[pts.length - 1].offset_s)},56`} />
+            <polyline points={line} vectorEffect="non-scaling-stroke" />
+            {best && <line x1={pct(best.offset_s)} x2={pct(best.offset_s)} y1={0} y2={56}
+              className="best" vectorEffect="non-scaling-stroke" />}
+          </svg>
+        )}
         <div className="ribbon-ticks" aria-hidden="true">
           {ticks.map((t, i) => (
             <span key={i} className={t.strong ? "tick strong" : "tick"}
@@ -79,10 +93,17 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
             </button>
           ))}
           <button type="button" onClick={() => onChange(0)} disabled={value === 0}>Reset</button>
+          {best && (
+            <button type="button" className="best-fit" onClick={() => onChange(best.offset_s)}
+              disabled={value === best.offset_s}>
+              Jump to best fit ({best.offset_s === 0 ? "recorded time" : describeOffset(best.offset_s)})
+            </button>
+          )}
         </div>
         {highlightKeys.length > 0 && (
           <p className="ribbon-legend">
-            Marks show where {highlightKeys.map((k) => k.label).join(" and ")} change sign.
+            Marks show where {highlightKeys.map((k) => k.label).join(" and ")} change sign
+            {pts.length > 1 ? "; the shaded curve is the life-event fit" : ""}.
           </p>
         )}
       </div>

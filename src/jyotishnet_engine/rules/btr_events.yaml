@@ -1,0 +1,111 @@
+# Event rules for birth-time rectification helpers (design doc: "Rule set used
+# by the helpers"). A dasha lord is linked to an event when, in D1 or in the
+# governing varga, it lords one of the event's houses, occupies one, or is the
+# event's natural karaka. Houses count from that chart's Lagna (whole sign).
+# check_only events are accepted for checking a birth time but are never shown
+# as predictions. All rules are drafts until an expert signs them off.
+- id: marriage
+  name: Marriage
+  d1_houses: [7]
+  varga: 9
+  varga_houses: [7]
+  karaka: Ve
+  indicative: true
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 7th house; Navamsa"}
+  status: draft
+- id: child
+  name: Birth of a child
+  d1_houses: [5]
+  varga: 7
+  varga_houses: [5]
+  karaka: Ju
+  indicative: true
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 5th house; Saptamsa"}
+  status: draft
+- id: career
+  name: Career start or promotion
+  d1_houses: [10]
+  varga: 10
+  varga_houses: [10]
+  karaka: Sa
+  indicative: true
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 10th house; Dasamsa"}
+  status: draft
+- id: relocation
+  name: Relocation or property
+  d1_houses: [4]
+  varga: 4
+  varga_houses: [4]
+  karaka: Ma
+  indicative: true
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th house; Chaturthamsa"}
+  status: draft
+- id: finance
+  name: Major financial gain or loss
+  d1_houses: [2, 11]
+  varga: 2
+  varga_houses: []
+  karaka: Ju
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 2nd and 11th houses; Hora"}
+  status: draft
+  notes: The Hora has only two signs, so it adds no house links; only D1 links count.
+- id: sibling
+  name: Birth or major event of a sibling
+  d1_houses: [3]
+  varga: 3
+  varga_houses: [3]
+  karaka: Ma
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 3rd house; Drekkana"}
+  status: draft
+- id: vehicle
+  name: Vehicle purchase or accident
+  d1_houses: [4]
+  varga: 16
+  varga_houses: [4]
+  karaka: Ve
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th house; Shodasamsa"}
+  status: draft
+- id: spiritual
+  name: Spiritual initiation or pilgrimage
+  d1_houses: [9, 12]
+  varga: 20
+  varga_houses: [9]
+  karaka: Ju
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 9th and 12th houses; Vimsamsa"}
+  status: draft
+- id: education
+  name: Degree or major exam result
+  d1_houses: [4, 5]
+  varga: 24
+  varga_houses: [4, 5]
+  karaka: Me
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th and 5th houses; Chaturvimsamsa"}
+  status: draft
+- id: father_death
+  name: Father's death
+  d1_houses: [9]
+  varga: 12
+  varga_houses: [9, 10, 3]
+  karaka: Su
+  check_only: true
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 9th house; Dwadasamsa"}
+  status: draft
+- id: mother_death
+  name: Mother's death
+  d1_houses: [4]
+  varga: 12
+  varga_houses: [4, 5, 10]
+  karaka: Mo
+  check_only: true
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th house; Dwadasamsa"}
+  status: draft
+- id: illness
+  name: Surgery or serious illness
+  d1_houses: [6, 8]
+  varga: 30
+  varga_houses: []
+  karaka: Sa
+  check_only: true
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 6th and 8th houses; Trimsamsa"}
+  status: draft
+  notes: The Trimsamsa is read by sign and planet rather than by house, so only D1 links count.

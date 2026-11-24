@@ -27,7 +27,7 @@ dev = ["pytest>=8", "hypothesis>=6", "httpx>=0.27"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-jyotishnet_engine = ["rules/yogas/*.yaml"]
+jyotishnet_engine = ["rules/*.yaml", "rules/yogas/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

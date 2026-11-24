@@ -12,6 +12,12 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   change sign (from `/v1/boundaries`). Planets or Lagnas that change sign
   flash briefly. The dasha panel shows the Vimshottari periods running on an
   event date you enter.
+- **Life events** (rectify mode): enter dated events; each is scored for the
+  birth time on the ribbon (dasha lords, links, double transit, verdict, and
+  whether it helps decide). The ribbon draws the total fit across the window
+  with a "Jump to best fit" button, and a panel lists indicative periods for
+  marriage, children, career and relocation. Events are kept per chart in
+  this browser only.
 - **Transits**: the birth chart stays fixed; the ribbon moves the sky (±3 days,
   ±1 year, ±12 years) and shows today's planets in the birth houses, with the
   periods running on that date.
@@ -37,6 +43,6 @@ accepts browser calls from the origins in `JYOTISHNET_CORS`.
 
 1. Analysis canvas: several vargas side by side with linked highlighting.
 2. Swiss Ephemeris compiled to WebAssembly in a Web Worker for offline,
-   sub-millisecond scrubbing; BTR event helpers on the ribbon.
+   sub-millisecond scrubbing.
 3. Client management and notes.
 4. A TypeScript client generated from the API's OpenAPI spec.

@@ -43,6 +43,9 @@ Workbench UI v0 (`web/`, built ahead of phase 4 so the engine can be used and
 reviewed): charts, the rectification and transit time ribbon, positions,
 running dashas.
 
+Rectification helpers (classical scoring from the design's rule set): event
+check table, fit curve with best fit, indicative periods; in the UI.
+
 Not yet: Narayana and other Jaimini dashas, Tajika, KP, Prashna, Muhurta,
 match-making, Panchanga; strength conditions inside some yogas; Layers 1-4.
 
@@ -55,8 +58,9 @@ browser (WebAssembly build of Swiss Ephemeris in a Web Worker) for offline,
 every-frame recalculation. The boundary map splits a birth window into
 segments where nothing time-sensitive changes; the ribbon already marks the
 Lagna changes, and the model will run once per segment. Rectification helpers
-will score known life events against dasha and transit rules for each
-candidate time; the UI already shows the periods running on an event date.
+score known life events against dasha and transit rules for each candidate
+time: the event check table, the fit curve on the ribbon and the indicative
+periods are built; the learned timing likelihood comes in research mode.
 
 ## Build phases
 
