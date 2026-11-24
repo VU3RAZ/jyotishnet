@@ -29,7 +29,7 @@ from datetime import datetime
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from jyotishnet_engine import BirthData, NodeType, SchoolConfig, build_chart  # noqa: E402
-from jyotishnet_engine.shadbala import PLANETS7, shadbala  # noqa: E402
+from jyotishnet_engine.shadbala import PLANETS7, ShadbalaOptions, shadbala  # noqa: E402
 
 with contextlib.redirect_stdout(io.StringIO()):
     from jhora import utils  # noqa: E402
@@ -40,6 +40,9 @@ with contextlib.redirect_stdout(io.StringIO()):
 drik.set_ayanamsa_mode("LAHIRI")
 drik.set_planet_list(set_rahu_ketu_as_true_nodes=True)
 CFG = SchoolConfig(node_type=NodeType.TRUE, true_positions=True)
+# PyJHora treats the Moon as benefic when waxing; the engine's default follows
+# Jagannatha Hora's Ashtami rule. Compare like with like.
+OPTS = ShadbalaOptions(moon_benefic="waxing")
 CITIES = [(28.61, 77.21), (19.08, 72.88), (13.08, 80.27), (22.57, 88.36)]
 TOL = 0.1
 
@@ -59,7 +62,7 @@ def main() -> int:
         dt = datetime(rng.randint(1950, 2030), rng.randint(1, 12), rng.randint(1, 28),
                       rng.randint(0, 23), rng.randint(0, 59))
         b = BirthData(dt, lat, lon, utc_offset_hours=5.5)
-        ours = shadbala(build_chart(b, CFG, [1, 2, 3, 7, 9, 12, 30]), b, CFG)
+        ours = shadbala(build_chart(b, CFG, [1, 2, 3, 7, 9, 12, 30]), b, CFG, OPTS)
         place = drik.Place("x", lat, lon, 5.5)
         jd = utils.julian_day_number((dt.year, dt.month, dt.day), (dt.hour, dt.minute, 0))
         with contextlib.redirect_stdout(io.StringIO()):
