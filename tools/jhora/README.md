@@ -22,8 +22,9 @@ not touched.
    other defaults already match: mean nodes, true positions, no refraction.
 
 3. Write charts as `.jhd` files (see `tests/golden/jhd/`): one field per line,
-   CRLF; month, day, year, time as h.mmss, zone as h.mmss (east negative),
-   longitude as d.mmss (east negative), latitude as d.mmss (north positive),
+   CRLF; month, day, year, then time, zone, longitude and latitude each as
+   whole units + minutes/100 + seconds/6000 (77 deg 12' 36" is 77.126; zone and
+   longitude east negative, latitude north positive),
    altitude, standard and summer zones in decimal hours (east negative), then
    `0 0 place country 1 1013.25 20 0`.
 
