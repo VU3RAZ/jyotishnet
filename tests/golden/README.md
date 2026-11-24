@@ -34,9 +34,10 @@ data as given. For each, save the natal chart text export to `jhora/`; for 5
 and 6, also save the Shadbala tables to `jhora_shadbala/` (same format as the
 existing three).
 
-For 7-11, **let JHora's atlas fill the time zone** instead of typing it, and
-note in the file name or a comment what offset JHora chose: that tells us which
-historical convention JHora follows, which `tests/test_timeutil.py` then pins.
+For 7-11, **type the zone shown** (JHora's daylight-saving box off). JHora's
+atlas gives every Indian place 5:30 on any date (see below), so letting it fill
+the zone would test nothing. These charts check that the engine matches JHora
+once both use the historical offset.
 
 Boundary times below were found with the engine (Lahiri, mean nodes). Margins
 are wider than the known JHora differences (Lagna 17", planets 2.2"), so a sign
@@ -50,13 +51,35 @@ flip here is a real disagreement, not noise.
 | 4 | Sun 21" into Aries (Mesha sankranti) | 1975-04-14 | 07:32:00 | Mumbai | 19.08 N, 72.88 E | +5:30 |
 | 5 | Planetary war, Mars and Jupiter 0.15 deg apart (Yuddha bala, decision #17) | 1991-06-14 | 12:00:00 | New Delhi | 28.61 N, 77.21 E | +5:30 |
 | 6 | Planetary war, Mercury and Saturn 0.25 deg apart | 1990-01-10 | 12:00:00 | New Delhi | 28.61 N, 77.21 E | +5:30 |
-| 7 | War time (IANA: +6:30) | 1943-06-01 | 12:00:00 | Kolkata | 22.57 N, 88.36 E | JHora atlas |
-| 8 | The 1942 break in war time (IANA: +5:30 from May 15 to Sep 1) | 1942-07-01 | 12:00:00 | Chennai | 13.08 N, 80.27 E | JHora atlas |
-| 9 | Bombay Time (+4:51 until 1955; IANA: +5:30) | 1950-03-01 | 10:00:00 | Mumbai | 19.08 N, 72.88 E | JHora atlas |
-| 10 | Calcutta Time (+5:53:20 until 1948; IANA: +5:30) | 1946-05-10 | 10:00:00 | Kolkata | 22.57 N, 88.36 E | JHora atlas |
-| 11 | Madras railway time (IANA: +5:21:10) | 1890-01-15 | 12:00:00 | Chennai | 13.08 N, 80.27 E | JHora atlas |
+| 7 | War time | 1943-06-01 | 12:00:00 | Kolkata | 22.57 N, 88.36 E | +6:30 |
+| 8 | The 1942 break in war time (IANA: May 15 to Sep 1) | 1942-07-01 | 12:00:00 | Chennai | 13.08 N, 80.27 E | +5:30 |
+| 9 | Bombay Time (until 1955) | 1950-03-01 | 10:00:00 | Mumbai | 19.08 N, 72.88 E | +4:51 |
+| 10 | Calcutta Time (until 1948) | 1946-05-10 | 10:00:00 | Kolkata | 22.57 N, 88.36 E | +5:53:20 |
+| 11 | Madras railway time | 1890-01-15 | 12:00:00 | Chennai | 13.08 N, 80.27 E | +5:21:10 |
 | 12 | Polar night: no sunrise (special lagnas, Tribhaga, vara). The engine raises here today (`tests/test_high_latitude.py`) | 1980-12-21 | 12:00:00 | Tromso | 69.65 N, 18.96 E | +1:00 |
 | 13 | High latitude, short night | 1975-06-21 | 23:30:00 | Reykjavik | 64.15 N, 21.94 W | +0:00 |
 | 14 | Southern hemisphere, summer time | 1988-01-26 | 09:00:00 | Sydney | 33.87 S, 151.21 E | +11:00 |
 | 15 | Southern hemisphere | 1970-07-15 | 14:00:00 | Johannesburg | 26.20 S, 28.05 E | +2:00 |
 | 16 | Southern and western hemispheres | 1965-10-10 | 20:00:00 | Buenos Aires | 34.60 S, 58.38 W | -3:00 |
+
+## How Jagannatha Hora handles time zones (JHora 8.0, checked November 2026)
+
+From the shipped files of `jh_full_install.exe` (SHA-256 `37df1209...4c2`):
+
+- The atlas `jhcore/atlas/jhworld.adb` stores, per place, the longitude and
+  latitude (degrees and minutes) and two signed bytes: the standard and summer
+  offsets in 15-minute units. Every Indian place, Bombay, Calcutta and Madras
+  included, carries `16 16`: +5:30 and +5:30. Checked against other places:
+  Tromso `04 08` (+1/+2), Johannesburg `08 08` (+2), an Afghan place `12 12` (+4:30),
+  New Zealand `30 34` (+12/+13).
+- The record has no dates, so the atlas has no history: no war time, Bombay,
+  Calcutta or Madras time, and no local mean time. `jhora.exe` names only a
+  "Standard Timezone", a "Summer Timezone" and a "Daylight Saving" switch; no
+  strings for war time or historical zones were found. (Inference: the code
+  that reads the atlas was not traced.)
+- The author's sample charts in `data/*.jhd` carry hand-entered local mean time
+  for 19th-century births (Gandhi 1869: 4:39:27, Ramakrishna 1836: 5:51,
+  Vivekananda 1863: 5:54), and 5:30 from 1906 on.
+
+So a JHora user who takes the zone from the atlas gets 5:30 for a 1943 Kolkata
+birth, where the engine's `Asia/Kolkata` gives war time, 6:30: an hour apart.
