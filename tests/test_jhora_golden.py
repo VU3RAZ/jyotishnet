@@ -94,8 +94,9 @@ def test_vimshottari(pair):
         assert abs((best[2] - start).days) <= 1, (md, ad, start, best[2])
 
 
-@pytest.mark.xfail(reason="Shadbala differs from JHora by up to ~100 virupas; needs JHora's "
-                          "component breakdown to locate (see docs/DECISIONS.md)", strict=False)
+@pytest.mark.xfail(reason="Totals differ from JHora only by Cheshta bala (astronomical, decision "
+                          "#16) plus small Ayana (#13) and Yuddha (BPHS) differences; every other "
+                          "component matches (tests/test_jhora_shadbala.py)", strict=False)
 def test_shadbala_totals(pair):
     c, b, ch = pair
     sb = shadbala(ch, b, DEFAULT_CONFIG)

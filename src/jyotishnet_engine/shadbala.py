@@ -71,11 +71,12 @@ class ShadbalaOptions:
     # Ashtami to Krishna Ashtami, i.e. at least 90 degrees from the Sun.
     moon_benefic: str = "ashtami"
     # Mercury's nature.
-    # "jhora": malefic when the Moon is malefic (see moon_benefic), or when it shares
-    #   a sign with Mars, Saturn, Rahu or Ketu; the Sun is not counted. Reproduces
-    #   JHora on all 9 golden Shadbala charts (decision "Shadbala benefics").
-    # "majority" (PVR Narasimha Rao's text): malefic when the Sun, Mars, Saturn, Rahu,
-    #   Ketu and a malefic Moon in its sign outnumber Jupiter, Venus and a benefic Moon.
+    # "jhora": PVR Narasimha Rao's majority rule applied by bhava: malefic when the Sun,
+    #   Mars, Saturn, Rahu, Ketu and a malefic Moon in Mercury's bhava outnumber Jupiter,
+    #   Venus and a benefic Moon there; bhavas are equal houses with the Lagna at the
+    #   middle of the 1st (each Lagna + 30n +/- 15 deg). Reproduces JHora on all 13
+    #   golden charts (decision "Shadbala benefics").
+    # "majority": the same count by sign.
     # "any": malefic with any of `mercury_malefic_with` in its sign (Moon only when
     #   malefic).
     mercury_rule: str = "jhora"
@@ -99,6 +100,11 @@ class ShadbalaOptions:
     # golden charts. "bphs_add" = the base curve plus BPHS's flat additions (+15
     # Mars, +30 Jupiter, +45 Saturn) in the special-aspect signs.
     drishti: str = "jhora"
+    # Declination for Ayana bala: "kranti" = BPHS kranti table (24 deg maximum, by
+    # 15-degree steps, linear between) from the tropical longitude, ecliptic latitude
+    # ignored; within 0.73 virupa of JHora on 70 values (decision #13). "true" = the
+    # ephemeris declination, which lets the Moon pass 24 deg at a lunar standstill.
+    ayana_declination: str = "kranti"
     # Moon's Cheshta: "elongation" (arc from the Sun / 3) or "paksha" (its Paksha bala).
     moon_cheshta: str = "elongation"
     # Planetary war: two of Ma, Me, Ju, Ve, Sa within this many degrees of longitude.
@@ -352,7 +358,10 @@ def kala_components(birth: BirthData, chart: Chart, cfg: SchoolConfig,
             nath = day_pts
         else:
             nath = 60.0 - day_pts
-        dec = declination(jd, p, cfg)
+        if opts.ayana_declination == "kranti":
+            dec = kranti((chart.grahas[p].longitude + chart.ayanamsa) % 360)
+        else:
+            dec = declination(jd, p, cfg)
         if p in ("Mo", "Sa"):
             ayana = (24.0 - dec) / 48.0 * 60.0
         elif p == "Me":
@@ -468,19 +477,41 @@ def drik_bala(lons: dict[str, float], benefic: dict[str, bool],
     return out
 
 
+def equal_bhava(lon: float, lagna: float) -> int:
+    """Equal-house bhava (0..11) with the Lagna at the middle of the 1st."""
+    return int(((lon - lagna + 15.0) % 360.0) // 30.0)
+
+
 def mercury_is_malefic(signs: dict[str, int], moon_good: bool,
-                       opts: ShadbalaOptions = DEFAULT_OPTIONS) -> bool:
-    """Mercury's nature from the planets sharing its sign (see ShadbalaOptions)."""
-    mates = [p for p in signs if p != "Me" and p in ("Su", "Mo", "Ma", "Ju", "Ve", "Sa", "Ra", "Ke")
-             and signs[p] == signs["Me"]]
-    if opts.mercury_rule == "majority":
+                       opts: ShadbalaOptions = DEFAULT_OPTIONS,
+                       bhavas: dict[str, int] | None = None) -> bool:
+    """Mercury's nature from the planets sharing its sign or bhava (see ShadbalaOptions)."""
+    where = bhavas if (opts.mercury_rule == "jhora" and bhavas is not None) else signs
+    mates = [p for p in where if p != "Me" and p in ("Su", "Mo", "Ma", "Ju", "Ve", "Sa", "Ra", "Ke")
+             and where[p] == where["Me"]]
+    if opts.mercury_rule in ("majority", "jhora"):
         good = sum(1 for p in mates if p in ("Ju", "Ve") or (p == "Mo" and moon_good))
         return len(mates) - good > good
-    if opts.mercury_rule == "jhora":
-        return (not moon_good) or any(p in ("Ma", "Sa", "Ra", "Ke") for p in mates)
     if opts.mercury_rule == "any":
         return any(p in opts.mercury_malefic_with and not (p == "Mo" and moon_good) for p in mates)
     raise ValueError(f"Unknown mercury_rule {opts.mercury_rule!r}")
+
+
+# BPHS kranti (declination) in arc-minutes at 0, 15, ..., 90 deg from the equinox.
+_KRANTI = [0, 362, 703, 1002, 1238, 1388, 1440]
+
+
+def kranti(tropical_lon: float) -> float:
+    """Declination in degrees from the BPHS kranti table (linear between 15-degree steps)."""
+    t = tropical_lon % 360
+    south = t > 180
+    if south:
+        t -= 180
+    bhuja = t if t <= 90 else 180 - t
+    i = min(int(bhuja // 15), 5)
+    f = (bhuja - 15 * i) / 15
+    v = (_KRANTI[i] + (_KRANTI[i + 1] - _KRANTI[i]) * f) / 60.0
+    return -v if south else v
 
 
 # --------------------------------------------------------------------- total
@@ -490,7 +521,8 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
     lons = {p: chart.grahas[p].longitude for p in PLANETS7}
     d1 = {p: chart.grahas[p].sign for p in chart.grahas}
     moon_good = moon_is_benefic(lons["Su"], lons["Mo"], opts.moon_benefic)
-    mercury_malefic = mercury_is_malefic(d1, moon_good, opts)
+    bhavas = {p: equal_bhava(chart.grahas[p].longitude, chart.lagna.longitude) for p in chart.grahas}
+    mercury_malefic = mercury_is_malefic(d1, moon_good, opts, bhavas)
     benefic = {"Su": False, "Mo": moon_good, "Ma": False, "Me": not mercury_malefic,
                "Ju": True, "Ve": True, "Sa": False}
     varga_signs = None

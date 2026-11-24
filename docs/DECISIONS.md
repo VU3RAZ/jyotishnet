@@ -8,7 +8,6 @@
 | 3 | Chara dasha method and Narayana dasha | Chara: K. N. Rao (start at Lagna, direction by the 9th; lord count; +1 exalted / -1 debilitated, none when the lord is in the sign; second cycle 12 minus first; antardasha table as PyJHora). PVN Rao (Parashara) and Iranganti variants not yet; Narayana not yet | Before phase 2, expert |
 | 4 | Gender-dependent rules | Not yet implemented; the yoga engine has no gender input yet | Before phase 4 |
 | 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
-| 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |
 | 15 | Shadbala: Sun/Moon Cheshta | Undoubled Ayana (Sun) and Paksha (Moon) bala | Phase 1, expert |
 | 18 | Yoga definitions | 56 rules marked `draft`; variant readings in each rule's `notes`. Not yet checked: strong Lagna lord (Lakshmi, Kahala), Gajakesari's extra conditions | Expert review of `rules/yogas/*.yaml` |
 | 19 | Chara dasha: Mercury in Virgo | Counted as exalted (BPHS), so +1 year where it is the counted lord outside its own sign; PyJHora treats it as own sign | With #3 |
@@ -28,11 +27,12 @@
 | Ashtakavarga | PVR variant; seven grahas occupy in Ekadhipatya; Virgo multiplier 5 (JHora: all pindas exact) |
 | Vimshottari year | Solar year by the Sun's sidereal motion (JHora: 584/648 exact, rest within 1 day); fixed years optional |
 | Pranapada formula | Sun-modality offset, one sign per 6 minutes (JHora match within 7.6', from a ~1 s sunrise difference) |
-| Shadbala benefics | Moon benefic from Shukla to Krishna Ashtami (at least 90 deg from the Sun). Mercury malefic when the Moon is malefic, or when it shares a sign with Mars, Saturn, Rahu or Ketu; the Sun is not counted (JHora; fits all 9 golden Shadbala charts, where neither PVR's majority rule nor a sign-only rule does). Majority and sign-only rules remain options. The yoga engine keeps the sign-only rule |
+| Shadbala benefics | Moon benefic from Shukla to Krishna Ashtami (at least 90 deg from the Sun). Mercury by PVR Narasimha Rao's majority rule, counted by bhava: malefic when the Sun, Mars, Saturn, Rahu, Ketu and a malefic Moon in its bhava outnumber Jupiter, Venus and a benefic Moon; bhavas are equal houses with the Lagna mid-1st (Lagna + 30n +/- 15 deg). Fits all 13 golden Shadbala charts; sign-based variants fail 3 or more (edge_18, 20, 23). The yoga engine keeps its sign-only rule |
 | Shadbala Abda/Masa | Kali ahargana - 13 days: the only offset (mod 360) that gives JHora's year and month lords on all 5 golden Shadbala charts. The earlier +1 matched the first three by chance and failed edge_06 (1990-01-10). More charts in the disputed part of the 30-day cycle would confirm it |
 | Shadbala Dig and Nathonnatha | 10th point = Lagna - 90 deg, 4th = Lagna + 90 deg (not the meridian); Nathonnatha from the Sun's distance to Lagna - 90 deg (equals the Sun's Dig bala). Back-solved from JHora on golden charts edge_18-20; matches all 9 charts to 0.01 virupa. Meridian and clock-time versions are options |
 | Drishti strength (Drik bala) | Straight lines between the BPHS values at every 30 deg (0, 15, 45, 30, 0, 60, 45, 30, 15, 0 from 30 to 300 deg), with special-aspect points raised to 60: Mars 90/210, Jupiter 120/240, Saturn 60/270. Measured from JHora (23 single-aspect points, all within 0.03); BPHS flat additions are an option |
 | Moon's moolatrikona | Taurus 4-20 deg (JHora: golden charts put the end between 17.2 and 20.2 deg). Affects dignity labels, yogas and Saptavargaja |
+| Ayana bala (#13) | Declination from the BPHS kranti table (24 deg maximum, 15-degree steps, linear between) on the tropical longitude, ecliptic latitude ignored. Within 0.73 virupa of JHora on 70 values (13 charts); the ephemeris declination was up to 5.85 off and turned the Moon's value negative at the 1990 lunar standstill. Ephemeris declination is an option |
 | Moon's Cheshta | Distance from the Sun / 3 (JHora) |
 | D2 (Hora) scheme | Uma-Shambhu (parivritti, even signs reversed), as JHora's D-2 and Saptavargaja (21/21 exact); Parashari Leo/Cancer hora optional |
 | Cheshta bala | Astronomical mean positions (modern orbital elements), not JHora's tables. Known difference from JHora (RMS 16 virupas on 3 charts); show a note in the UI. Revisit later |

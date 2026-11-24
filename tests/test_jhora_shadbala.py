@@ -47,11 +47,11 @@ def case(request):
 
 
 # Tolerances in virupas. Dig, Drik and Sthana match JHora to its printed precision.
-# Kala keeps 6 for Ayana bala (ephemeris declination, decision #13) and Yuddha bala
-# (BPHS, which JHora does not apply); the other Kala parts are checked exactly below.
+# Kala allows 2.5: Ayana bala within 0.73 (decision #13) plus Yuddha bala (BPHS, up to
+# 1.27 on the war charts; JHora applies none). Each Kala part is checked below.
 # Naisargika: JHora prints the BPHS table values (e.g. 25.70 for 180/7 = 25.714).
 @pytest.mark.parametrize("component,tol", [("naisargika", 0.02), ("dig", 0.05),
-                                           ("kala", 6.0), ("drik", 0.05), ("sthana", 0.05)])
+                                           ("kala", 2.5), ("drik", 0.05), ("sthana", 0.05)])
 def test_component(case, component, tol):
     jh, sb = case
     for p in PLANETS7:
@@ -82,8 +82,8 @@ KALA_PARTS = ["nathonnatha", "paksha", "tribhaga", "abda", "masa", "vara", "hora
 
 @pytest.mark.parametrize("path", KALA_FILES, ids=[f.stem for f in KALA_FILES])
 def test_kala_parts(path):
-    """Every Kala part against JHora's Kaala Bala table, except Ayana (#13) and
-    Yuddha (BPHS kept; JHora applies none)."""
+    """Every Kala part against JHora's Kaala Bala table: exact except Ayana (BPHS
+    kranti table, within 0.8; decision #13) and Yuddha (BPHS kept; JHora applies none)."""
     c = parse(GOLDEN / "jhora" / path.name)
     b = BirthData(c.local, c.latitude, c.longitude, utc_offset_hours=c.utc_offset_hours,
                   altitude_m=c.altitude_m)
@@ -93,6 +93,7 @@ def test_kala_parts(path):
         if parts and parts[0] in NAMES:
             p = NAMES[parts[0]]
             for k, v in zip(KALA_PARTS, map(float, parts[3:12])):
-                if k in ("ayana", "yuddha"):
+                if k == "yuddha":
                     continue
-                assert abs(sb[p].kala[k] - v) <= 0.05, (p, k, sb[p].kala[k], v)
+                tol = 0.8 if k == "ayana" else 0.05
+                assert abs(sb[p].kala[k] - v) <= tol, (p, k, sb[p].kala[k], v)
