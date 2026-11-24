@@ -1,0 +1,12 @@
+Planet  Age            Alertness (D-1)   Mood (D-1)
+
+Sun     Vriddha (old)  Sushupta (asleep) Deena (sad)
+Moon    Vriddha (old)  Swapna (dreaming) Mudita (delighted)
+Mars    Mrita (dead)   Jaagrita (awake)  Swastha (comfortable), Khala (mischievous)
+Mercury Baala (infant) Swapna (dreaming) Mudita (delighted)
+Jupiter Vriddha (old)  Swapna (dreaming) Duhkhita (distressed), Vikala (crippled), Khala (mischievous)
+Venus   Baala (infant) Swapna (dreaming) Mudita (delighted)
+Saturn  Mrita (dead)   Jaagrita (awake)  Swastha (comfortable), Khala (mischievous)
+Rahu    Baala (infant) Sushupta (asleep) Deena (sad)
+Ketu    Baala (infant) Swapna (dreaming) Deena (sad), Khala (mischievous)
+

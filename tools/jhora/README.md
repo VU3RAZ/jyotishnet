@@ -42,5 +42,10 @@ Other strengths: right-click the Shadbala table, pick "Shadbala Break-up" or
 "Sthana Bala" or "Kaala Bala" (or "Bhava balas" for `jhora_bhavabala`), then
 "Copy to clipboard".
 
+Avastha tables (`jhora_avasthas`): in the same view, right-click the Vimsopaka
+table, pick "Basic Avasthas (age, alertness, mood)", right-click again and
+"Copy to clipboard". JHora's default uses natural relationships for alertness
+(`UseCompundRelationshipInAvasthas=0` in jhora.ini).
+
 `xdrive.py` also takes screenshots (`xdrive.py shot out.png`) for finding new
 menu positions.

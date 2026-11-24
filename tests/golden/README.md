@@ -54,6 +54,8 @@ Kaala Bala tables, which `tests/test_jhora_shadbala.py` checks part by part;
 all 23 pass. `jhora_bhavabala/` holds JHora's Bhava balas table for the same 23
 charts (`tests/test_jhora_bhavabala.py`): Dig bala exact, Drik bala within 0.025
 virupa (the Lagna's 17"), lord's bala equal to the lord's Shadbala total.
+`jhora_avasthas/` holds JHora's Basic Avasthas table (age, alertness, mood in
+D-1) for all 55 charts (`tests/test_jhora_avasthas.py`): all 495 planets match.
 
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:

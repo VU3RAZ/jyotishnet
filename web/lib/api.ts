@@ -123,6 +123,7 @@ export type Shadbala = {
     house: number; sign: number; lord: string; lord_virupas: number; dig: number; drik: number;
     total_virupas: number; rupas: number;
   }[];
+  avasthas: Record<string, { baladi: string; jagradadi: string; moods: string[] }>;
 };
 export type DashaSystem = "vimshottari" | "ashtottari" | "yogini" | "chara";
 export type DashaPeriod = {

@@ -99,6 +99,24 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
           </tbody>
         </table>
       </div>
+      <h3>Avasthas</h3>
+      <div className="table-wrap">
+        <table className="grid-table">
+          <caption className="visually-hidden">Avasthas (planetary states) in the Rasi chart</caption>
+          <thead>
+            <tr><th scope="col">Graha</th><th scope="col">Age (Baladi)</th>
+              <th scope="col">Alertness (Jagradadi)</th><th scope="col">Mood</th></tr>
+          </thead>
+          <tbody>
+            {Object.entries(sb.avasthas).map(([g, a]) => (
+              <tr key={g}>
+                <th scope="row">{GRAHA_NAME[g]}</th><td>{a.baladi}</td><td>{a.jagradadi}</td>
+                <td>{a.moods.join(", ") || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       <p className="rules-note">Cheshta bala uses astronomical mean motions rather than Jagannatha
         Hora&apos;s tables, so totals can differ from JHora by a few tenths of a rupa. The Sun&apos;s and Moon&apos;s
         Cheshta bala are not counted in their totals (as JHora); they still feed Ishta and Kashta phala. A house&apos;s

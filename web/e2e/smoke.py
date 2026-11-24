@@ -54,6 +54,7 @@ async def main() -> int:
             await step(f"tab {tab}", 1500)
             if tab == "Shadbala":
                 await page.wait_for_selector("caption:has-text('Bhava bala')", state="attached")
+                await page.wait_for_selector("caption:has-text('Avasthas')", state="attached")
         for system in ["Ashtottari", "Yogini", "Chara (K. N. Rao)", "Vimshottari"]:
             await page.click(f"[role=tab]:has-text('Dashas')")
             await page.click(f"text={system}")

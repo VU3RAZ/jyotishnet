@@ -122,3 +122,11 @@ def test_btr_endpoints():
     assert set(r.json()["periods"]) == {"marriage", "child", "career", "relocation"}
     r = client.post("/v1/btr/check", json={"birth": BIRTH, "events": [{"type": "lottery", "date": "2000-01-01"}]})
     assert r.status_code == 422
+
+
+def test_avasthas():
+    r = client.post("/v1/avasthas", json={"birth": BIRTH})
+    assert r.status_code == 200
+    body = r.json()["planets"]
+    assert set(body) == {"Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke"}
+    assert body["Su"]["baladi"] in ("Baala", "Kumara", "Yuva", "Vriddha", "Mrita")

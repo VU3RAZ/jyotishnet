@@ -209,7 +209,24 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
     houses = [{"house": h.house, "sign": h.sign, "lord": h.lord, "lord_virupas": h.adhipati,
                "dig": h.dig, "drik": h.drik, "total_virupas": h.total, "rupas": h.rupas}
               for h in bhava_bala(c, birth, cfg)]
-    return {"planets": out, "wars": wars, "houses": houses}
+    from jyotishnet_engine.avasthas import avasthas
+    states = {p: {"baladi": a.baladi, "jagradadi": a.jagradadi, "moods": list(a.moods)}
+              for p, a in avasthas(c).items()}
+    return {"planets": out, "wars": wars, "houses": houses, "avasthas": states}
+
+
+class AvasthaRequest(ChartRequest):
+    compound: bool = Field(False, description="Jagradadi by compound (natural + temporal) "
+                                              "relationship instead of natural (JHora's default)")
+
+
+@app.post("/v1/avasthas")
+def avasthas_endpoint(req: AvasthaRequest) -> dict:
+    from jyotishnet_engine.avasthas import avasthas
+    birth, cfg = req.birth.to_birth(), req.config.to_config()
+    c = build_chart(birth, cfg, [1])
+    return {"planets": {p: {"baladi": a.baladi, "jagradadi": a.jagradadi, "moods": list(a.moods)}
+                        for p, a in avasthas(c, req.compound).items()}}
 
 
 class VimshopakaRequest(ChartRequest):
