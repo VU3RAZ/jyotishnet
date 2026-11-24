@@ -59,6 +59,18 @@ def test_shadbala():
     assert body["Su"]["naisargika"] == 60
 
 
+def test_birth_warnings():
+    war = {"local_datetime": "1943-05-01T10:00:00", "latitude": 28.61, "longitude": 77.21,
+           "utc_offset_hours": 5.5}
+    w = client.post("/v1/birth/warnings", json={"birth": war}).json()["warnings"]
+    assert len(w) == 1 and "war time" in w[0]
+    # By zone name the tz database applies war time itself: nothing to warn about.
+    by_zone = {k: v for k, v in war.items() if k != "utc_offset_hours"}
+    assert client.post("/v1/birth/warnings", json={"birth": by_zone}).json()["warnings"] == []
+    assert client.post("/v1/chart", json={"birth": war, "vargas": [1]}).json()["warnings"] == w
+    assert client.post("/v1/chart", json={"birth": BIRTH, "vargas": [1]}).json()["warnings"] == []
+
+
 def test_vimshopaka():
     r = client.post("/v1/vimshopaka", json={"birth": BIRTH})
     assert r.status_code == 200

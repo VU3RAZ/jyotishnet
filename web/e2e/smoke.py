@@ -63,6 +63,20 @@ async def main() -> int:
         await step("transit ±12 years")
         await page.click("text=Rectify birth time")
         await step("back to rectify", 1500)
+
+        # Time-zone warning in the birth form (1943 Delhi at +5:30: war time was +6:30).
+        await page.fill(".birth-form input[type=date]", "1943-05-01")
+        await page.fill(".birth-form label:has-text('Latitude') input", "28.61")
+        await page.fill(".birth-form label:has-text('Longitude') input", "77.21")
+        await page.fill(".birth-form label:has-text('UTC offset') input", "5.5")
+        await page.wait_for_selector(".form-warning", timeout=5000)
+        text = await page.inner_text(".form-warning")
+        if "war time" not in text:
+            print(f"FAIL: expected a war-time warning, got {text!r}")
+            raise SystemExit(1)
+        await page.fill(".birth-form label:has-text('UTC offset') input", "6.5")
+        await page.wait_for_selector(".form-warning", state="detached", timeout=5000)
+        await step("birth form time-zone warning")
         await browser.close()
     print("smoke test passed")
     return 0

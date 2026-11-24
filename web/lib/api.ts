@@ -31,6 +31,7 @@ export type Chart = {
   grahas: Record<string, Point>;
   special?: Record<string, Point>;
   sunrise_utc: string;
+  warnings?: string[];
 };
 
 export type RunningPeriod = { lord: string; name?: string | null; level: number; start: string; end: string };
@@ -57,6 +58,9 @@ export const api = {
   runningDasha: (birth: Birth, atUtc: string, signal?: AbortSignal) =>
     post<{ running: RunningPeriod[] }>("/v1/dasha",
       { birth, system: "vimshottari", levels: 3, at: atUtc }, signal),
+  /** Time-zone warnings for a birth record (India before 1956); never changes a chart. */
+  birthWarnings: (birth: Birth, signal?: AbortSignal) =>
+    post<{ warnings: string[] }>("/v1/birth/warnings", { birth }, signal),
   boundaries: (birth: Birth, windowMin: number, vargas: number[], signal?: AbortSignal) =>
     post<{ changes: Boundary[] }>("/v1/boundaries",
       { birth, window_min: windowMin, step_s: 10, vargas }, signal),

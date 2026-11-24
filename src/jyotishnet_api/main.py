@@ -20,7 +20,7 @@ from jyotishnet_engine import (
     ashtottari,
 )
 from jyotishnet_engine.constants import MODEL_VARGAS, SHODASHAVARGA
-from jyotishnet_engine.timeutil import jd_to_datetime
+from jyotishnet_engine.timeutil import jd_to_datetime, zone_warnings
 
 app = FastAPI(title="JyotishNet API", version="0.1.0")
 app.add_middleware(
@@ -57,6 +57,11 @@ class BirthIn(BaseModel):
     def to_birth(self) -> BirthData:
         return BirthData(self.local_datetime.replace(tzinfo=None), self.latitude, self.longitude,
                          self.tz_name, self.utc_offset_hours, self.altitude_m)
+
+    def warnings(self) -> list[str]:
+        b = self.to_birth()
+        offset = (b.local_datetime - b.utc().replace(tzinfo=None)).total_seconds() / 3600
+        return zone_warnings(b.local_datetime, b.latitude, b.longitude, offset)
 
 
 class ChartRequest(BaseModel):
@@ -106,7 +111,19 @@ def chart(req: ChartRequest) -> dict:
         raise HTTPException(422, str(e)) from e
     out = c.to_dict()
     out["sunrise_utc"] = _iso(c.sunrise_jd)
+    out["warnings"] = req.birth.warnings()
     return out
+
+
+class BirthCheck(BaseModel):
+    birth: BirthIn
+
+
+@app.post("/v1/birth/warnings")
+def birth_warnings(req: BirthCheck) -> dict:
+    """Warnings about the birth record's time zone (India before 1956: war time,
+    Bombay and Calcutta city times, local mean time). Never changes a chart."""
+    return {"warnings": req.birth.warnings()}
 
 
 def _period_json(p, depth: int) -> dict:

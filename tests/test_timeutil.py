@@ -61,3 +61,52 @@ def test_shifted_keeps_offset_and_zone():
     s = b.shifted(30)
     assert s.utc_offset_hours == 6.5 and s.tz_name == b.tz_name
     assert s.utc() - b.utc() == timedelta(minutes=30)
+
+
+# ------------------------------------------------------------ zone warnings
+from jyotishnet_engine.timeutil import format_offset, zone_warnings  # noqa: E402
+
+BOMBAY = (18.94, 72.84)
+CALCUTTA = (22.57, 88.36)
+DELHI = (28.61, 77.21)
+
+
+def test_format_offset():
+    assert format_offset(5.5) == "UTC+5:30"
+    assert format_offset(4.85) == "UTC+4:51"
+    assert format_offset(5 + 53 / 60 + 20 / 3600) == "UTC+5:53:20"
+    assert format_offset(-3) == "UTC-3:00"
+
+
+def test_no_warning_after_1955_or_outside_india():
+    assert zone_warnings(datetime(1960, 5, 1, 10), *BOMBAY, 5.5) == []
+    assert zone_warnings(datetime(1943, 5, 1, 10), 51.5, -0.1, 0.0) == []
+
+
+def test_bombay_time():
+    w = zone_warnings(datetime(1950, 5, 1, 10), *BOMBAY, 5.5)
+    assert len(w) == 1 and "Bombay Time" in w[0]
+    assert zone_warnings(datetime(1950, 5, 1, 10), *BOMBAY, 4.85) == []
+    assert zone_warnings(datetime(1950, 5, 1, 10), 18.52, 73.86, 5.5)   # Pune, 120 km
+
+
+def test_calcutta_time():
+    assert "Calcutta Time" in zone_warnings(datetime(1946, 5, 1, 10), *CALCUTTA, 5.5)[0]
+    assert zone_warnings(datetime(1946, 5, 1, 10), *CALCUTTA, 5 + 53 / 60 + 20 / 3600) == []
+    assert zone_warnings(datetime(1950, 5, 1, 10), *CALCUTTA, 5.5) == []
+    # Before IST, local mean time is the check (Calcutta's LMT is +5:53:28).
+    assert zone_warnings(datetime(1880, 5, 1, 10), *CALCUTTA, 88.36 / 15) == []
+
+
+def test_war_time():
+    w = zone_warnings(datetime(1943, 5, 1, 10), *DELHI, 5.5)
+    assert len(w) == 1 and "war time, UTC+6:30" in w[0]
+    assert zone_warnings(datetime(1943, 5, 1, 10), *DELHI, 6.5) == []
+    assert zone_warnings(datetime(1942, 6, 15, 10), *DELHI, 5.5) == []    # the 1942 break
+
+
+def test_before_ist():
+    w = zone_warnings(datetime(1890, 5, 1, 10), *DELHI, 5.5)
+    assert "local mean time (UTC+5:08:50" in w[0]
+    assert zone_warnings(datetime(1890, 5, 1, 10), *DELHI, 77.21 / 15) == []
+    assert zone_warnings(datetime(1890, 5, 1, 10), *DELHI, 5 + 21 / 60 + 10 / 3600) == []

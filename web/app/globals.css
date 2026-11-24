@@ -92,6 +92,11 @@ button, input, select { font: inherit; color: inherit; }
   cursor: pointer;
 }
 .form-error, .service-error { color: var(--sindoor); margin: 0; flex-basis: 100%; }
+.form-warning {
+  flex-basis: 100%; margin: 0; padding: 0.4rem 0.75rem 0.4rem 1.5rem;
+  background: var(--saffron-wash); border-left: 3px solid var(--saffron); color: var(--ink);
+  font-size: 0.92rem;
+}
 .service-error code { font-size: 0.9em; }
 
 /* Mode bar ---------------------------------------------------------------- */

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 "use client";
 
-import { FormEvent, useState } from "react";
-import { Birth } from "@/lib/api";
+import { FormEvent, useEffect, useState } from "react";
+import { api, Birth } from "@/lib/api";
 import { PRESETS } from "@/lib/presets";
 
 type Props = { name: string; birth: Birth; onSubmit: (name: string, b: Birth) => void };
@@ -15,6 +15,25 @@ export function BirthForm({ name, birth, onSubmit }: Props) {
   const [lon, setLon] = useState(String(birth.longitude));
   const [tz, setTz] = useState(String(birth.utc_offset_hours));
   const [error, setError] = useState("");
+  const [warnings, setWarnings] = useState<string[]>([]);
+
+  // Check the time zone as the user types (historical Indian zones, decision
+  // "Historical Indian zones"): a warning only, the chart is never changed.
+  useEffect(() => {
+    const la = Number(lat), lo = Number(lon), off = Number(tz);
+    const t = time.length === 5 ? `${time}:00` : time;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}:\d{2}$/.test(t) ||
+        !(la >= -66 && la <= 66) || !(lo >= -180 && lo <= 180) || !(off >= -14 && off <= 14)) {
+      setWarnings([]);
+      return;
+    }
+    const ctl = new AbortController();
+    const timer = setTimeout(() => {
+      api.birthWarnings({ local_datetime: `${date}T${t}`, latitude: la, longitude: lo, utc_offset_hours: off },
+        ctl.signal).then((r) => setWarnings(r.warnings)).catch(() => {});
+    }, 300);
+    return () => { clearTimeout(timer); ctl.abort(); };
+  }, [date, time, lat, lon, tz]);
 
   function load(i: number) {
     const p = PRESETS[i];
@@ -68,6 +87,11 @@ export function BirthForm({ name, birth, onSubmit }: Props) {
         <input inputMode="decimal" value={tz} onChange={(e) => setTz(e.target.value)} /></label>
       <button type="submit" className="primary">Cast chart</button>
       {error && <p className="form-error" role="alert">{error}</p>}
+      {warnings.length > 0 && (
+        <ul className="form-warning" role="status" aria-label="Time zone check">
+          {warnings.map((w) => <li key={w}>{w}</li>)}
+        </ul>
+      )}
     </form>
   );
 }
