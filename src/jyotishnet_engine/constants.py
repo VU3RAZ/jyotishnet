@@ -77,6 +77,14 @@ VIMSHOTTARI_LORDS = ["Ke", "Ve", "Su", "Mo", "Ma", "Ra", "Ju", "Sa", "Me"]
 VIMSHOTTARI_YEARS = {"Ke": 7, "Ve": 20, "Su": 6, "Mo": 10, "Ma": 7, "Ra": 18, "Ju": 16, "Sa": 19, "Me": 17}
 
 # Yogini dasha: name, lord, years. Total 36 years.
+# Ashtottari (108 years). Each lord rules a run of nakshatras counted from Ardra
+# (index 5, 0-based); the balance at birth is the Moon's progress through the
+# whole run. Order of lords: Su, Mo, Ma, Me, Sa, Ju, Ra, Ve.
+ASHTOTTARI_LORDS = ["Su", "Mo", "Ma", "Me", "Sa", "Ju", "Ra", "Ve"]
+ASHTOTTARI_YEARS = {"Su": 6, "Mo": 15, "Ma": 8, "Me": 17, "Sa": 10, "Ju": 19, "Ra": 12, "Ve": 21}
+ASHTOTTARI_NAKSHATRAS = {"Su": 4, "Mo": 3, "Ma": 4, "Me": 3, "Sa": 3, "Ju": 3, "Ra": 4, "Ve": 3}
+ASHTOTTARI_FIRST_NAKSHATRA = 5   # Ardra
+
 YOGINIS = [
     ("Mangala", "Mo", 1), ("Pingala", "Su", 2), ("Dhanya", "Ju", 3),
     ("Bhramari", "Ma", 4), ("Bhadrika", "Me", 5), ("Ulka", "Sa", 6),

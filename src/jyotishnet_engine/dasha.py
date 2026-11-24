@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Rahul Sathe
-"""Dasha systems: Vimshottari (three levels) and Yogini.
+"""Dasha systems: Vimshottari (three levels), Ashtottari and Yogini.
 
 Periods are computed in years from birth, then converted to Julian days by the
 configured year definition:
@@ -16,7 +16,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from .config import SchoolConfig
-from .constants import VIMSHOTTARI_LORDS, VIMSHOTTARI_YEARS, YOGINIS
+from .constants import (
+    ASHTOTTARI_FIRST_NAKSHATRA, ASHTOTTARI_LORDS, ASHTOTTARI_NAKSHATRAS, ASHTOTTARI_YEARS,
+    SIGN_LORD, VIMSHOTTARI_LORDS, VIMSHOTTARI_YEARS, YOGINIS,
+)
 from .ephemeris import body_longitude
 from .nakshatra import nakshatra_of
 
@@ -118,6 +121,36 @@ def vimshottari(moon_lon: float, birth_jd: float, cfg: SchoolConfig,
     years = {k: float(v) for k, v in VIMSHOTTARI_YEARS.items()}
     return _build(VIMSHOTTARI_LORDS, years, VIMSHOTTARI_TOTAL, idx, first_start, span_years,
                   levels, YearClock(birth_jd, cfg))
+
+
+def ashtottari(moon_lon: float, birth_jd: float, cfg: SchoolConfig,
+               levels: int = 3, span_years: float = 108.0) -> list[Period]:
+    """Ashtottari dasha (108 years), antardashas from the dasha lord onwards.
+
+    The starting lord rules the run of nakshatras holding the Moon; the part of
+    that dasha elapsed at birth is the Moon's progress through the whole run
+    (Jagannatha Hora's method).
+    """
+    span = 360.0 / 27.0
+    rel = (moon_lon - ASHTOTTARI_FIRST_NAKSHATRA * span) % 360.0
+    start = 0.0
+    for idx, lord in enumerate(ASHTOTTARI_LORDS):
+        width = ASHTOTTARI_NAKSHATRAS[lord] * span
+        if rel < start + width:
+            fraction = (rel - start) / width
+            break
+        start += width
+    years = {k: float(v) for k, v in ASHTOTTARI_YEARS.items()}
+    return _build(ASHTOTTARI_LORDS, years, 108.0, idx, -fraction * years[lord], span_years,
+                  levels, YearClock(birth_jd, cfg))
+
+
+def ashtottari_applicable(lagna_sign: int, signs: dict[str, int]) -> bool:
+    """Common rule for when Ashtottari applies: Rahu in a kendra or trikona from
+    the Lagna lord, but not in the Lagna."""
+    lord_sign = signs[SIGN_LORD[lagna_sign]]
+    d = (signs["Ra"] - lord_sign) % 12 + 1
+    return signs["Ra"] != lagna_sign and d in (1, 4, 5, 7, 9, 10)
 
 
 def yogini(moon_lon: float, birth_jd: float, cfg: SchoolConfig,

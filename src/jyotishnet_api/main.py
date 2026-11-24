@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 from jyotishnet_engine import (
     Ayanamsa, BirthData, HouseSystem, NodeType, SchoolConfig, SunriseMode,
     boundary_map, build_chart, running, vimshottari, yogini,
+    ashtottari,
 )
 from jyotishnet_engine.constants import MODEL_VARGAS, SHODASHAVARGA
 from jyotishnet_engine.timeutil import jd_to_datetime
@@ -58,7 +59,7 @@ class ChartRequest(BaseModel):
 class DashaRequest(BaseModel):
     birth: BirthIn
     config: ConfigIn = ConfigIn()
-    system: str = Field("vimshottari", pattern="^(vimshottari|yogini)$")
+    system: str = Field("vimshottari", pattern="^(vimshottari|ashtottari|yogini)$")
     levels: int = Field(3, ge=1, le=3)
     at: datetime | None = Field(None, description="UTC moment for the running-period lookup")
 
@@ -116,9 +117,15 @@ def dasha(req: DashaRequest) -> dict:
     moon = c.grahas["Mo"].longitude
     if req.system == "vimshottari":
         periods = vimshottari(moon, c.jd_ut, cfg, levels=req.levels)
+    elif req.system == "ashtottari":
+        periods = ashtottari(moon, c.jd_ut, cfg, levels=req.levels)
     else:
         periods = yogini(moon, c.jd_ut, cfg, levels=min(req.levels, 2))
     out = {"system": req.system, "periods": [_period_json(p, req.levels) for p in periods]}
+    if req.system == "ashtottari":
+        from jyotishnet_engine.dasha import ashtottari_applicable
+        out["applicable"] = ashtottari_applicable(
+            c.lagna.sign, {k: p.sign for k, p in c.grahas.items()})
     if req.at:
         from jyotishnet_engine.timeutil import datetime_to_jd
         out["running"] = [{"lord": p.lord, "level": p.level, "end": _iso(p.end_jd)}

@@ -54,3 +54,44 @@ def test_yogini_start():
     assert first.name == "Bhramari" and first.lord == "Ma"
     cycle = yogini(0.0, BIRTH, DEFAULT_CONFIG)[:8]
     assert cycle[-1].end_jd - cycle[0].start_jd == pytest.approx(36 * YEAR)
+
+
+# --- Ashtottari --------------------------------------------------------------
+
+def test_ashtottari_structure():
+    from jyotishnet_engine.constants import ASHTOTTARI_NAKSHATRAS, ASHTOTTARI_YEARS
+    from jyotishnet_engine.dasha import ashtottari
+    assert sum(ASHTOTTARI_YEARS.values()) == 108
+    assert sum(ASHTOTTARI_NAKSHATRAS.values()) == 27
+    ps = ashtottari(100.0, 2451545.0, DEFAULT_CONFIG, levels=2)
+    seq = [p.lord for p in ps[:8]]
+    assert seq == (["Su", "Mo", "Ma", "Me", "Sa", "Ju", "Ra", "Ve"] * 2)[
+        ["Su", "Mo", "Ma", "Me", "Sa", "Ju", "Ra", "Ve"].index(seq[0]):][:8]
+    for md in ps:
+        assert md.children[0].lord == md.lord
+        span = md.end_years - md.start_years
+        assert sum(c.end_years - c.start_years for c in md.children) == pytest.approx(span)
+
+
+@pytest.mark.parametrize("moon,lord,frac", [
+    (5 * 360 / 27, "Su", 0.0),                  # start of Ardra
+    (5 * 360 / 27 + 2 * 360 / 27, "Su", 0.5),   # halfway through Ardra..Ashlesha
+    (0.0, "Ra", 0.5),                           # Ashwini: 3rd of Rahu's 4 (UBha, Rev, Ash, Bha)
+    (2 * 360 / 27, "Ve", 0.0),                  # Krittika starts Venus
+])
+def test_ashtottari_balance(moon, lord, frac):
+    from jyotishnet_engine.constants import ASHTOTTARI_YEARS
+    from jyotishnet_engine.dasha import ashtottari
+    first = ashtottari(moon, 2451545.0, DEFAULT_CONFIG, levels=1)[0]
+    assert first.lord == lord
+    assert -first.start_years == pytest.approx(frac * ASHTOTTARI_YEARS[lord])
+
+
+def test_ashtottari_applicability():
+    from jyotishnet_engine.dasha import ashtottari_applicable
+    # Aries lagna, Mars (lagna lord) in Cancer; Rahu in Libra = 4th from Mars -> applies.
+    assert ashtottari_applicable(0, {"Ma": 3, "Ra": 6})
+    # Rahu in the Lagna never applies.
+    assert not ashtottari_applicable(0, {"Ma": 3, "Ra": 0})
+    # Rahu 3rd from the lagna lord -> no.
+    assert not ashtottari_applicable(0, {"Ma": 3, "Ra": 5})

@@ -66,3 +66,10 @@ def test_yogas():
     assert ys and all(y["present"] and y["source"]["text"] for y in ys)
     r = client.post("/v1/yogas", json={"birth": BIRTH, "include_absent": True})
     assert len(r.json()["yogas"]) >= 50
+
+
+def test_ashtottari_api():
+    r = client.post("/v1/dasha", json={"birth": BIRTH, "system": "ashtottari", "levels": 2})
+    assert r.status_code == 200
+    j = r.json()
+    assert isinstance(j["applicable"], bool) and j["periods"][0]["children"]
