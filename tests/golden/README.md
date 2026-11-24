@@ -30,7 +30,7 @@ boundaries, high latitudes, pre-1955 Indian zones, and the southern hemisphere.
 
 ## Edge-case charts (phase 1 gate)
 
-The design doc asks for about 50 golden charts chosen for edge cases. These 24
+The design doc asks for about 50 golden charts chosen for edge cases. These 23
 fill the gaps the first eight leave. None is a real person. Their inputs are in
 `jhd/`; they were exported from JHora 8.0 under Wine on 24 November 2026 (see
 `tools/jhora/README.md`).
@@ -42,20 +42,16 @@ chosen so that two candidate Abda/Masa day offsets give different lords.
 21-24 (New Delhi, noon, 1990-03-21, 06-21, 09-23, 12-22) put the Sun near
 the equinoxes and solstices, for Ayana bala (decision #13).
 
-**Result:** 23 of 24 pass every check in `tests/test_jhora_golden.py` (planets,
+**Result:** all 23 pass every check in `tests/test_jhora_golden.py` (planets,
 Lagna, special lagnas, Navamsa, Ashtakavarga and pindas, Vimshottari), including
 the boundary cases. Shadbala totals stay expected failures (Cheshta, #16).
 `jhora_shadbala/` holds JHora's Shadbala breakdowns of the first three charts
 and of 5, 6 and 17-24, and `jhora_shadbala/kala/` their Kaala Bala tables,
 which `tests/test_jhora_shadbala.py` checks part by part; all 13 pass.
 
-`pending/` holds a file that waits for the engine or a decision; the tests do
-not read it:
-
-- `pending/jhora/edge_12_polar_night_tromso.txt`: the engine cannot build a
-  chart without a sunrise (`tests/test_high_latitude.py`). JHora's export is no
-  reference for the sunrise-based items either: it prints "Sunrise: 13:00:00
-  (November 24)", a time on the day of the export, not near the birth.
+Chart 12 (Tromso, polar night) was dropped: polar births are out of scope
+(`docs/DECISIONS.md`). JHora gave no usable reference for it either: it printed
+"Sunrise: 13:00:00 (November 24)", a time on the day of the export.
 
 Boundary times below were found with the engine (Lahiri, mean nodes). Margins
 are wider than the known JHora differences (Lagna 17", planets 2.2"), so a sign
@@ -74,7 +70,6 @@ flip here is a real disagreement, not noise.
 | 9 | Bombay Time (until 1955) | 1950-03-01 | 10:00:00 | Mumbai | 19.08 N, 72.88 E | +4:51 |
 | 10 | Calcutta Time (until 1948) | 1946-05-10 | 10:00:00 | Kolkata | 22.57 N, 88.36 E | +5:53:20 |
 | 11 | Madras railway time | 1890-01-15 | 12:00:00 | Chennai | 13.08 N, 80.27 E | +5:21:10 |
-| 12 | Polar night: no sunrise (special lagnas, Tribhaga, vara). The engine raises here today (`tests/test_high_latitude.py`) | 1980-12-21 | 12:00:00 | Tromso | 69.65 N, 18.96 E | +1:00 |
 | 13 | High latitude, short night | 1975-06-21 | 23:30:00 | Reykjavik | 64.15 N, 21.94 W | +0:00 |
 | 14 | Southern hemisphere, summer time | 1988-01-26 | 09:00:00 | Sydney | 33.87 S, 151.21 E | +11:00 |
 | 15 | Southern hemisphere | 1970-07-15 | 14:00:00 | Johannesburg | 26.20 S, 28.05 E | +2:00 |

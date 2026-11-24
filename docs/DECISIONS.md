@@ -41,3 +41,4 @@
 | Ashtottari | Lords Su, Mo, Ma, Me, Sa, Ju, Ra, Ve from Ardra; balance by the Moon's progress through the lord's whole nakshatra run; antardashas from the dasha lord (JHora/PyJHora) |
 | Front-end stack | Next.js + React + TypeScript, plain CSS; fonts Martel and Hind (Latin + Devanagari); the slider calls the API (latest-wins) until the WebAssembly engine exists |
 | Yuddha bala (#17) | Keep BPHS: within 1 deg, the planet with more Sthana + Dig + Kala (to Hora) wins; amount = difference / disc-diameter difference. Known difference from JHora 8.0, which applies none (golden charts edge_05, edge_06: 0.74 and 1.27 virupas, inside the Kala tolerance). Decided by the user, 24 Nov 2026 |
+| Polar births | Out of scope: no sunrise in polar night or midnight sun, so the special lagnas, Tribhaga, vara and hora have no base. The API rejects latitudes beyond +/-66 deg; the JHora golden chart for Tromso was dropped. Decided by the user, 24 Nov 2026 |
