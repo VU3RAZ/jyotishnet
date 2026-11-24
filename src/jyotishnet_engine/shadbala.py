@@ -70,11 +70,17 @@ class ShadbalaOptions:
     # Moon is benefic when "waxing" (elongation < 180), or per "ashtami": from Shukla
     # Ashtami to Krishna Ashtami, i.e. at least 90 degrees from the Sun.
     moon_benefic: str = "ashtami"
-    # Mercury turns malefic when sharing a sign with any of these (the Moon only
-    # when it is itself malefic). The Sun is not counted: Mercury is never far from it.
+    # Mercury's nature. "majority" (JHora; PVR Narasimha Rao): benefic when alone or
+    # with at least as many natural benefics as malefics in its sign, malefic when
+    # malefics outnumber them. Malefics: Sun, Mars, Saturn, Rahu, Ketu and a malefic
+    # Moon; benefics: Jupiter, Venus and a benefic Moon. "any": malefic with any of
+    # `mercury_malefic_with` (the Moon only when malefic).
+    mercury_rule: str = "majority"
     mercury_malefic_with: tuple[str, ...] = ("Mo", "Ma", "Sa", "Ra", "Ke")
-    # Days added to the Kali-epoch ahargana for Abda and Masa lords.
-    ahargana_offset_days: int = 1
+    # Days added to the Kali-epoch ahargana for Abda and Masa lords. -13 is the only
+    # value (mod 360) that reproduces JHora's year and month lords on all five golden
+    # Shadbala charts; +1 matched the first three but not edge_06 (1990-01-10).
+    ahargana_offset_days: int = -13
     # Temporal relationships for Saptavargaja: from D1 ("d1") or within each varga.
     saptavarga_relation: str = "d1"
     # Moon's Cheshta: "elongation" (arc from the Sun / 3) or "paksha" (its Paksha bala).
@@ -423,6 +429,19 @@ def drik_bala(lons: dict[str, float], benefic: dict[str, bool]) -> dict[str, flo
     return out
 
 
+def mercury_is_malefic(signs: dict[str, int], moon_good: bool,
+                       opts: ShadbalaOptions = DEFAULT_OPTIONS) -> bool:
+    """Mercury's nature from the planets sharing its sign (see ShadbalaOptions)."""
+    mates = [p for p in signs if p != "Me" and p in ("Su", "Mo", "Ma", "Ju", "Ve", "Sa", "Ra", "Ke")
+             and signs[p] == signs["Me"]]
+    if opts.mercury_rule == "majority":
+        good = sum(1 for p in mates if p in ("Ju", "Ve") or (p == "Mo" and moon_good))
+        return len(mates) - good > good
+    if opts.mercury_rule == "any":
+        return any(p in opts.mercury_malefic_with and not (p == "Mo" and moon_good) for p in mates)
+    raise ValueError(f"Unknown mercury_rule {opts.mercury_rule!r}")
+
+
 # --------------------------------------------------------------------- total
 
 def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
@@ -430,8 +449,7 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
     lons = {p: chart.grahas[p].longitude for p in PLANETS7}
     d1 = {p: chart.grahas[p].sign for p in chart.grahas}
     moon_good = moon_is_benefic(lons["Su"], lons["Mo"], opts.moon_benefic)
-    companions = [m for m in opts.mercury_malefic_with if not (m == "Mo" and moon_good)]
-    mercury_malefic = any(d1[m] == d1["Me"] for m in companions)
+    mercury_malefic = mercury_is_malefic(d1, moon_good, opts)
     benefic = {"Su": False, "Mo": moon_good, "Ma": False, "Me": not mercury_malefic,
                "Ju": True, "Ve": True, "Sa": False}
     varga_signs = None
