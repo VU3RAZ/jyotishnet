@@ -31,6 +31,24 @@ jobs:
       - run: npm ci
       - run: npx next build
       - run: npx tsc --noEmit
+      # Browser smoke test (M1.4): API + built app, Chromium via Playwright.
+      # Fails on any page error or console error.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .. playwright && python -m playwright install --with-deps chromium
+      - name: Start API and web app
+        run: |
+          nohup uvicorn jyotishnet_api.main:app --host 127.0.0.1 --port 8000 > ../api.log 2>&1 &
+          nohup npx next start -H 127.0.0.1 -p 3000 > ../web.log 2>&1 &
+          for _ in $(seq 1 60); do
+            curl -fs http://127.0.0.1:8000/health >/dev/null && curl -fs http://127.0.0.1:3000 >/dev/null && exit 0
+            sleep 1
+          done
+          echo "servers did not start"; cat ../api.log ../web.log; exit 1
+      - run: python e2e/smoke.py http://127.0.0.1:3000
+      - if: failure()
+        run: tail -n 100 ../api.log ../web.log
 
   crosscheck:
     # Compares every Shodashavarga placement with PyJHora (test oracle only, AGPL).
