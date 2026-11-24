@@ -94,3 +94,39 @@ export const btr = {
   indicative: (birth: Birth) =>
     post<{ periods: Record<string, IndicativePeriod[]> }>("/v1/btr/indicative", { birth }),
 };
+
+// --- Analysis views -------------------------------------------------------------
+
+export type Yoga = {
+  id: string; name: string; group: string; present: boolean; cancelled: boolean;
+  evidence: string[]; summary: string; source: { text: string; section: string }; status: string;
+};
+export type Ashtakavarga = {
+  bav: Record<string, number[]>; sav: number[];
+  bav_trikona: Record<string, number[]>; bav_reduced: Record<string, number[]>;
+  rasi_pinda: Record<string, number>; graha_pinda: Record<string, number>;
+  shodhya_pinda: Record<string, number>;
+};
+export type PlanetStrength = {
+  sthana: Record<string, number>; dig: number; kala: Record<string, number>; cheshta: number;
+  naisargika: number; drik: number; total_virupas: number; rupas: number;
+  required_rupas: number; ratio: number;
+};
+export type Shadbala = {
+  planets: Record<string, PlanetStrength>;
+  wars: { planets: string[]; separation_deg: number }[];
+};
+export type DashaSystem = "vimshottari" | "ashtottari" | "yogini" | "chara";
+export type DashaPeriod = {
+  lord: string; name?: string | null; start: string; end: string; level: number;
+  children?: DashaPeriod[];
+};
+
+export const analysis = {
+  yogas: (birth: Birth) => post<{ yogas: Yoga[] }>("/v1/yogas", { birth, include_absent: true }),
+  ashtakavarga: (birth: Birth) => post<Ashtakavarga>("/v1/ashtakavarga", { birth }),
+  shadbala: (birth: Birth) => post<Shadbala>("/v1/shadbala", { birth }),
+  dashas: (birth: Birth, system: DashaSystem) =>
+    post<{ system: string; periods: DashaPeriod[]; applicable?: boolean }>("/v1/dasha",
+      { birth, system, levels: system === "chara" ? 2 : 3 }),
+};
