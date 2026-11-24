@@ -10,7 +10,6 @@
 | 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
 | 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |
 | 15 | Shadbala: Sun/Moon Cheshta | Undoubled Ayana (Sun) and Paksha (Moon) bala | Phase 1, expert |
-| 17 | Yuddha bala: winner and orb | BPHS: within 1 deg; the planet with more Sthana + Dig + Kala (to Hora) wins; amount = difference / disc-diameter difference. Evidence (Nov 2026): JHora 8.0 applies no Yuddha bala on golden charts edge_05 (Mars-Jupiter 0.15 deg) and edge_06 (Mercury-Saturn 0.25 deg); ours adds 0.74 and 1.27 virupas, inside the Kala tolerance. Options: keep BPHS (note the JHora difference) or add a "none" setting as default to match JHora | User
 | 18 | Yoga definitions | 56 rules marked `draft`; variant readings in each rule's `notes`. Not yet checked: strong Lagna lord (Lakshmi, Kahala), Gajakesari's extra conditions | Expert review of `rules/yogas/*.yaml` |
 | 19 | Chara dasha: Mercury in Virgo | Counted as exalted (BPHS), so +1 year where it is the counted lord outside its own sign; PyJHora treats it as own sign | With #3 |
 | 20 | Rectification event rules | 12 event types (design table), draft. A dasha lord is linked if, in D1 or the event's varga, it lords or occupies an event house or is the karaka; D2 and D30 add no house links; Rahu and Ketu link only by occupancy (no dispositor rule yet); double transit = Jupiter and Saturn both occupy or aspect an event house in D1 | Expert review of `rules/btr_events.yaml` |
