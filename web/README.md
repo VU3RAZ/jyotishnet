@@ -5,7 +5,8 @@ Next.js + React + TypeScript front end for the JyotishNet API.
 ## What it does
 
 - North and South Indian charts (SVG) for the Rasi and any divisional chart.
-- **Rectify birth time**: a time ribbon moves the birth time by up to ±2 hours.
+- **Rectify birth time**: a time ribbon moves the birth time within ±30 minutes by default (±20 minutes
+  or ±2 hours on request).
   Charts, positions and dashas recompute as you drag (about 3 ms per API call),
   and marks on the ribbon show where the Lagna and the chosen varga's Lagna
   change sign (from `/v1/boundaries`). Planets or Lagnas that change sign

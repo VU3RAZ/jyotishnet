@@ -6,7 +6,7 @@ import { BirthForm } from "@/components/BirthForm";
 import { ChartCard } from "@/components/ChartCard";
 import { DashaPanel } from "@/components/DashaPanel";
 import { PlanetTable } from "@/components/PlanetTable";
-import { RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
+import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
 import { api, Birth, Chart } from "@/lib/api";
 import { GRAHA_ORDER, placements } from "@/lib/jyotish";
 import { PRESETS } from "@/lib/presets";
@@ -25,7 +25,7 @@ export default function Workbench() {
   const [birth, setBirth] = useState<Birth>(PRESETS[0].birth);
   const [mode, setMode] = useState<Mode>("rectify");
   const [offset, setOffset] = useState(0);
-  const [range, setRange] = useState<RibbonRange>(RECTIFY_RANGES[1]);
+  const [range, setRange] = useState<RibbonRange>(DEFAULT_RECTIFY_RANGE);
   const [varga, setVarga] = useState(9);
   const [style, setStyle] = useState<ChartStyle>("north");
   const [transitBase, setTransitBase] = useState(() => Date.now());
@@ -49,7 +49,7 @@ export default function Workbench() {
   function switchMode(m: Mode) {
     setMode(m);
     setOffset(0);
-    setRange(m === "rectify" ? RECTIFY_RANGES[1] : TRANSIT_RANGES[1]);
+    setRange(m === "rectify" ? DEFAULT_RECTIFY_RANGE : TRANSIT_RANGES[1]);
     if (m === "transit") setTransitBase(Date.now());
   }
 

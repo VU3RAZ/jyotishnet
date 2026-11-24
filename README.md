@@ -24,7 +24,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
 | Yogas | 56 rules in YAML (`src/jyotishnet_engine/rules/yogas/`), each citing text and section, with evidence and cancellation: Pancha Mahapurusha, Chandra, Surya, Raja, Viparita, Neecha Bhanga, Parivartana, Dhana, Lakshmi, Amala, Saraswati, Parvata, Kahala, Kartari, Nabhasa (Sankhya, Ashraya, Dala, Akriti). All `draft` pending expert review |
 | API | FastAPI: `/v1/chart`, `/v1/dasha` (vimshottari, ashtottari, yogini, chara), `/v1/ashtakavarga`, `/v1/shadbala` (lists planetary wars), `/v1/yogas`, `/v1/boundaries`; CORS via `JYOTISHNET_CORS` |
-| Workbench UI | Next.js app in `web/`: North and South Indian charts for any varga; time ribbon for birth-time rectification (±20 min / ±2 h, with Lagna-change marks) and transits (±3 days to ±12 years); sign changes flash; positions table; Vimshottari periods on an event date; the 8 JHora charts as presets. See [web/README.md](web/README.md) |
+| Workbench UI | Next.js app in `web/`: North and South Indian charts for any varga; time ribbon for birth-time rectification (±30 min by default, ±20 min or ±2 h, with Lagna-change marks) and transits (±3 days to ±12 years); sign changes flash; positions table; Vimshottari periods on an event date; the 8 JHora charts as presets. See [web/README.md](web/README.md) |
 
 A full chart with all 16 vargas takes about 8 ms; the D1 + one varga request
 behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.

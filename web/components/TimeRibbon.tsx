@@ -8,8 +8,13 @@ export type RibbonRange = { id: string; label: string; seconds: number; step: nu
 
 export const RECTIFY_RANGES: RibbonRange[] = [
   { id: "20m", label: "±20 min", seconds: 1200, step: 1 },
+  { id: "30m", label: "±30 min", seconds: 1800, step: 1 },
   { id: "2h", label: "±2 h", seconds: 7200, step: 5 },
 ];
+// Default rectification window: ±30 min, as in the design's BTR section
+// (unrated or C-rated birth times); widen to ±2 h when the time is doubtful.
+export const DEFAULT_RECTIFY_RANGE = RECTIFY_RANGES[1];
+
 export const TRANSIT_RANGES: RibbonRange[] = [
   { id: "3d", label: "±3 days", seconds: 3 * 86400, step: 60 },
   { id: "1y", label: "±1 year", seconds: 366 * 86400, step: 3600 },
