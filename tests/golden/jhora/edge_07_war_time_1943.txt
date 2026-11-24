@@ -1,0 +1,1018 @@
+C:\charts\edge_07_war_time_1943
+
+Natal Chart
+
+Date:          June 1, 1943
+Time:          12:00:00
+Time Zone:     6:30:00 (East of GMT)
+Place:         88 E 21' 36", 22 N 34' 12"
+               Kolkata, India
+Altitude:      0.00 meters
+
+Lunar Yr-Mo:   Subhanu - Vaisakha
+Tithi:         Krishna Chaturdasi (Ve) (65.83% left)
+Vedic Weekday: Tuesday (Ma)
+Nakshatra:     Krittika (Su) (98.24% left)
+Yoga:          Atiganda (Mo) (47.24% left)
+Karana:        Vishti (Sa) (31.65% left)
+Hora Lord:     Jupiter (5 min sign: Pi)
+Mahakala Hora: Saturn (5 min sign: Ge)
+Kaala Lord:    Venus (Mahakala: Venus)
+
+Sunrise:       5:55:36
+Sunset:        19:12:45
+Janma Ghatis:  15.1833
+
+Ayanamsa:      23-04-00.12
+Sidereal Time: 3:58:46
+
+Body                    Longitude        Nakshatra Pada Rasi Navamsa
+
+Lagna                    9 Le 08' 20.69" Magh      3    Le   Ge
+Sun - BK                16 Ta 48' 01.72" Rohi      3    Ta   Ge
+Moon - AK               26 Ar 54' 04.33" Krit      1    Ar   Sg
+Mars - MK               10 Pi 31' 33.11" UBha      3    Pi   Li
+Mercury (R) - PiK        4 Ta 28' 36.95" Krit      3    Ta   Aq
+Jupiter - GK             0 Cn 56' 34.92" Puna      4    Cn   Cn
+Venus - DK               0 Cn 10' 00.16" Puna      4    Cn   Cn
+Saturn - AmK            22 Ta 06' 39.84" Rohi      4    Ta   Cn
+Rahu - PK               26 Cn 26' 28.63" Asre      3    Cn   Aq
+Ketu                    26 Cp 26' 28.63" Dhan      1    Cp   Le
+Maandi                  28 Le 23' 43.67" UPha      1    Le   Sg
+Gulika                  16 Le 55' 50.42" PPha      2    Le   Vi
+Bhava Lagna             17 Le 39' 26.72" PPha      2    Le   Vi
+Hora Lagna              18 Sc 45' 25.09" Jye       1    Sc   Sg
+Ghati Lagna             22 Le 03' 20.20" PPha      3    Le   Li
+Vighati Lagna            8 Ge 32' 55.77" Ardr      1    Ge   Sg
+Varnada Lagna            9 Pi 08' 20.69" UBha      2    Pi   Pi
+Sree Lagna              15 Le 28' 17.62" PPha      1    Le   Le
+Pranapada Lagna          8 Aq 47' 29.14" Sata      1    Aq   Sg
+Indu Lagna              26 Cn 54' 04.33" Asre      4    Cn   Pi
+Bhrigu Bindu            11 Sg 40' 16.48" Mool      4    Sg   Cn
+Dhooma                   0 Li 08' 01.72" Chit      3    Li   Li
+Vyatipata               29 Vi 51' 58.28" Chit      2    Vi   Vi
+Parivesha               29 Pi 51' 58.28" Reva      4    Pi   Pi
+Indra Chapa              0 Ar 08' 01.72" Aswi      1    Ar   Ar
+Upaketu                 16 Ar 48' 01.72" Bhar      2    Ar   Vi
+Kaala                   14 Li 04' 53.73" Swat      3    Li   Aq
+Mrityu                  28 Ta 44' 51.90" Mrig      2    Ta   Vi
+Artha Prahara           21 Ge 29' 07.80" Puna      1    Ge   Ar
+Yama Ghantaka           13 Cn 24' 17.76" Push      4    Cn   Sc
+Prana Sphuta             2 Ge 37' 33.86" Mrig      3    Ge   Li
+Deha Sphuta             22 Pi 08' 25.06" Reva      2    Pi   Cp
+Mrityu Sphuta           15 Cp 18' 54.66" Srav      2    Cp   Ta
+Sookshma TriSphuta      10 Pi 04' 53.58" UBha      3    Pi   Li
+Tithi Sphuta            10 Pi 06' 02.61" UBha      3    Pi   Li
+Yoga Sphuta (Sun-Moon)  13 Ge 42' 06.06" Ardr      3    Ge   Aq
+Rahu Tithi Sphuta        9 Ge 38' 26.91" Ardr      1    Ge   Sg
+Kshetra Sphuta           8 Cn 22' 12.36" Push      2    Cn   Vi
+Beeja Sphuta            17 Sc 54' 36.80" Jye       1    Sc   Sg
+TriSphuta               22 Cp 58' 15.44" Srav      4    Cp   Cn
+ChatusSphuta             9 Pi 46' 17.16" UBha      2    Pi   Vi
+PanchaSphuta             6 Cn 12' 45.79" Push      1    Cn   Le
+V2                       9 Aq 08' 20.69" Sata      1    Aq   Ar
+V3                       9 Cn 08' 20.69" Push      2    Cn   Cn
+V4                       9 Li 08' 20.69" Swat      1    Li   Le
+V5                       9 Sc 08' 20.69" Anu       2    Sc   Sc
+V6                       9 Aq 08' 20.69" Sata      1    Aq   Sg
+V7                       9 Pi 08' 20.69" UBha      2    Pi   Pi
+V8                       9 Aq 08' 20.69" Sata      1    Aq   Ar
+V9                       9 Sc 08' 20.69" Anu       2    Sc   Cn
+V10                      9 Li 08' 20.69" Swat      1    Li   Le
+V11                      9 Cn 08' 20.69" Push      2    Cn   Sc
+V12                      9 Aq 08' 20.69" Sata      1    Aq   Sg
+Kunda                   20 Ar 15' 55.75" Bhar      3    Ar   Li
+Yoga Sphuta             17 Vi 02' 06.06" Hast      3    Vi   Ge
+Avayoga Sphuta          23 Pi 42' 06.06" Reva      3    Pi   Aq
+
+Chara karaka Planet  Meaning of portfolio
+
+AK           Moon    Self
+AmK          Saturn  Minister (advisor)
+BK           Sun     Brother (associate)
+MK           Mars    Mother (nourisher)
+PiK          Mercury Father (authority)
+PK           Rahu    Son (follower)
+GK           Jupiter Cousin (rival)
+DK           Venus   Spouse (partner)
+
+Ashtakavarga of Rasi Chart:
+
+      Ar  Ta  Ge  Cn  Le  Vi  Li  Sc  Sg  Cp  Aq  Pi
+As   2   5   3   4   6*  2   6   2   3   4   5   7 
+Su   2   4*  6   2   2   3   3   5   5   7   4   5 
+Mo   4*  5   2   5   3   4   6   3   4   5   4   4 
+Ma   2   4   5   2   2   4   4   1   4   3   4   4*
+Me   3   6*  4   3   3   6   4   5   3   6   5   6 
+Ju   5   6   4   3*  6   5   5   3   5   5   5   4 
+Ve   5   4   3   4*  5   4   3   5   4   3   5   7 
+Sa   1   5*  5   2   3   2   3   3   5   3   4   3 
+
+      Sodhya Pinda  Rasi Pinda  Graha Pinda
+As           257         138          119
+Su           149         110           39
+Mo           122          60           62
+Ma           106          50           56
+Me            87          63           24
+Ju            66          43           23
+Ve           134          90           44
+Sa           148          95           53
+
+Planet  Shadbala In rupas % Strength IshtaPhala KashtaPhala
+
+Sun     586.18   9.77     195.39     50.42      9.09
+Moon    394.15   6.57     109.49     19.61      10.42
+Mars    421.98   7.03     140.66     36.18      21.11
+Mercury 481.31   8.02     114.60     27.72      24.16
+Jupiter 532.17   8.87     136.45     30.27      7.75
+Venus   351.10   5.85     106.39     31.05      28.79
+Saturn  290.99   4.85     97.00      4.79       53.41
+
+Vaiseshikamsas Dasa Varga (10) Shodasa Varga (16)
+
+Sun                            3-Kusuma       
+Moon                           2-Bhedaka      
+Mars                                          
+Mercury                                       
+Jupiter        5-Simhasana     7-Kalpavriksha 
+Venus          2-Paarijaata    3-Kusuma       
+Saturn         4-Gopura        6-Kerala       
+Rahu           2-Paarijaata    4-Nagapurusha  
+Ketu           2-Paarijaata    2-Bhedaka      
+
+Vimsopaka Dasa Varga (10) Shodasa Varga (16) Sapta Varga (7) Shad Varga (6)
+
+Sun       10.90  (54.50%) 11.20  (56.00%)    10.48  (52.38%) 9.55  (47.75%)
+Moon      10.98  (54.88%) 10.65  (53.25%)    11.20  (56.00%) 10.20  (51.00%)
+Mars      10.90  (54.50%) 11.90  (59.50%)    10.63  (53.13%) 11.00  (55.00%)
+Mercury   11.73  (58.63%) 11.55  (57.75%)    15.32  (76.63%) 14.25  (71.25%)
+Jupiter   12.55  (62.75%) 13.05  (65.25%)    11.75  (58.75%) 12.15  (60.75%)
+Venus     10.15  (50.75%) 10.43  (52.13%)    8.60  (43.00%)  7.45  (37.25%)
+Saturn    15.80  (79.00%) 14.60  (73.00%)    16.68  (83.38%) 15.45  (77.25%)
+Rahu      10.75  (53.75%) 10.13  (50.63%)    12.15  (60.75%) 11.00  (55.00%)
+Ketu      12.98  (64.88%) 11.80  (59.00%)    9.63  (48.13%)  9.70  (48.50%)
+
+Planet  Age                 Alertness (D-1)   Mood (D-1)
+
+Sun     Yuva (young)        Sushupta (asleep) Deena (sad)
+Moon    Mrita (dead)        Swapna (dreaming) Saanta (peaceful), Khala (mischievous)
+Mars    Vriddha (old)       Swapna (dreaming) Deena (sad)
+Mercury Mrita (dead)        Swapna (dreaming) Mudita (delighted), Vikala (crippled)
+Jupiter Mrita (dead)        Jaagrita (awake)  Deepta (glowing), Mudita (delighted), Garvita (proud)
+Venus   Mrita (dead)        Sushupta (asleep) Deena (sad)
+Saturn  Kumara (adolescent) Swapna (dreaming) Mudita (delighted), Kopita (angry)
+Rahu    Baala (infant)      Sushupta (asleep) Deena (sad)
+Ketu    Baala (infant)      Swapna (dreaming) Deena (sad), Khala (mischievous)
+
+Planet  Activity
+
+Sun     Nidra (sleeping)
+Moon    Aagamana (coming)
+Mars    Nidra (sleeping)
+Mercury Nidra (sleeping)
+Jupiter Kautuka (eager)
+Venus   Aagamana (coming)
+Saturn  Prakasana (glowing)
+Rahu    Nidra (sleeping)
+Ketu    Nidra (sleeping)
+
+                      Rasi                       
++-----------------------------------------------+
+| \                   /   \     Ve   Ra       / |
+|   \               /       \      Ju       /   |
+|     \           /           \           /     |
+|       \       /      GL       \       /       |
+|         \   /                   \   /         |
+|           x    Gk    As           x           |
+|         /   \                   /   \         |
+|       /       \      Md       /       \       |
+|     /           \           /           \     |
+|   /      AL       \   5   /      MeR      \   |
+| /                   \   /                   \ |
+|          HL           x          Su           |
+| \                   /   \                   / |
+|   \               /       \      Sa       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x                       x       Mo  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ke       \       /      Ma       \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Navamsa                                       D-9
++-----------------------------------------------+
+| \     Ve   Sa       /   \                   / |
+|   \      Ju       /       \               /   |
+|     \           /           \           /     |
+|       \       /      Su       \       /       |
+|         \   /                   \   /         |
+|Ke         x          As           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   3   /               \   |
+| /                   \   /                   \ |
+|          Gk           x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /      HL       \       /       |
+|AL       \   /                   \   /         |
+|Ma   GL    x          Mo           x  Ra   MeR |
+|         /   \                   /   \         |
+|       /       \      Md       /       \       |
+|     /           \           /           \     |
+|   /               \       /               \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Hora                                     D-2 (US)
++-----------------------------------------------+
+| \     Md   Gk       /   \     Ve            / |
+|   \      GL       /       \      Ju       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /     AL  |
+|           x          As           x  Ke   Ra  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   9   /               \   |
+| /                   \   /                   \ |
+|          Ma           x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /      Sa       \       /       |
+|         \   /                   \   /         |
+|           x          Su           x           |
+|         /   \                   /   \         |
+|       /       \      HL       /       \       |
+|     /           \           /           \     |
+|   /      Mo       \       /      MeR      \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Drekkana                                D-3 (Trd)
++-----------------------------------------------+
+| \     Ke            /   \     Ju   Ve       / |
+|   \      Su       /       \      Ma       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|AL         x          As           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   5   /               \   |
+| /                   \   /                   \ |
+|                       x          MeR          |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|Mo   Gk    x                       x  Md   GL  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Sa       \       /      Ra       \   |
+| /                   \   /     HL            \ |
++-----------------------------------------------+
+ 
+Chaturthamsa                                  D-4
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \      Ke       /   |
+|     \           /           \           /     |
+|       \       /      Su       \       /       |
+|         \   /                   \   /         |
+|Mo         x          As           x       AL  |
+|         /   \                   /   \         |
+|       /       \      Sa       /       \       |
+|     /           \           /           \     |
+|   /      Gk       \   8   /               \   |
+| /                   \   /                   \ |
+|          GL           x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /      HL       \       /       |
+|         \   /                   \   /         |
+|           x          MeR          x  Ve   Ju  |
+|         /   \                   /   \         |
+|       /       \      Md       /       \       |
+|     /           \           /           \     |
+|   /      Ra       \       /      Ma       \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Panchamsa                                     D-5
++-----------------------------------------------+
+| \                   /   \     HL            / |
+|   \      Su       /       \      Sa       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          As           x       Gk  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ju       \   11  /      Ke       \   |
+| /                   \   /                   \ |
+|    AL    MeR          x          Ra           |
+| \                   /   \                   / |
+|   \      Ve       /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|GL         x                       x  Md   Mo  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \       /      Ma       \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Shashthamsa                                   D-6
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /     AL  |
+|Gk         x          As           x  Ke   Ra  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   2   /               \   |
+| /                   \   /                   \ |
+|          GL           x          Sa           |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|Mo   Md    x                       x  HL   Su  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      MeR      \       /      Ma       \   |
+| /     Ju   Ve       \   /                   \ |
++-----------------------------------------------+
+ 
+Saptamsa                                D-7 (Trd)
++-----------------------------------------------+
+| \     Gk            /   \                   / |
+|   \      Ma       /       \      HL       /   |
+|     \           /           \           /     |
+|       \       /      Mo       \       /       |
+|         \   /                   \   /         |
+|MeR        x          As           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ve       \   7   /               \   |
+| /                   \   /                   \ |
+|    GL    Ju    AL     x          Ra           |
+| \                   /   \                   / |
+|   \      Ke       /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|Su   Md    x          Sa           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \       /               \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Ashtamsa                                      D-8
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \      MeR      /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|Ve       \   /                   \   /         |
+|Su   Ju    x          As           x           |
+|Gk       /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      HL       \   11  /      Ra       \   |
+| /                   \   /                   \ |
+|    AL    Sa           x          Mo           |
+| \                   /   \                   / |
+|   \      GL       /       \      Ke       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x                       x       Ma  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Md       \       /               \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Dasamsa                                D-10 (Trd)
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \      Mo       /       \               /   |
+|     \           /           \           /     |
+|       \       /      Ra       \       /       |
+|         \   /                   \   /         |
+|HL   Gk    x          As           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      MeR      \   8   /               \   |
+| /                   \   /                   \ |
+|          Ma           x          Sa           |
+| \                   /   \                   / |
+|   \      AL       /       \               /   |
+|     \           /           \           /     |
+|       \       /      Md       \       /       |
+|GL       \   /                   \   /         |
+|Ju   Ve    x          Ke           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \       /      Su       \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Rudramsa                                     D-11
++-----------------------------------------------+
+| \     Ke            /   \                   / |
+|   \      MeR      /       \               /   |
+|     \           /           \           /     |
+|       \       /      HL       \       /       |
+|         \   /                   \   /     Ve  |
+|           x          As           x  Ju   Mo  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   12  /               \   |
+| /                   \   /                   \ |
+|          Gk           x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          Su           x  AL   Sa  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ma       \       /      Ra       \   |
+| /     GL            \   /     Md            \ |
++-----------------------------------------------+
+ 
+Dwadasamsa                             D-12 (Trd)
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /      Su       \       /       |
+|         \   /                   \   /         |
+|Sa         x          As           x           |
+|         /   \                   /   \         |
+|       /       \      Ke       /       \       |
+|     /           \           /           \     |
+|   /      Gk       \   8   /               \   |
+| /                   \   /                   \ |
+|          Mo           x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /     Ve  |
+|AL         x          Ra           x  Ju   Ma  |
+|         /   \                   /   \     Md  |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      GL       \       /      MeR      \   |
+| /                   \   /     HL            \ |
++-----------------------------------------------+
+ 
+Shodasamsa                             D-16 (Trd)
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \      Md       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          As           x       MeR |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   9   /               \   |
+| /                   \   /                   \ |
+|                       x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /      Ra       \       /       |
+|Ve       \   /                   \   /         |
+|Su   Ju    x    HL    Mo           x       AL  |
+|         /   \                   /   \         |
+|       /       \      Ke       /       \       |
+|     /           \           /           \     |
+|   /      Ma       \       /      Sa       \   |
+| /     Gk            \   /     GL            \ |
++-----------------------------------------------+
+ 
+Vimsamsa                               D-20 (Trd)
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /      Md       \       /       |
+|         \   /                   \   /         |
+|           x          As           x  Ve   Ju  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ra       \   3   /               \   |
+| /                   \   /                   \ |
+|          Mo           x          Ma           |
+| \                   /   \                   / |
+|   \      Ke       /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /     GL  |
+|AL         x          HL           x  Sa   MeR |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Su       \       /               \   |
+| /     Gk            \   /                   \ |
++-----------------------------------------------+
+ 
+Siddhamsa                              D-24 (Trd)
++-----------------------------------------------+
+| \     Ke            /   \                   / |
+|   \      Ra       /       \               /   |
+|     \           /           \           /     |
+|       \       /      Ma       \       /       |
+|         \   /                   \   /         |
+|Mo         x          As           x       GL  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   12  /               \   |
+| /                   \   /                   \ |
+|          Md           x          Sa           |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|Ju   Ve    x          Gk           x       AL  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Su       \       /      MeR      \   |
+| /                   \   /     HL            \ |
++-----------------------------------------------+
+ 
+Nakshatramsa                           D-27 (Trd)
++-----------------------------------------------+
+| \     Ve            /   \     GL            / |
+|   \      Ju       /       \      MeR      /   |
+|     \           /           \           /     |
+|       \       /      Ra       \       /       |
+|         \   /                   \   /         |
+|Sa   AL    x          As           x  Ma   Su  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   9   /               \   |
+| /                   \   /                   \ |
+|                       x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|Mo         x          Ke           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      HL       \       /      Gk       \   |
+| /     Md            \   /                   \ |
++-----------------------------------------------+
+ 
+Trimsamsa                                    D-30
++-----------------------------------------------+
+| \     HL            /   \                   / |
+|   \      Su       /       \      Sa       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          As           x       Gk  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ju       \   11  /      Ke       \   |
+| /                   \   /                   \ |
+|    AL    MeR          x          Ra           |
+| \                   /   \                   / |
+|   \      Ve       /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|GL         x                       x  Md   Mo  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \       /      Ma       \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Khavedamsa                                   D-40
++-----------------------------------------------+
+| \                   /   \     MeR  Sa       / |
+|   \      Md       /       \      Mo       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          As           x       Gk  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   1   /               \   |
+| /                   \   /                   \ |
+|                       x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|Su   AL    x          Ve           x       Ma  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ra       \       /      Ju       \   |
+| /     Ke   GL       \   /     HL            \ |
++-----------------------------------------------+
+ 
+Akshavedamsa                                 D-45
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \      Mo       /   |
+|     \           /           \           /     |
+|       \       /      Su       \       /       |
+|         \   /                   \   /     AL  |
+|           x          As           x  Ke   Ra  |
+|         /   \                   /   \         |
+|       /       \      Gk       /       \       |
+|     /           \           /           \     |
+|   /               \   6   /               \   |
+| /                   \   /                   \ |
+|          HL           x                       |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /     GL  |
+|           x          Ma           x  Sa   Ju  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      MeR      \       /      Ve       \   |
+| /     Md            \   /                   \ |
++-----------------------------------------------+
+ 
+Shashtyamsa                            D-60 (Trd)
++-----------------------------------------------+
+| \                   /   \     Sa            / |
+|   \               /       \      MeR      /   |
+|     \           /           \           /     |
+|       \       /      Su       \       /       |
+|         \   /                   \   /     AL  |
+|GL   Md    x          As           x  HL   Ma  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Gk       \   11  /               \   |
+| /                   \   /                   \ |
+|          Ke           x          Ra           |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          Ju           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ve       \       /      Mo       \   |
+| /                   \   /                   \ |
++-----------------------------------------------+
+ 
+Navanavamsa                                  D-81
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \      GL       /   |
+|     \           /           \           /     |
+|       \       /      Mo       \       /       |
+|         \   /                   \   /         |
+|Ra   AL    x          As           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   1   /      Gk       \   |
+| /                   \   /                   \ |
+|          Ve           x          MeR          |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|Md         x          Su           x  Ke   Sa  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ju       \       /      Ma       \   |
+| /     HL            \   /                   \ |
++-----------------------------------------------+
+ 
+Ashtottaramsa                               D-108
++-----------------------------------------------+
+| \                   /   \                   / |
+|   \               /       \      Ra       /   |
+|     \           /           \           /     |
+|       \       /      Sa       \       /       |
+|         \   /                   \   /         |
+|           x          As           x  AL   Mo  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /               \   11  /               \   |
+| /                   \   /                   \ |
+|          GL           x          Ma           |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|Md       \   /                   \   /         |
+|Su   MeR   x                       x       Ju  |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      Ve       \       /      Gk       \   |
+| /     Ke   HL       \   /                   \ |
++-----------------------------------------------+
+ 
+Dwadasa-Dwadasamsa                          D-144
++-----------------------------------------------+
+| \     Ve            /   \                   / |
+|   \      Su       /       \      Ke       /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          As           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     /           \           /           \     |
+|   /      AL       \   3   /               \   |
+| /                   \   /                   \ |
+|          Ma           x          MeR          |
+| \                   /   \                   / |
+|   \               /       \               /   |
+|     \           /           \           /     |
+|       \       /               \       /       |
+|         \   /                   \   /         |
+|           x          HL           x           |
+|         /   \                   /   \         |
+|       /       \               /       \       |
+|     / Ra   Md   \           /           \     |
+|   / Gk   Mo       \       /      GL       \   |
+| /     Ju   Sa       \   /                   \ |
++-----------------------------------------------+
+ 
+Vimsottari Dasa ():
+
+Sun  Sun 1943-04-23  Moon 1943-08-13  Mars 1944-02-10  
+     Rah 1944-06-17  Jup 1945-05-11  Sat 1946-02-27  
+     Merc 1947-02-09  Ket 1947-12-18  Ven 1948-04-22  
+Moon  Moon 1949-04-22  Mars 1950-02-21  Rah 1950-09-25  
+      Jup 1952-03-22  Sat 1953-07-25  Merc 1955-02-21  
+      Ket 1956-07-25  Ven 1957-02-21  Sun 1958-10-26  
+Mars  Mars 1959-04-23  Rah 1959-09-23  Jup 1960-10-10  
+      Sat 1961-09-16  Merc 1962-10-26  Ket 1963-10-23  
+      Ven 1964-03-16  Sun 1965-05-17  Moon 1965-09-25  
+Rah  Rah 1966-04-23  Jup 1969-01-05  Sat 1971-05-30  
+     Merc 1974-04-04  Ket 1976-10-25  Ven 1977-11-13  
+     Sun 1980-11-12  Moon 1981-10-08  Mars 1983-04-05  
+Jup  Jup 1984-04-22  Sat 1986-06-11  Merc 1988-12-24  
+     Ket 1991-03-30  Ven 1992-03-05  Sun 1994-11-07  
+     Moon 1995-08-26  Mars 1996-12-24  Rah 1997-12-01  
+Sat  Sat 2000-04-22  Merc 2003-04-26  Ket 2006-01-05  
+     Ven 2007-02-13  Sun 2010-04-14  Moon 2011-03-27  
+     Mars 2012-10-29  Rah 2013-12-07  Jup 2016-10-14  
+Merc  Merc 2019-04-23  Ket 2021-09-23  Ven 2022-09-20  
+      Sun 2025-07-19  Moon 2026-05-24  Mars 2027-10-26  
+      Rah 2028-10-23  Jup 2031-05-09  Sat 2033-08-16  
+Ket  Ket 2036-04-23  Ven 2036-09-22  Sun 2037-11-22  
+     Moon 2038-03-27  Mars 2038-10-29  Rah 2039-03-24  
+     Jup 2040-04-10  Sat 2041-03-17  Merc 2042-04-26  
+Ven  Ven 2043-04-23  Sun 2046-08-26  Moon 2047-08-26  
+     Mars 2049-04-23  Rah 2050-06-24  Jup 2053-06-24  
+     Sat 2056-02-22  Merc 2059-04-23  Ket 2062-02-22  
+
+Moola Dasa (dasa showing the root of events - past karma):
+
+Sat  Sat 1943-06-01  Sun 1944-08-22  Merc 1945-01-01  
+     Jup 1946-08-04  Rah 1947-10-24  Ven 1949-02-22  
+     Ket 1951-03-21  Moon 1951-08-04  Mars 1952-09-09  
+Sun  Sun 1953-06-01  Merc 1953-07-12  Jup 1954-01-01  
+     Rah 1954-05-14  Ven 1954-10-11  Ket 1955-05-23  
+     Moon 1955-07-03  Mars 1955-11-02  Sat 1956-01-19  
+Merc  Merc 1956-05-31  Jup 1958-06-24  Rah 1960-01-24  
+      Ven 1961-10-24  Ket 1964-07-03  Moon 1964-12-24  
+      Mars 1966-05-27  Sat 1967-05-09  Sun 1968-12-11  
+Jup  Jup 1969-06-01  Rah 1970-08-23  Ven 1971-12-24  
+     Ket 1974-01-19  Moon 1974-06-01  Mars 1975-07-08  
+     Sat 1976-03-29  Sun 1977-06-19  Merc 1977-11-02  
+Rah  Rah 1979-06-01  Ven 1980-11-24  Ket 1983-03-04  
+     Moon 1983-07-31  Mars 1984-10-15  Sat 1985-08-04  
+     Sun 1986-12-07  Merc 1987-04-30  Jup 1989-01-27  
+Ven  Ven 1990-06-01  Ket 1993-12-11  Moon 1994-07-26  
+     Mars 1996-06-05  Sat 1997-09-05  Sun 1999-10-03  
+     Merc 2000-05-13  Jup 2003-01-24  Rah 2005-02-18  
+Ket  Ket 2007-06-01  Moon 2007-07-13  Mars 2007-11-11  
+     Sat 2008-01-28  Sun 2008-06-10  Merc 2008-07-21  
+     Jup 2009-01-10  Rah 2009-05-23  Ven 2009-10-20  
+Moon  Moon 2010-06-01  Mars 2011-05-28  Sat 2012-01-24  
+      Sun 2013-02-27  Merc 2013-06-29  Jup 2014-12-03  
+      Rah 2016-01-07  Ven 2017-03-21  Ket 2019-02-01  
+Mars  Mars 2019-06-01  Sat 2019-11-11  Sun 2020-08-04  
+      Merc 2020-10-24  Jup 2021-10-07  Rah 2022-06-29  
+      Ven 2023-04-17  Ket 2024-07-17  Moon 2024-10-06  
+
+Ashtottari Dasa (conditional nakshatra dasa):
+
+Ven  Ven 1943-04-16  Sun 1947-05-17  Moon 1948-07-18  
+     Mars 1951-06-17  Merc 1953-01-06  Sat 1956-04-26  
+     Jup 1958-04-06  Rah 1961-12-18  
+Sun  Sun 1964-04-16  Moon 1964-08-19  Mars 1965-06-17  
+     Merc 1965-11-28  Sat 1966-11-08  Jup 1967-05-28  
+     Rah 1968-06-17  Ven 1969-02-15  
+Moon  Moon 1970-04-16  Mars 1972-05-17  Merc 1973-06-28  
+      Sat 1975-11-09  Jup 1977-03-27  Rah 1979-11-19  
+      Ven 1981-07-19  Sun 1984-06-17  
+Mars  Mars 1985-04-16  Merc 1985-11-22  Sat 1987-02-22  
+      Jup 1987-11-22  Rah 1989-04-16  Ven 1990-03-07  
+      Sun 1991-09-30  Moon 1992-03-06  
+Merc  Merc 1993-04-16  Sat 1995-12-22  Jup 1997-07-19  
+      Rah 2000-07-15  Ven 2002-06-04  Sun 2005-09-26  
+      Moon 2006-09-06  Mars 2009-01-13  
+Sat  Sat 2010-04-16  Jup 2011-03-21  Rah 2012-12-24  
+     Ven 2014-02-02  Sun 2016-01-14  Moon 2016-08-05  
+     Mars 2017-12-25  Merc 2018-09-23  
+Jup  Jup 2020-04-16  Rah 2023-08-23  Ven 2025-10-03  
+     Sun 2029-06-10  Moon 2030-07-02  Mars 2033-02-18  
+     Merc 2034-07-19  Sat 2037-07-15  
+Rah  Rah 2039-04-17  Ven 2040-08-19  Sun 2042-12-19  
+     Moon 2043-08-20  Mars 2045-04-16  Merc 2046-03-07  
+     Sat 2048-01-27  Jup 2049-03-07  
+
+Kalachakra Dasa (From Moon of D-1, Savya, Paramayush: 86 yr, Deha: Ar, Jiva: Sg):
+
+Sg (Krit1)  Ar (Mool1) 1942-09-20  Ta (Mool2) 1943-05-31  Ge (Mool3) 1945-01-05  
+            Cn (Mool4) 1945-12-01  Le (PSha1) 1948-01-06  Vi (PSha2) 1948-07-07  
+            Li (PSha3) 1949-05-30  Sc (PSha4) 1951-01-06  Sg (USha1) 1951-09-20  
+Cp (Krit2)  Cp (USha2) 1952-09-19  Aq (USha3) 1952-11-27  Pi (USha4) 1953-02-01  
+            Sc (Srav1) 1953-07-25  Li (Srav2) 1953-11-23  Vi (Srav3) 1954-08-25  
+            Cn (Srav4) 1955-01-24  Le (Dhan1) 1956-01-20  Ge (Dhan2) 1956-04-14  
+Aq (Krit3)  Ta (Dhan3) 1956-09-20  Ar (Dhan4) 1957-06-26  Pi (Sata1) 1957-10-29  
+            Aq (Sata2) 1958-04-20  Cp (Sata3) 1958-07-01  Sg (Sata4) 1958-09-11  
+            Ar (PBha1) 1959-03-03  Ta (PBha2) 1959-07-06  Ge (PBha3) 1960-04-10  
+Pi (Krit4)  Cn (PBha4) 1960-09-20  Le (UBha1) 1963-02-25  Vi (UBha2) 1963-09-29  
+            Li (UBha3) 1964-10-15  Sc (UBha4) 1966-08-25  Sg (Reva1) 1967-06-16  
+            Cp (Reva2) 1968-08-16  Aq (Reva3) 1969-01-31  Pi (Reva4) 1969-07-21  
+Sc (Rohi1)  Sg (Jye4) 1970-09-20  Cp (Jye3) 1971-07-13  Aq (Jye2) 1971-11-10  
+            Pi (Jye1) 1972-03-05  Ar (Anu4) 1972-12-29  Ta (Anu3) 1973-07-25  
+            Ge (Anu2) 1974-11-14  Le (Anu1) 1975-08-08  Cn (Visa4) 1976-01-03  
+Li (Rohi2)  Vi (Visa3) 1977-09-20  Li (Visa2) 1979-06-13  Sc (Visa1) 1982-07-15  
+            Pi (Swat4) 1983-11-21  Aq (Swat3) 1985-10-25  Cp (Swat2) 1986-08-02  
+            Sg (Swat1) 1987-05-08  Sc (Chit4) 1989-04-11  Li (Chit3) 1990-08-20  
+Vi (Rohi3)  Vi (Chit2) 1993-09-20  Le (Chit1) 1994-09-03  Cn (Hast4) 1995-03-12  
+            Ge (Hast3) 1997-06-02  Ta (Hast2) 1998-05-15  Ar (Hast1) 2000-01-25  
+            Sg (UPha4) 2000-10-24  Cp (UPha3) 2001-11-15  Aq (UPha2) 2002-04-15  
+Cn (Rohi4)  Pi (UPha1) 2002-09-20  Ar (PPha4) 2004-10-26  Ta (PPha3) 2006-04-12  
+            Ge (PPha2) 2009-08-25  Le (PPha1) 2011-07-15  Cn (Magh4) 2012-08-02  
+            Vi (Magh3) 2016-12-29  Li (Magh2) 2018-11-21  Sc (Magh1) 2022-03-29  
+Le (Mrig1)  Pi (Asre4) 2023-09-21  Aq (Asre3) 2024-04-16  Cp (Asre2) 2024-07-12  
+            Sg (Asre1) 2024-10-07  Sc (Push4) 2025-05-04  Li (Push3) 2025-10-03  
+            Vi (Push2) 2026-09-08  Le (Push1) 2027-03-14  Cn (Puna4) 2027-06-30  
+
+Narayana Dasa of D-1 chart (a versatile phalita rasi dasa):
+
+Aq  Ta 1943-06-01  Ar 1944-02-29  Pi 1944-12-02  
+    Aq 1945-09-03  Cp 1946-06-01  Sg 1947-03-01  
+    Sc 1947-12-03  Li 1948-09-02  Vi 1949-06-01  
+    Le 1950-03-01  Cn 1950-12-02  Ge 1951-09-03  
+Cn  Ar 1952-05-31  Ta 1952-09-02  Ge 1952-12-02  
+    Cn 1953-03-01  Le 1953-06-01  Vi 1953-09-03  
+    Li 1953-12-02  Sc 1954-03-01  Sg 1954-06-01  
+    Cp 1954-09-03  Aq 1954-12-03  Pi 1955-03-01  
+Sg  Ta 1955-06-01  Ar 1956-01-31  Pi 1956-10-03  
+    Aq 1957-06-01  Cp 1958-01-30  Sg 1958-10-04  
+    Sc 1959-06-01  Li 1960-01-31  Vi 1960-10-03  
+    Le 1961-06-01  Cn 1962-01-30  Ge 1962-10-04  
+Ta  Cn 1963-06-01  Le 1963-08-03  Vi 1963-10-04  
+    Li 1963-12-03  Sc 1964-01-31  Sg 1964-03-31  
+    Cp 1964-05-31  Aq 1964-08-02  Pi 1964-10-03  
+    Ar 1964-12-02  Ta 1965-01-30  Ge 1965-03-31  
+Li  Pi 1965-06-01  Aq 1966-03-01  Cp 1966-12-03  
+    Sg 1967-09-03  Sc 1968-05-31  Li 1969-03-01  
+    Vi 1969-12-02  Le 1970-09-03  Cn 1971-06-01  
+    Ge 1972-03-01  Ta 1972-12-02  Ar 1973-09-03  
+Pi  Cn 1974-06-01  Ge 1975-03-01  Ta 1975-12-03  
+    Ar 1976-09-02  Pi 1977-06-01  Aq 1978-03-01  
+    Cp 1978-12-03  Sg 1979-09-03  Sc 1980-05-31  
+    Li 1981-03-01  Vi 1981-12-02  Le 1982-09-03  
+Le  Ta 1983-06-01  Ar 1983-09-03  Pi 1983-12-03  
+    Aq 1984-03-01  Cp 1984-06-01  Sg 1984-09-03  
+    Sc 1984-12-02  Li 1985-03-01  Vi 1985-06-01  
+    Le 1985-09-03  Cn 1985-12-02  Ge 1986-03-01  
+Cp  Ar 1986-06-01  Ta 1987-01-31  Ge 1987-10-04  
+    Cn 1988-06-01  Le 1989-01-30  Vi 1989-10-04  
+    Li 1990-06-01  Sc 1991-01-31  Sg 1991-10-04  
+    Cp 1992-06-01  Aq 1993-01-30  Pi 1993-10-04  
+Ge  Ta 1994-06-01  Ar 1995-05-01  Pi 1996-03-31  
+    Aq 1997-03-01  Cp 1998-01-30  Sg 1999-01-01  
+    Sc 1999-12-03  Li 2000-11-03  Vi 2001-10-04  
+    Le 2002-09-03  Cn 2003-08-03  Ge 2004-07-02  
+Sc  Cn 2005-06-01  Le 2005-08-03  Vi 2005-10-04  
+    Li 2005-12-03  Sc 2006-01-31  Sg 2006-03-31  
+    Cp 2006-06-01  Aq 2006-08-03  Pi 2006-10-04  
+    Ar 2006-12-03  Ta 2007-01-31  Ge 2007-04-01  
+Ar  Pi 2007-06-01  Aq 2008-05-01  Cp 2009-03-31  
+    Sg 2010-03-01  Sc 2011-01-31  Li 2012-01-02  
+    Vi 2012-12-02  Le 2013-11-03  Cn 2014-10-04  
+    Ge 2015-09-03  Ta 2016-08-03  Ar 2017-07-02  
+Vi  Cn 2018-06-01  Ge 2018-10-04  Ta 2019-01-31  
+    Ar 2019-06-01  Pi 2019-10-04  Aq 2020-01-31  
+    Cp 2020-06-01  Sg 2020-10-03  Sc 2021-01-30  
+    Li 2021-06-01  Vi 2021-10-04  Le 2022-01-31  
+
+Sudasa (phalita dasa showing Lakshmi's blessings):
+
+Ta  Ta 1943-06-01  Ge 1943-07-01  Cn 1943-08-01  
+    Le 1943-08-31  Vi 1943-09-30  Li 1943-10-29  
+    Sc 1943-11-27  Sg 1943-12-26  Cp 1944-01-23  
+    Aq 1944-02-21  Pi 1944-03-21  Ar 1944-04-19  
+Le  Aq 1944-05-19  Pi 1944-08-22  Ar 1944-11-21  
+    Ta 1945-02-17  Ge 1945-05-20  Cn 1945-08-22  
+    Le 1945-11-21  Vi 1946-02-18  Li 1946-05-20  
+    Sc 1946-08-22  Sg 1946-11-21  Cp 1947-02-18  
+Sc  Ta 1947-05-20  Ge 1947-07-22  Cn 1947-09-22  
+    Le 1947-11-22  Vi 1948-01-20  Li 1948-03-19  
+    Sc 1948-05-19  Sg 1948-07-21  Cp 1948-09-21  
+    Aq 1948-11-21  Pi 1949-01-19  Ar 1949-03-19  
+Aq  Aq 1949-05-20  Pi 1950-02-18  Ar 1950-11-21  
+    Ta 1951-08-22  Ge 1952-05-20  Cn 1953-02-17  
+    Le 1953-11-21  Vi 1954-08-22  Li 1955-05-20  
+    Sc 1956-02-18  Sg 1956-11-21  Cp 1957-08-22  
+Pi  Pi 1958-05-20  Aq 1959-02-18  Cp 1959-11-22  
+    Sg 1960-08-22  Sc 1961-05-20  Li 1962-02-18  
+    Vi 1962-11-21  Le 1963-08-22  Cn 1964-05-20  
+    Ge 1965-02-17  Ta 1965-11-21  Ar 1966-08-22  
+Ge  Ge 1967-05-20  Cn 1968-04-19  Le 1969-03-19  
+    Vi 1970-02-18  Li 1971-01-19  Sc 1971-12-21  
+    Sg 1972-11-21  Cp 1973-10-22  Aq 1974-09-22  
+    Pi 1975-08-22  Ar 1976-07-21  Ta 1977-06-20  
+Vi  Pi 1978-05-20  Aq 1978-09-22  Cp 1979-01-19  
+    Sg 1979-05-20  Sc 1979-09-22  Li 1980-01-20  
+    Vi 1980-05-20  Le 1980-09-22  Cn 1981-01-19  
+    Ge 1981-05-20  Ta 1981-09-22  Ar 1982-01-19  
+Sg  Ge 1982-05-20  Cn 1983-01-20  Le 1983-09-22  
+    Vi 1984-05-20  Li 1985-01-19  Sc 1985-09-22  
+    Sg 1986-05-20  Cp 1987-01-20  Aq 1987-09-22  
+    Pi 1988-05-20  Ar 1989-01-19  Ta 1989-09-22  
+Cn  Cn 1990-05-20  Ge 1990-08-22  Ta 1990-11-22  
+    Ar 1991-02-18  Pi 1991-05-21  Aq 1991-08-23  
+    Cp 1991-11-22  Sg 1992-02-18  Sc 1992-05-20  
+    Li 1992-08-22  Vi 1992-11-21  Le 1993-02-18  
+Li  Ar 1993-05-20  Ta 1994-02-18  Ge 1994-11-22  
+    Cn 1995-08-23  Le 1996-05-20  Vi 1997-02-18  
+    Li 1997-11-21  Sc 1998-08-22  Sg 1999-05-21  
+    Cp 2000-02-18  Aq 2000-11-21  Pi 2001-08-22  
+Cp  Cn 2002-05-20  Ge 2003-01-20  Ta 2003-09-23  
+    Ar 2004-05-20  Pi 2005-01-19  Aq 2005-09-22  
+    Cp 2006-05-20  Sg 2007-01-20  Sc 2007-09-23  
+    Li 2008-05-20  Vi 2009-01-19  Le 2009-09-22  
+Ar  Ar 2010-05-20  Ta 2011-04-20  Ge 2012-03-19  
+    Cn 2013-02-18  Le 2014-01-19  Vi 2014-12-21  
+    Li 2015-11-22  Sc 2016-10-22  Sg 2017-09-22  
+    Cp 2018-08-23  Aq 2019-07-22  Pi 2020-06-20  
+

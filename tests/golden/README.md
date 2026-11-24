@@ -1,13 +1,14 @@
 # Jagannatha Hora golden set
 
-`jhora/*.txt` are Jagannatha Hora "Natal Chart" text exports (eight charts, born
-1836-1970). `jhora_parser.py` reads them; `tests/test_jhora_golden.py` checks the
+`jhora/*.txt` are Jagannatha Hora "Natal Chart" text exports: eight charts born
+1836-1970, and 15 edge-case charts `edge_*` (below). `jhora_parser.py` reads them; `tests/test_jhora_golden.py` checks the
 engine against them; `tools/compare_jhora.py` compares candidate settings.
 
 ## Adding a chart
 
-In Jagannatha Hora, open the chart and export the natal chart report as text,
-then save it here as `firstname_lastname.txt`. The parser reads the date, time,
+In Jagannatha Hora, open the chart and use Edit > Copy complete calculations,
+then save the text here as `firstname_lastname.txt`. `tools/jhora/` does this
+under Wine from `.jhd` files, with the settings the golden set needs. The parser reads the date, time,
 time zone, place, ayanamsa, sunrise, body table, Ashtakavarga, pindas, Shadbala
 totals and Vimshottari dasha. Useful additions: births near sign or nakshatra
 boundaries, high latitudes, pre-1955 Indian zones, and the southern hemisphere.
@@ -26,18 +27,35 @@ boundaries, high latitudes, pre-1955 Indian zones, and the southern hemisphere.
 | Vimshottari antardasha starts | 584/648 exact, rest within 1 day | solar (Sun's sidereal motion) year |
 | Shadbala totals | differ by up to ~100 virupas | open: needs JHora's component table |
 
-## Charts wanted (phase 1 gate)
+## Edge-case charts (phase 1 gate)
 
-The design doc asks for about 50 golden charts chosen for edge cases. These
-fill the gaps the first eight leave. None needs to be a real person; enter the
-data as given. For each, save the natal chart text export to `jhora/`; for 5
-and 6, also save the Shadbala tables to `jhora_shadbala/` (same format as the
-existing three).
+The design doc asks for about 50 golden charts chosen for edge cases. These 16
+fill the gaps the first eight leave. None is a real person. Their inputs are in
+`jhd/`; they were exported from JHora 8.0 under Wine on 24 November 2026 (see
+`tools/jhora/README.md`).
 
-For 7-11, **type the zone shown** (JHora's daylight-saving box off). JHora's
-atlas gives every Indian place 5:30 on any date (see below), so letting it fill
-the zone would test nothing. These charts check that the engine matches JHora
-once both use the historical offset.
+For 7-11 the zone is the historical offset, typed in: JHora's atlas gives
+every Indian place 5:30 on any date (see below), so these check that the engine
+matches JHora once both use the same offset.
+
+**Result:** 15 of 16 pass every check in `tests/test_jhora_golden.py` (planets,
+Lagna, special lagnas, Navamsa, Ashtakavarga and pindas, Vimshottari), including
+the boundary cases. Shadbala totals stay expected failures, as for the first
+eight. Three files wait in `pending/`, which the tests do not read:
+
+- `pending/jhora/edge_12_polar_night_tromso.txt`: the engine cannot build a
+  chart without a sunrise (`tests/test_high_latitude.py`). JHora's export is no
+  reference for the sunrise-based items either: it prints "Sunrise: 13:00:00
+  (November 24)", a time on the day of the export, not near the birth.
+- `pending/jhora_shadbala/edge_05_*`, `edge_06_*` (and `kala/`, with the Kaala
+  Bala table): component checks fail on Kala and Drik bala. Differences found:
+  JHora applies no Yuddha bala to either war (Mars-Jupiter 0.15 deg apart,
+  Mercury-Saturn 0.25 deg; the engine gives +/-0.74 and +/-1.27 virupas);
+  JHora treats Mercury conjunct the Sun as malefic for Paksha bala (chart 5:
+  JHora 51.65, engine 8.35); Masa lord on 1990-01-10 is the Moon in JHora, Mercury
+  in the engine (30 virupas); Saturn's Drik bala in chart 5 differs by 18
+  virupas. Move the files up a level once the engine agrees or the difference
+  is recorded as a decision.
 
 Boundary times below were found with the engine (Lahiri, mean nodes). Margins
 are wider than the known JHora differences (Lagna 17", planets 2.2"), so a sign
