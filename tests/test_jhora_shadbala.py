@@ -39,7 +39,8 @@ def case(request):
 
 
 # Tolerances in virupas reflect current agreement; tighten as gaps are closed.
-@pytest.mark.parametrize("component,tol", [("naisargika", 0.01), ("dig", 3.0),
+# Naisargika: JHora prints the BPHS table values (e.g. 25.70 for 180/7 = 25.714).
+@pytest.mark.parametrize("component,tol", [("naisargika", 0.02), ("dig", 3.0),
                                            ("kala", 6.0), ("drik", 8.0)])
 def test_component(case, component, tol):
     jh, sb = case
