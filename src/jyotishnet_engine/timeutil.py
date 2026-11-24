@@ -3,8 +3,11 @@
 """Birth data and time conversion.
 
 Historical Indian time is a frequent source of silent errors (pre-1955 zones,
-war time 1942-45). IANA zone `Asia/Kolkata` carries that history; an explicit
-UTC offset overrides it when a record states the offset used.
+war time 1941-45). IANA zone `Asia/Kolkata` carries the all-India history (local
+mean times, Madras time, IST from 1906, war time), but not the city times that
+Bombay (UTC+4:51, until 1955) and Calcutta (UTC+5:53:20, until 1948) kept beside
+IST: give an explicit UTC offset for such records. An explicit offset always
+overrides the zone. See tests/test_timeutil.py.
 """
 
 from __future__ import annotations
