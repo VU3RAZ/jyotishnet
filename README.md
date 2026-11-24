@@ -18,8 +18,9 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Aspects | Parashari graha drishti; optional Rahu/Ketu 5th/9th |
 | Special lagnas | Bhava, Hora, Ghati Lagna and Pranapada (sunrise mode configurable) |
 | Dashas | Vimshottari (3 levels), Yogini (2 levels); configurable year length |
+| Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
-| API | FastAPI: `/v1/chart`, `/v1/dasha`, `/v1/boundaries` |
+| API | FastAPI: `/v1/chart`, `/v1/dasha`, `/v1/ashtakavarga`, `/v1/boundaries` |
 
 A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
 
@@ -30,6 +31,9 @@ A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
   run: **0 mismatches in 64,000 placements (400 charts, 1900-2030, 8 Indian
   cities)**, with matching settings (Lahiri, true nodes, true positions,
   Parashari hora).
+- **Ashtakavarga cross-check**: `tools/crosscheck_ashtakavarga.py` compares BAV,
+  SAV, both reductions and Shodhya pinda with PyJHora: **all components match
+  on 300 random charts** (PVR variant, PyJHora's occupancy rule).
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
 - **Jagannatha Hora golden set**: `tests/golden/`, to be filled by hand.
 

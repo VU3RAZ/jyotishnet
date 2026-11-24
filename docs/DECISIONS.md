@@ -11,6 +11,9 @@
 | 5 | Apparent vs true planet positions | Apparent (`true_positions=False`); PyJHora uses true | Phase 1, week 1: match the JHora golden set |
 | 6 | Pranapada formula convention | Sun-modality offset, 1 sign per 6 minutes; needs expert sign-off | Phase 1 |
 | 7 | Mean vs true nodes default | Mean (PyJHora defaults to true) | Phase 1 |
+| 8 | Ashtakavarga BAV variant | `bphs` (Raman's reading); `pvr` (PVR Narasimha Rao, PyJHora default) differs for Moon and Venus | Phase 1, with the expert reviewer |
+| 9 | Ekadhipatya "occupied" signs | Seven grahas; options add Rahu/Ketu, or Rahu/Ketu and Lagna (PyJHora) | Phase 1, with the expert reviewer |
+| 10 | Shodhya pinda Virgo multiplier | 5 (common references); 6 in PVR's book | Phase 1 |
 
 ## Decided
 

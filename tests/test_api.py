@@ -43,3 +43,9 @@ def test_boundaries():
 def test_polar_latitude_rejected():
     bad = dict(BIRTH, latitude=80)
     assert client.post("/v1/chart", json={"birth": bad}).status_code == 422
+
+
+def test_ashtakavarga():
+    r = client.post("/v1/ashtakavarga", json={"birth": BIRTH, "variant": "pvr"})
+    assert r.status_code == 200
+    assert sum(r.json()["sav"]) == 337

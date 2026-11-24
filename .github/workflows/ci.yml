@@ -30,3 +30,4 @@ jobs:
           .venv-oracle/bin/pip install --no-deps pyjhora
           .venv-oracle/bin/pip install pytz numpy python-dateutil requests geopy timezonefinder geocoder reverse_geocode img2pdf
       - run: .venv-oracle/bin/python tools/crosscheck_pyjhora.py --charts 200
+      - run: .venv-oracle/bin/python tools/crosscheck_ashtakavarga.py --charts 200

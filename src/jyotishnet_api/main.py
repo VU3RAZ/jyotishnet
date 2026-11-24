@@ -61,6 +61,14 @@ class DashaRequest(BaseModel):
     at: datetime | None = Field(None, description="UTC moment for the running-period lookup")
 
 
+class AshtakavargaRequest(BaseModel):
+    birth: BirthIn
+    config: ConfigIn = ConfigIn()
+    variant: str = Field("bphs", pattern="^(bphs|pvr)$")
+    occupancy: str = Field("grahas7", pattern="^(grahas7|grahas9|all)$")
+    virgo_multiplier: int = Field(5, ge=5, le=6)
+
+
 class BoundaryRequest(BaseModel):
     birth: BirthIn
     config: ConfigIn = ConfigIn()
@@ -126,3 +134,14 @@ def boundaries(req: BoundaryRequest) -> dict:
         "segments": [{"start_min": round(s.start_min, 4), "end_min": round(s.end_min, 4)}
                      for s in segments],
     }
+
+
+@app.post("/v1/ashtakavarga")
+def ashtakavarga_endpoint(req: AshtakavargaRequest) -> dict:
+    from dataclasses import asdict
+    from jyotishnet_engine.ashtakavarga import ashtakavarga
+    c = build_chart(req.birth.to_birth(), req.config.to_config(), [1])
+    av = ashtakavarga(c, req.variant, req.virgo_multiplier, req.occupancy)
+    out = asdict(av)
+    out.pop("prastara")
+    return out
