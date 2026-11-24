@@ -8,7 +8,7 @@ Components implemented here:
 - Sthana bala: Uchcha, Saptavargaja, Ojayugma, Kendra, Drekkana
 - Dig bala
 - Kala bala: Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana
-  (Yuddha bala is not yet implemented and is reported as 0)
+  and Yuddha (planetary war between Mars, Mercury, Jupiter, Venus and Saturn)
 - Cheshta bala (Sun: Ayana bala; Moon: Paksha bala; others: cheshta kendra
   from modern mean elements)
 - Naisargika bala
@@ -79,6 +79,8 @@ class ShadbalaOptions:
     saptavarga_relation: str = "d1"
     # Moon's Cheshta: "elongation" (arc from the Sun / 3) or "paksha" (its Paksha bala).
     moon_cheshta: str = "elongation"
+    # Planetary war: two of Ma, Me, Ju, Ve, Sa within this many degrees of longitude.
+    yuddha_orb: float = 1.0
 
 
 DEFAULT_OPTIONS = ShadbalaOptions()
@@ -101,6 +103,53 @@ class PlanetStrength:
     @property
     def rupas(self) -> float:
         return self.total / 60.0
+
+
+# Disc diameters (bimba) in seconds of arc, BPHS ch. 27.
+DISC_DIAMETER = {"Ma": 9.4, "Me": 6.6, "Ju": 190.4, "Ve": 16.6, "Sa": 158.0}
+WAR_PLANETS = ("Ma", "Me", "Ju", "Ve", "Sa")
+# Kala components counted "up to Hora bala" (BPHS order; Ayana and Yuddha excluded).
+_PRE_YUDDHA_KALA = ("nathonnatha", "paksha", "tribhaga", "abda", "masa", "vara", "hora")
+
+
+@dataclass
+class PlanetaryWar:
+    winner: str
+    loser: str
+    separation: float        # degrees of longitude
+    yuddha_bala: float       # virupas added to the winner and taken from the loser
+
+
+def planetary_wars(lons: dict[str, float], orb: float = 1.0) -> list[tuple[str, str, float]]:
+    """Pairs of Ma, Me, Ju, Ve, Sa closer than `orb` degrees."""
+    out = []
+    for i, a in enumerate(WAR_PLANETS):
+        for b in WAR_PLANETS[i + 1:]:
+            d = _arc(lons[a], lons[b])
+            if d < orb:
+                out.append((a, b, d))
+    return out
+
+
+def yuddha_bala(strengths: dict[str, "PlanetStrength"], lons: dict[str, float],
+                orb: float = 1.0) -> list[PlanetaryWar]:
+    """Apply Yuddha bala in place (BPHS ch. 27).
+
+    For each pair at war, add Sthana, Dig and Kala bala up to Hora bala; the
+    difference of the two totals divided by the difference of their disc
+    diameters is the Yuddha bala, added to the stronger planet (the winner)
+    and subtracted from the weaker one.
+    """
+    wars = []
+    for a, b, d in planetary_wars(lons, orb):
+        tot = {p: sum(strengths[p].sthana.values()) + strengths[p].dig
+               + sum(strengths[p].kala[k] for k in _PRE_YUDDHA_KALA) for p in (a, b)}
+        winner, loser = (a, b) if tot[a] >= tot[b] else (b, a)
+        yb = abs(tot[a] - tot[b]) / abs(DISC_DIAMETER[a] - DISC_DIAMETER[b])
+        strengths[winner].kala["yuddha"] += yb
+        strengths[loser].kala["yuddha"] -= yb
+        wars.append(PlanetaryWar(winner, loser, d, yb))
+    return wars
 
 
 # --------------------------------------------------------------- relationships
@@ -414,4 +463,5 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
         ps.naisargika = NAISARGIKA[p]
         ps.drik = drik[p]
         out[p] = ps
+    yuddha_bala(out, lons, opts.yuddha_orb)
     return out

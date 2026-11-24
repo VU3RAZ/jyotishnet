@@ -89,3 +89,49 @@ def test_time_lords(sb):
     assert sum(sb[p].kala["vara"] for p in PLANETS7) == 45
     assert sum(sb[p].kala["hora"] for p in PLANETS7) == 60
     assert sb["Ju"].kala["tribhaga"] == 60
+
+
+# --- Yuddha bala -------------------------------------------------------------
+
+def _sb(dt, lat=28.61, lon=77.21):
+    from datetime import datetime
+    from jyotishnet_engine import BirthData, build_chart
+    from jyotishnet_engine.shadbala import shadbala
+    b = BirthData(datetime(*dt), lat, lon, utc_offset_hours=5.5)
+    c = build_chart(b, vargas=[1, 2, 3, 7, 9, 12, 30])
+    return c, shadbala(c, b)
+
+
+@pytest.mark.parametrize("dt,pair", [
+    ((2020, 12, 21, 23, 0), {"Ju", "Sa"}),      # great conjunction, about 0.1 deg
+    ((2023, 3, 2, 12, 0), {"Ve", "Ju"}),        # Venus-Jupiter, about 0.5 deg
+])
+def test_yuddha_bala_in_real_conjunction(dt, pair):
+    from jyotishnet_engine.shadbala import (
+        _PRE_YUDDHA_KALA, DISC_DIAMETER, planetary_wars)
+    c, sb = _sb(dt)
+    wars = planetary_wars({p: c.grahas[p].longitude for p in ("Ma", "Me", "Ju", "Ve", "Sa")})
+    assert {w[0] for w in wars} | {w[1] for w in wars} >= pair
+    a, b = sorted(pair)
+    ya, yb = sb[a].kala["yuddha"], sb[b].kala["yuddha"]
+    assert ya == pytest.approx(-yb) and ya != 0
+    # The winner is the one with the larger pre-Yuddha total, and the amount follows BPHS.
+    tot = {p: sum(sb[p].sthana.values()) + sb[p].dig + sum(sb[p].kala[k] for k in _PRE_YUDDHA_KALA)
+           for p in pair}
+    winner = max(pair, key=tot.get)
+    assert sb[winner].kala["yuddha"] > 0
+    expected = abs(tot[a] - tot[b]) / abs(DISC_DIAMETER[a] - DISC_DIAMETER[b])
+    assert abs(ya) == pytest.approx(expected)
+
+
+def test_no_yuddha_without_war():
+    from jyotishnet_engine.shadbala import planetary_wars
+    c, sb = _sb((2000, 1, 1, 12, 0))
+    if not planetary_wars({p: c.grahas[p].longitude for p in ("Ma", "Me", "Ju", "Ve", "Sa")}):
+        assert all(sb[p].kala["yuddha"] == 0 for p in sb)
+
+
+def test_sun_and_moon_never_at_war():
+    from jyotishnet_engine.shadbala import planetary_wars
+    lons = {"Ma": 10.0, "Me": 50.0, "Ju": 100.0, "Ve": 150.0, "Sa": 200.0, "Su": 10.2, "Mo": 50.1}
+    assert planetary_wars(lons) == []

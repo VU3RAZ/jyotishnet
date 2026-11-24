@@ -162,7 +162,10 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
             "rupas": s.rupas, "required_rupas": REQUIRED_RUPAS[p],
             "ratio": s.rupas / REQUIRED_RUPAS[p],
         }
-    return {"planets": out, "note": "Yuddha bala not yet implemented (reported as 0)."}
+    from jyotishnet_engine.shadbala import planetary_wars
+    wars = [{"planets": [a, b], "separation_deg": d} for a, b, d in planetary_wars(
+        {p: c.grahas[p].longitude for p in ("Ma", "Me", "Ju", "Ve", "Sa")})]
+    return {"planets": out, "wars": wars}
 
 
 class YogaRequest(ChartRequest):

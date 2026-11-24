@@ -9,6 +9,7 @@
 | 4 | Gender-dependent rules | Not yet implemented (rules engine pending) | Before phase 4 |
 | 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
 | 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |
+| 17 | Yuddha bala: winner and orb | BPHS: within 1 deg; the planet with more Sthana + Dig + Kala (to Hora) wins; amount = difference / disc-diameter difference. Surya Siddhanta instead picks the more northerly planet. Not in the golden set (no wars in the 8 charts) | Phase 1, expert + a JHora chart with a war |
 | 15 | Shadbala: Sun/Moon Cheshta | Undoubled Ayana (Sun) and Paksha (Moon) bala | Phase 1, expert |
 
 ## Decided
