@@ -1,0 +1,24 @@
+- id: dhana_2_11
+  name: Dhana yoga (2nd and 11th lords)
+  group: Dhana
+  summary: The 2nd and 11th lords in conjunction, mutual aspect or exchange.
+  source: {text: Brihat Parashara Hora Shastra, section: Dhana Yogas}
+  when:
+    lords_related: {houses_a: [2], houses_b: [11]}
+- id: dhana_wealth_trikona
+  name: Dhana yoga (wealth and trikona lords)
+  group: Dhana
+  summary: The 2nd or 11th lord related to the 5th or 9th lord.
+  source: {text: Brihat Parashara Hora Shastra, section: Dhana Yogas}
+  when:
+    lords_related: {houses_a: [2, 11], houses_b: [5, 9]}
+- id: lakshmi
+  name: Lakshmi
+  group: Dhana
+  summary: The 9th lord in own sign or exaltation, placed in a kendra or trikona.
+  source: {text: Brihat Parashara Hora Shastra, section: Lakshmi Yoga}
+  notes: BPHS also requires a strong Lagna lord (not yet checked). PVR Narasimha Rao requires a kendra only; B. V. Raman accepts a kendra or trikona (used here).
+  when:
+    all:
+      - dignity: {planet: "lord:9", in: [own, moolatrikona, exalted]}
+      - lord_in_house: {house: 9, houses: [1, 4, 5, 7, 9, 10]}

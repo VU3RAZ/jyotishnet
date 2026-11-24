@@ -1,0 +1,56 @@
+- id: amala
+  name: Amala
+  group: Shubha
+  summary: Only natural benefics (Jupiter, Venus, Mercury) in the 10th from the Lagna or the Moon.
+  source: {text: Phaladeepika, section: Amala Yoga}
+  notes: PyJHora's code accepts any benefic in the 10th, even alongside malefics, despite its own "only benefics" description.
+  when:
+    any:
+      - all:
+          - occupants: {of: [Ju, Ve, Me], houses: [10], from: La, mode: any}
+          - occupants: {of: [Su, Ma, Sa, Ra, Ke], houses: [10], from: La, mode: none}
+      - all:
+          - occupants: {of: [Ju, Ve, Me], houses: [10], from: Mo, mode: any}
+          - occupants: {of: [Su, Ma, Sa, Ra, Ke], houses: [10], from: Mo, mode: none}
+- id: saraswati
+  name: Saraswati
+  group: Shubha
+  summary: Jupiter, Venus and Mercury in kendras, trikonas or the 2nd, with Jupiter in its own, exaltation or a friend's sign.
+  source: {text: Phaladeepika, section: Saraswati Yoga}
+  when:
+    all:
+      - in_house: {planets: [Ju, Ve, Me], houses: [1, 2, 4, 5, 7, 9, 10]}
+      - dignity: {planet: Ju, in: [own, moolatrikona, exalted, friend]}
+- id: parvata
+  name: Parvata
+  group: Shubha
+  summary: Kendras occupied only by benefics, and the 6th and 8th empty or holding only benefics.
+  source: {text: Brihat Parashara Hora Shastra, section: Parvata Yoga}
+  notes: B. V. Raman's Three Hundred Important Combinations reads the 7th and 8th instead of the 6th and 8th.
+  when:
+    all:
+      - occupants: {of: [Ju, Ve, Me], houses: [1, 4, 7, 10], mode: any}
+      - occupants: {of: [Su, Ma, Sa, Ra, Ke], houses: [1, 4, 7, 10], mode: none}
+      - occupants: {of: [Su, Ma, Sa, Ra, Ke], houses: [6, 8], mode: none}
+- id: kahala
+  name: Kahala
+  group: Shubha
+  summary: The 4th and 9th lords in kendras from each other.
+  source: {text: Brihat Parashara Hora Shastra, section: Kahala Yoga}
+  notes: BPHS also requires a strong Lagna lord (not yet checked). Phaladeepika and B. V. Raman use the 4th lord and Jupiter instead of the 9th lord.
+  when:
+    in_house: {planet: "lord:4", houses: [1, 4, 7, 10], from: "lord:9"}
+- id: shubha_kartari_lagna
+  name: Shubha Kartari (Lagna)
+  group: Kartari
+  summary: Benefics in both the 2nd and 12th from the Lagna.
+  source: {text: Phaladeepika, section: Kartari Yogas}
+  when:
+    kartari: {of_point: La, by: benefics}
+- id: papa_kartari_lagna
+  name: Papa Kartari (Lagna)
+  group: Kartari
+  summary: Malefics in both the 2nd and 12th from the Lagna.
+  source: {text: Phaladeepika, section: Kartari Yogas}
+  when:
+    kartari: {of_point: La, by: malefics}

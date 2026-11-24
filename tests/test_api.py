@@ -57,3 +57,12 @@ def test_shadbala():
     body = r.json()["planets"]
     assert set(body) == {"Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"}
     assert body["Su"]["naisargika"] == 60
+
+
+def test_yogas():
+    r = client.post("/v1/yogas", json={"birth": BIRTH})
+    assert r.status_code == 200
+    ys = r.json()["yogas"]
+    assert ys and all(y["present"] and y["source"]["text"] for y in ys)
+    r = client.post("/v1/yogas", json={"birth": BIRTH, "include_absent": True})
+    assert len(r.json()["yogas"]) >= 50

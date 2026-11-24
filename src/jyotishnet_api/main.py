@@ -163,3 +163,19 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
             "ratio": s.rupas / REQUIRED_RUPAS[p],
         }
     return {"planets": out, "note": "Yuddha bala not yet implemented (reported as 0)."}
+
+
+class YogaRequest(ChartRequest):
+    include_absent: bool = False
+
+
+@app.post("/v1/yogas")
+def yogas_endpoint(req: YogaRequest) -> dict:
+    from dataclasses import asdict
+    from jyotishnet_engine.yogas import find_yogas
+    c = build_chart(req.birth.to_birth(), req.config.to_config(), [1])
+    ys = find_yogas(c, include_absent=req.include_absent)
+    return {
+        "yogas": [asdict(y) for y in ys],
+        "note": "Rules are drafts pending expert review; see each rule's source and status.",
+    }

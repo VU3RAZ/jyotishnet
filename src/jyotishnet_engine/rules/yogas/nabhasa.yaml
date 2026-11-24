@@ -1,0 +1,51 @@
+# Nabhasa yogas: patterns of the seven grahas (Rahu and Ketu excluded).
+# Sankhya (number of signs occupied)
+- {id: vallaki, name: Vallaki (Veena), group: Nabhasa Sankhya, summary: "The seven grahas in seven signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {sign_count: {count: 7}}}
+- {id: damini, name: Damini, group: Nabhasa Sankhya, summary: "The seven grahas in six signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {sign_count: {count: 6}}}
+- {id: pasha, name: Pasha, group: Nabhasa Sankhya, summary: "The seven grahas in five signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {sign_count: {count: 5}}}
+- {id: kedara, name: Kedara, group: Nabhasa Sankhya, summary: "The seven grahas in four signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {sign_count: {count: 4}}}
+- {id: shoola, name: Shoola, group: Nabhasa Sankhya, summary: "The seven grahas in three signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {sign_count: {count: 3}}}
+- {id: yuga, name: Yuga, group: Nabhasa Sankhya, summary: "The seven grahas in two signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {sign_count: {count: 2}}}
+- {id: gola, name: Gola, group: Nabhasa Sankhya, summary: "The seven grahas in one sign.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {sign_count: {count: 1}}}
+# Ashraya (modality)
+- {id: rajju, name: Rajju, group: Nabhasa Ashraya, summary: "All seven grahas in movable signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {all_in_modality: {modality: movable}}}
+- {id: musala, name: Musala, group: Nabhasa Ashraya, summary: "All seven grahas in fixed signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {all_in_modality: {modality: fixed}}}
+- {id: nala, name: Nala, group: Nabhasa Ashraya, summary: "All seven grahas in dual signs.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {all_in_modality: {modality: dual}}}
+# Dala
+- {id: mala, name: Mala (Srik), group: Nabhasa Dala, summary: "Mercury, Jupiter and Venus in three different kendras.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {distinct_houses: {of: [Me, Ju, Ve], houses: [1, 4, 7, 10], count: 3}}}
+- {id: sarpa, name: Sarpa, group: Nabhasa Dala, summary: "At least three kendras occupied by natural malefics.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, notes: "PyJHora requires exactly three; this rule also counts all four.", when: {houses_occupied_by: {of: [Su, Ma, Sa, Ra, Ke], houses: [1, 4, 7, 10], min: 3}}}
+# Akriti (shapes)
+- id: gada
+  name: Gada
+  group: Nabhasa Akriti
+  summary: All seven grahas in two adjacent kendras.
+  source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}
+  when:
+    any:
+      - houses_exactly: {houses: [1, 4]}
+      - houses_exactly: {houses: [4, 7]}
+      - houses_exactly: {houses: [7, 10]}
+      - houses_exactly: {houses: [10, 1]}
+- {id: shakata_akriti, name: Shakata (Akriti), group: Nabhasa Akriti, summary: "All seven grahas in the 1st and 7th.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {houses_exactly: {houses: [1, 7]}}}
+- {id: vihaga, name: Vihaga, group: Nabhasa Akriti, summary: "All seven grahas in the 4th and 10th.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {houses_exactly: {houses: [4, 10]}}}
+- {id: shringataka, name: Shringataka, group: Nabhasa Akriti, summary: "All seven grahas in the 1st, 5th and 9th.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {houses_exactly: {houses: [1, 5, 9]}}}
+- id: hala
+  name: Hala
+  group: Nabhasa Akriti
+  summary: All seven grahas in one of the other trines (2-6-10, 3-7-11 or 4-8-12).
+  source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}
+  when:
+    any:
+      - houses_exactly: {houses: [2, 6, 10]}
+      - houses_exactly: {houses: [3, 7, 11]}
+      - houses_exactly: {houses: [4, 8, 12]}
+- {id: kamala, name: Kamala (Padma), group: Nabhasa Akriti, summary: "All seven grahas in the four kendras.", source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}, when: {houses_exactly: {houses: [1, 4, 7, 10]}}}
+- id: vapi
+  name: Vapi
+  group: Nabhasa Akriti
+  summary: All seven grahas in panaparas (2, 5, 8, 11) or all in apoklimas (3, 6, 9, 12).
+  source: {text: Brihat Parashara Hora Shastra, section: Nabhasa Yogas}
+  when:
+    any:
+      - houses_exactly: {houses: [2, 5, 8, 11], all_occupied: false}
+      - houses_exactly: {houses: [3, 6, 9, 12], all_occupied: false}

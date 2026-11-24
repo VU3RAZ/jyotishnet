@@ -21,7 +21,8 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
 | Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik; rupas and required minimums. Yuddha bala pending |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
-| API | FastAPI: `/v1/chart`, `/v1/dasha`, `/v1/ashtakavarga`, `/v1/shadbala`, `/v1/boundaries` |
+| Yogas | 56 rules in YAML (`src/jyotishnet_engine/rules/yogas/`), each citing text and section, with evidence and cancellation: Pancha Mahapurusha, Chandra, Surya, Raja, Viparita, Neecha Bhanga, Parivartana, Dhana, Lakshmi, Amala, Saraswati, Parvata, Kahala, Kartari, Nabhasa (Sankhya, Ashraya, Dala, Akriti). All `draft` pending expert review |
+| API | FastAPI: `/v1/chart`, `/v1/dasha`, `/v1/ashtakavarga`, `/v1/shadbala`, `/v1/yogas`, `/v1/boundaries` |
 
 A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
 
@@ -40,6 +41,10 @@ A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
   5.0.6 returns out-of-range Dig and Paksha values in many charts, so those and
   Drik bala are reported rather than checked; Shadbala needs the Jagannatha
   Hora golden set for absolute verification.
+- **Yoga cross-check**: `tools/crosscheck_yogas.py` compares 38 yogas with
+  PyJHora (PVR Narasimha Rao's definitions) on random charts. 24 agree on every
+  chart; the rest differ by textual variant (for example B. V. Raman's Sunapha
+  and Vesi do not need the opposite side empty), which each rule's `notes` record.
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
 - **Jagannatha Hora golden set**: 8 JHora exports (1836-1970) in `tests/golden/jhora`.
   Positions match within 2.2", Navamsa 80/80, Ashtakavarga and all pindas

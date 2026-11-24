@@ -1,0 +1,73 @@
+# Raja yogas: sambandha (conjunction, mutual aspect or sign exchange) between
+# lords of kendras and trikonas, and related combinations.
+- id: raja_kendra_trikona
+  name: Raja yoga (kendra-trikona)
+  group: Raja
+  summary: A kendra lord and a trikona lord in conjunction, mutual aspect or exchange.
+  source: {text: Brihat Parashara Hora Shastra, section: Raja Yogas}
+  when:
+    lords_related: {houses_a: [1, 4, 7, 10], houses_b: [1, 5, 9]}
+- id: dharma_karmadhipati
+  name: Dharma-Karmadhipati
+  group: Raja
+  summary: The 9th and 10th lords in conjunction, mutual aspect or exchange, or one planet lording both.
+  source: {text: Brihat Parashara Hora Shastra, section: Raja Yogas}
+  when:
+    lords_related: {houses_a: [9], houses_b: [10], same_planet_counts: true}
+- id: yogakaraka
+  name: Yogakaraka
+  group: Raja
+  summary: One planet lords both a kendra (4, 7 or 10) and a trikona (5 or 9).
+  source: {text: Brihat Parashara Hora Shastra, section: Yogakarakas}
+  when:
+    same_lord_owns: {houses_a: [4, 7, 10], houses_b: [5, 9]}
+- id: harsha
+  name: Harsha (Viparita Raja)
+  group: Viparita Raja
+  summary: The 6th lord in the 6th, 8th or 12th.
+  source: {text: Uttara Kalamrita, section: Viparita Raja Yogas}
+  when:
+    lord_in_house: {house: 6, houses: [6, 8, 12]}
+- id: sarala
+  name: Sarala (Viparita Raja)
+  group: Viparita Raja
+  summary: The 8th lord in the 6th, 8th or 12th.
+  source: {text: Uttara Kalamrita, section: Viparita Raja Yogas}
+  when:
+    lord_in_house: {house: 8, houses: [6, 8, 12]}
+- id: vimala
+  name: Vimala (Viparita Raja)
+  group: Viparita Raja
+  summary: The 12th lord in the 6th, 8th or 12th.
+  source: {text: Uttara Kalamrita, section: Viparita Raja Yogas}
+  when:
+    lord_in_house: {house: 12, houses: [6, 8, 12]}
+- id: neecha_bhanga
+  name: Neecha Bhanga Raja
+  group: Raja
+  summary: A debilitated planet whose debilitation-sign lord or exaltation-sign lord is in a kendra from the Lagna or the Moon.
+  source: {text: Phaladeepika, section: Neecha Bhanga Raja Yoga}
+  notes: Texts list several further cancellation conditions; only the most common is used here.
+  when:
+    debilitation_cancelled: {}
+- id: maha_parivartana
+  name: Maha Parivartana
+  group: Parivartana
+  summary: Sign exchange between two lords of houses other than the 3rd, 6th, 8th and 12th.
+  source: {text: Phaladeepika, section: Parivartana Yogas}
+  when:
+    parivartana: {kind: maha}
+- id: khala_parivartana
+  name: Khala Parivartana
+  group: Parivartana
+  summary: Sign exchange involving the 3rd lord (and no dusthana lord).
+  source: {text: Phaladeepika, section: Parivartana Yogas}
+  when:
+    parivartana: {kind: khala}
+- id: dainya_parivartana
+  name: Dainya Parivartana
+  group: Parivartana
+  summary: Sign exchange involving the 6th, 8th or 12th lord.
+  source: {text: Phaladeepika, section: Parivartana Yogas}
+  when:
+    parivartana: {kind: dainya}

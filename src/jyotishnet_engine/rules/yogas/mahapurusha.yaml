@@ -1,0 +1,48 @@
+# Pancha Mahapurusha yogas. A planet in its own sign (incl. moolatrikona) or
+# exaltation, placed in a kendra from the Lagna.
+- id: ruchaka
+  name: Ruchaka
+  group: Pancha Mahapurusha
+  summary: Mars in own sign or exaltation in a kendra from the Lagna.
+  source: {text: Brihat Parashara Hora Shastra, section: Pancha Mahapurusha Yogas}
+  notes: Some authors also count kendras from the Moon.
+  when:
+    all:
+      - dignity: {planet: Ma, in: [own, moolatrikona, exalted]}
+      - in_house: {planet: Ma, houses: [1, 4, 7, 10]}
+- id: bhadra
+  name: Bhadra
+  group: Pancha Mahapurusha
+  summary: Mercury in own sign or exaltation in a kendra from the Lagna.
+  source: {text: Brihat Parashara Hora Shastra, section: Pancha Mahapurusha Yogas}
+  when:
+    all:
+      - dignity: {planet: Me, in: [own, moolatrikona, exalted]}
+      - in_house: {planet: Me, houses: [1, 4, 7, 10]}
+- id: hamsa
+  name: Hamsa
+  group: Pancha Mahapurusha
+  summary: Jupiter in own sign or exaltation in a kendra from the Lagna.
+  source: {text: Brihat Parashara Hora Shastra, section: Pancha Mahapurusha Yogas}
+  when:
+    all:
+      - dignity: {planet: Ju, in: [own, moolatrikona, exalted]}
+      - in_house: {planet: Ju, houses: [1, 4, 7, 10]}
+- id: malavya
+  name: Malavya
+  group: Pancha Mahapurusha
+  summary: Venus in own sign or exaltation in a kendra from the Lagna.
+  source: {text: Brihat Parashara Hora Shastra, section: Pancha Mahapurusha Yogas}
+  when:
+    all:
+      - dignity: {planet: Ve, in: [own, moolatrikona, exalted]}
+      - in_house: {planet: Ve, houses: [1, 4, 7, 10]}
+- id: sasa
+  name: Sasa
+  group: Pancha Mahapurusha
+  summary: Saturn in own sign or exaltation in a kendra from the Lagna.
+  source: {text: Brihat Parashara Hora Shastra, section: Pancha Mahapurusha Yogas}
+  when:
+    all:
+      - dignity: {planet: Sa, in: [own, moolatrikona, exalted]}
+      - in_house: {planet: Sa, houses: [1, 4, 7, 10]}

@@ -1,0 +1,84 @@
+# Yogas formed with respect to the Moon. "Planets" exclude the Sun, Rahu and Ketu.
+- id: sunapha
+  name: Sunapha
+  group: Chandra
+  summary: A planet other than the Sun in the 2nd from the Moon, none in the 12th.
+  source: {text: Brihat Parashara Hora Shastra, section: Chandra Yogas}
+  notes: B. V. Raman does not require the 12th to be empty, so his Sunapha overlaps Durudhara.
+  when:
+    all:
+      - occupants: {of: grahas7, exclude: [Su], houses: [2], from: Mo, mode: any}
+      - occupants: {of: grahas7, exclude: [Su], houses: [12], from: Mo, mode: none}
+- id: anapha
+  name: Anapha
+  group: Chandra
+  summary: A planet other than the Sun in the 12th from the Moon, none in the 2nd.
+  source: {text: Brihat Parashara Hora Shastra, section: Chandra Yogas}
+  notes: B. V. Raman does not require the 2nd to be empty, so his Anapha overlaps Durudhara.
+  when:
+    all:
+      - occupants: {of: grahas7, exclude: [Su], houses: [12], from: Mo, mode: any}
+      - occupants: {of: grahas7, exclude: [Su], houses: [2], from: Mo, mode: none}
+- id: durudhara
+  name: Durudhara
+  group: Chandra
+  summary: Planets other than the Sun in both the 2nd and 12th from the Moon.
+  source: {text: Brihat Parashara Hora Shastra, section: Chandra Yogas}
+  when:
+    all:
+      - occupants: {of: grahas7, exclude: [Su], houses: [2], from: Mo, mode: any}
+      - occupants: {of: grahas7, exclude: [Su], houses: [12], from: Mo, mode: any}
+- id: kemadruma
+  name: Kemadruma
+  group: Chandra
+  summary: No planet other than the Sun in the 2nd or 12th from the Moon.
+  source: {text: Brihat Parashara Hora Shastra, section: Chandra Yogas}
+  notes: Cancellation rules vary; this uses a planet in a kendra from the Lagna or the Moon.
+  when:
+    occupants: {of: grahas7, exclude: [Su], houses: [2, 12], from: Mo, mode: none}
+  cancelled_by:
+    any:
+      - occupants: {of: grahas7, exclude: [Mo], houses: [1, 4, 7, 10], from: La, mode: any}
+      - occupants: {of: grahas7, exclude: [Mo], houses: [1, 4, 7, 10], from: Mo, mode: any}
+- id: gajakesari
+  name: Gajakesari
+  group: Chandra
+  summary: Jupiter in a kendra from the Moon.
+  source: {text: Brihat Parashara Hora Shastra, section: Chandra Yogas}
+  notes: Phaladeepika and B. V. Raman add a benefic conjoining or aspecting Jupiter, and Jupiter not debilitated, combust or in an enemy's sign.
+  when:
+    in_house: {planet: Ju, houses: [1, 4, 7, 10], from: Mo}
+- id: adhi
+  name: Adhi
+  group: Chandra
+  summary: Mercury, Jupiter and Venus all in the 6th, 7th or 8th from the Moon.
+  source: {text: Brihat Parashara Hora Shastra, section: Chandra Yogas}
+  notes: Some texts accept two of the three benefics. PyJHora drops Mercury from the benefics when it is with a malefic.
+  when:
+    in_house: {planets: [Me, Ju, Ve], houses: [6, 7, 8], from: Mo}
+- id: chandra_mangala
+  name: Chandra-Mangala
+  group: Chandra
+  summary: The Moon and Mars together in one sign.
+  source: {text: Phaladeepika, section: Chandra Yogas}
+  when:
+    conjunct: {planets: [Mo, Ma]}
+- id: shakata
+  name: Shakata
+  group: Chandra
+  summary: The Moon in the 6th, 8th or 12th from Jupiter.
+  source: {text: Phaladeepika, section: Chandra Yogas}
+  notes: Cancelled when the Moon is in a kendra from the Lagna.
+  when:
+    in_house: {planet: Mo, houses: [6, 8, 12], from: Ju}
+  cancelled_by:
+    in_house: {planet: Mo, houses: [1, 4, 7, 10]}
+- id: vasumati
+  name: Vasumati
+  group: Chandra
+  summary: Mercury, Jupiter and Venus all in upachaya houses (3, 6, 10, 11) from the Lagna or the Moon.
+  source: {text: Phaladeepika, section: Chandra Yogas}
+  when:
+    any:
+      - in_house: {planets: [Me, Ju, Ve], houses: [3, 6, 10, 11], from: La}
+      - in_house: {planets: [Me, Ju, Ve], houses: [3, 6, 10, 11], from: Mo}

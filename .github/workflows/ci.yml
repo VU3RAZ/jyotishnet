@@ -32,3 +32,4 @@ jobs:
       - run: .venv-oracle/bin/python tools/crosscheck_pyjhora.py --charts 200
       - run: .venv-oracle/bin/python tools/crosscheck_ashtakavarga.py --charts 200
       - run: .venv-oracle/bin/python tools/crosscheck_shadbala.py --charts 100
+      - run: .venv-oracle/bin/python tools/crosscheck_yogas.py --charts 100

@@ -1,0 +1,37 @@
+# Yogas formed with respect to the Sun. "Planets" exclude the Moon, Rahu and Ketu.
+- id: vesi
+  name: Vesi
+  group: Surya
+  summary: A planet other than the Moon in the 2nd from the Sun, none in the 12th.
+  source: {text: Brihat Parashara Hora Shastra, section: Surya Yogas}
+  notes: B. V. Raman does not require the 12th to be empty, so his Vesi overlaps Ubhayachari.
+  when:
+    all:
+      - occupants: {of: grahas7, exclude: [Mo], houses: [2], from: Su, mode: any}
+      - occupants: {of: grahas7, exclude: [Mo], houses: [12], from: Su, mode: none}
+- id: vosi
+  name: Vosi
+  group: Surya
+  summary: A planet other than the Moon in the 12th from the Sun, none in the 2nd.
+  source: {text: Brihat Parashara Hora Shastra, section: Surya Yogas}
+  when:
+    all:
+      - occupants: {of: grahas7, exclude: [Mo], houses: [12], from: Su, mode: any}
+      - occupants: {of: grahas7, exclude: [Mo], houses: [2], from: Su, mode: none}
+- id: ubhayachari
+  name: Ubhayachari
+  group: Surya
+  summary: Planets other than the Moon in both the 2nd and 12th from the Sun.
+  source: {text: Brihat Parashara Hora Shastra, section: Surya Yogas}
+  when:
+    all:
+      - occupants: {of: grahas7, exclude: [Mo], houses: [2], from: Su, mode: any}
+      - occupants: {of: grahas7, exclude: [Mo], houses: [12], from: Su, mode: any}
+- id: budha_aditya
+  name: Budha-Aditya (Nipuna)
+  group: Surya
+  summary: The Sun and Mercury together in one sign.
+  source: {text: Phaladeepika, section: Nipuna Yoga}
+  notes: Very common because Mercury is never more than 28 degrees from the Sun.
+  when:
+    conjunct: {planets: [Su, Me]}
