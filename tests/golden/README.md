@@ -59,7 +59,8 @@ them:
 - `pending/jhora/edge_39_*`, `edge_40_*` (2050, 2100): JHora's Delta T for
   future dates is larger than Swiss Ephemeris's current model (about 48 s in
   2050, 125 s in 2100), so the Moon differs by 27" and 75" and Vimshottari dates
-  by about 2 days. Open decision #22.
+  by about 2 days. Decided (#22): we keep Swiss Ephemeris's model; these stay
+  here as a record of the difference.
 - `pending/jhora_shadbala/edge_48_*`, `edge_50_*` (and `kala/`): Mercury's
   nature for Paksha and Drik bala. JHora calls Mercury benefic with Venus 15.5
   and 17.3 deg away but malefic at 16.4 deg (edge_49, live), so its rule is not a
