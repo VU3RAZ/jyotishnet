@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Regression tests against charts transcribed from Jagannatha Hora (see tests/golden/README.md)."""
 
 import json

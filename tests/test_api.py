@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 from fastapi.testclient import TestClient
 
 from jyotishnet_api.main import app

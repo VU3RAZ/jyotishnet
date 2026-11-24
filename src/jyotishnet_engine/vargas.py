@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Parashari divisional charts (Shodashavarga), per Brihat Parashara Hora Shastra.
 
 `varga_sign(lon, n)` returns the sign (0..11) a sidereal longitude falls in for

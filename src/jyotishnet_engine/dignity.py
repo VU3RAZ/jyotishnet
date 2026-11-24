@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Planetary dignity in a sign (exaltation, moolatrikona, own, natural relation).
 
 Rahu and Ketu dignities differ between schools and are left as "node" here.

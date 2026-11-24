@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """School configuration: every convention that differs between traditions.
 
 One SchoolConfig travels with every calculation so results are reproducible

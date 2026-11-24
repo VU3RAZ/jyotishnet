@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Thin, thread-safe wrapper over the Swiss Ephemeris.
 
 Swiss Ephemeris keeps the sidereal mode as global state, so every call that

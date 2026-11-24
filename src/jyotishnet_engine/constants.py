@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Static Jyotish reference tables used across the engine.
 
 Signs are indexed 0..11 from Aries. Planets use two-letter codes.

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Dasha systems: Vimshottari (three levels) and Yogini.
 
 Periods are returned with Julian-day start and end so callers can convert to

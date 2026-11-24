@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Birth data and time conversion.
 
 Historical Indian time is a frequent source of silent errors (pre-1955 zones,

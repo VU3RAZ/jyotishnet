@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 import pytest
 
 from jyotishnet_engine import DEFAULT_CONFIG, running, vimshottari, yogini

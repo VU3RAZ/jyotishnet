@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """FastAPI service exposing Layer 0 (design doc, Implementation: API gateway + calc engine).
 
 Run: uvicorn jyotishnet_api.main:app --reload

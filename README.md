@@ -56,14 +56,25 @@ chart = build_chart(BirthData(datetime(1990, 1, 15, 6, 30), 28.61, 77.21))
 print(describe(chart))
 ```
 
-## Licensing notes (resolve before any release)
+## License
 
-- **Swiss Ephemeris** (via `pyswisseph`) is dual-licensed: AGPL-3.0 or a paid
-  commercial licence from Astrodienst. A closed-source network service needs the
-  commercial licence.
-- **PyJHora** is AGPL-3.0. It is used only as an external test oracle in a
-  separate environment and is never imported by the engine.
-- No licence has been chosen for this repository yet; all rights reserved.
+Copyright (C) 2026 Rahul Sathe.
+
+JyotishNet is free software: you can redistribute it and/or modify it under the
+terms of the **GNU Affero General Public License, version 3 or (at your option)
+any later version**. See [LICENSE](LICENSE). Because it is the AGPL, anyone who
+runs a modified version as a network service must offer its source code to that
+service's users.
+
+Notes:
+
+- **Swiss Ephemeris** (via `pyswisseph`) is used under its AGPL licence option,
+  which requires the whole project to be AGPL-compatible. A closed-source edition
+  would need the Swiss Ephemeris Professional Licence from Astrodienst.
+- **PyJHora** (AGPL-3.0) is used only as an external test oracle in a separate
+  environment and is not imported by the engine.
+- **Trained model weights and datasets** are not covered by this repository's
+  licence and are not included here.
 
 ## Layout
 

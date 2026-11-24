@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Cross-check JyotishNet Layer 0 against PyJHora on random charts.
 
 PyJHora (AGPL-3.0) is used only as an external test oracle, never imported by

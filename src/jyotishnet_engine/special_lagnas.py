@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Special lagnas that move faster than the ascendant (key for rectification).
 
 Conventions differ between sources; these follow the common Parashari

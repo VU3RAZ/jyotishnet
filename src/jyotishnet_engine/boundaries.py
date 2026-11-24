@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """Boundary map for birth-time rectification (design doc, BTR pipeline step 2).
 
 Scans a window around the recorded birth time and finds every moment where

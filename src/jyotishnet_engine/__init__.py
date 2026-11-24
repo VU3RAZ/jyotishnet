@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
 """JyotishNet Layer 0: the verified calculation core.
 
 Deterministic Vedic astrology calculations used by the API, the browser
