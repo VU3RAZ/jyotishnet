@@ -7,8 +7,13 @@ import { ChartCard } from "@/components/ChartCard";
 import { DashaPanel } from "@/components/DashaPanel";
 import { PlanetTable } from "@/components/PlanetTable";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
-import { api, Birth, btr, Chart, EventRule, LifeEvent } from "@/lib/api";
+import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, LifeEvent } from "@/lib/api";
 import { EventPanel } from "@/components/EventPanel";
+import { AnalysisTabs, TabId } from "@/components/AnalysisTabs";
+import { YogaView } from "@/components/YogaView";
+import { AshtakavargaView } from "@/components/AshtakavargaView";
+import { ShadbalaView } from "@/components/ShadbalaView";
+import { DashaTimeline } from "@/components/DashaTimeline";
 import { IndicativePanel } from "@/components/IndicativePanel";
 import { GRAHA_ORDER, placements } from "@/lib/jyotish";
 import { PRESETS } from "@/lib/presets";
@@ -33,6 +38,8 @@ export default function Workbench() {
   const [transitBase, setTransitBase] = useState(() => Date.now());
   const [eventDate, setEventDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [rules, setRules] = useState<EventRule[]>([]);
+  const [tab, setTab] = useState<TabId>("positions");
+  const [dashaSystem, setDashaSystem] = useState<DashaSystem>("vimshottari");
   const [events, setEvents] = useState<LifeEvent[]>([]);
 
   useEffect(() => { btr.events().then((r) => setRules(r.events)).catch(() => {}); }, []);
@@ -54,6 +61,7 @@ export default function Workbench() {
   const moving: Birth = { ...birth, local_datetime: formatLocal(momentMs) };
 
   const live = useLive(JSON.stringify([moving, varga]), () => api.chart(moving, [1, varga]));
+  const chart_ = live.data;
   const natal = useLive(mode === "transit" ? JSON.stringify([birth, varga]) : null,
     () => api.chart(birth, [1, varga]));
   const dashaAt = mode === "rectify" ? `${eventDate}T12:00:00` : toUtcIso(momentMs, birth.utc_offset_hours);
@@ -70,6 +78,18 @@ export default function Workbench() {
   const curve = useLive(rectify && events.length ? JSON.stringify([birth, evKey, windowMin]) : null,
     () => btr.curve(birth, events, windowMin, windowMin <= 30 ? 30 : 60), 300);
   const indicative = useLive(rectify ? JSON.stringify(moving) : null, () => btr.indicative(moving), 250);
+
+  // Analysis views follow the chart on the ribbon in rectify mode, the birth chart in transit mode.
+  const subject = rectify ? moving : birth;
+  const subjectKey = JSON.stringify(subject);
+  const yogas = useLive(tab === "yogas" ? subjectKey : null, () => analysis.yogas(subject), 200);
+  const av = useLive(tab === "ashtakavarga" ? subjectKey : null, () => analysis.ashtakavarga(subject), 200);
+  const sb = useLive(tab === "shadbala" ? subjectKey : null, () => analysis.shadbala(subject), 200);
+  const dashas = useLive(tab === "dashas" ? JSON.stringify([subject, dashaSystem]) : null,
+    () => analysis.dashas(subject, dashaSystem), 250);
+  const subjectChart = rectify ? chart_ : natal.data;
+  const birthUtc = toUtcIso(parseLocal(subject.local_datetime), subject.utc_offset_hours) + "Z";
+  const refUtc = (rectify ? `${eventDate}T12:00:00` : toUtcIso(momentMs, birth.utc_offset_hours)) + "Z";
 
   function switchMode(m: Mode) {
     setMode(m);
@@ -174,17 +194,32 @@ export default function Workbench() {
           onRemove={(i) => saveEvents(events.filter((_, j) => j !== i))} />
       )}
 
-      <section className="details">
-        {chart && (
-          <div className="table-wrap">
-            <h2>{mode === "rectify" ? "Positions at this birth time" : "Transit positions"}</h2>
-            <PlanetTable chart={chart} varga={varga} />
+      <AnalysisTabs tab={tab} onTab={setTab}
+        busy={yogas.loading || av.loading || sb.loading || dashas.loading}>
+        {tab === "positions" && (
+          <div className="details">
+            {chart && (
+              <div className="table-wrap">
+                <h2>{mode === "rectify" ? "Positions at this birth time" : "Transit positions"}</h2>
+                <PlanetTable chart={chart} varga={varga} />
+              </div>
+            )}
+            <DashaPanel running={dasha.data?.running ?? null} loading={dasha.loading}
+              date={mode === "rectify" ? eventDate : dashaAt.slice(0, 10)}
+              onDate={mode === "rectify" ? setEventDate : undefined} />
           </div>
         )}
-        <DashaPanel running={dasha.data?.running ?? null} loading={dasha.loading}
-          date={mode === "rectify" ? eventDate : dashaAt.slice(0, 10)}
-          onDate={mode === "rectify" ? setEventDate : undefined} />
-      </section>
+        {tab === "yogas" && (yogas.data ? <YogaView yogas={yogas.data.yogas} /> : <p className="muted">Finding yogas…</p>)}
+        {tab === "ashtakavarga" && (av.data && subjectChart
+          ? <AshtakavargaView av={av.data} lagnaSign={subjectChart.lagna.sign} />
+          : <p className="muted">Counting bindus…</p>)}
+        {tab === "shadbala" && (sb.data ? <ShadbalaView sb={sb.data} /> : <p className="muted">Working out strengths…</p>)}
+        {tab === "dashas" && (dashas.data
+          ? <DashaTimeline system={dashaSystem} onSystem={setDashaSystem} periods={dashas.data.periods}
+              applicable={dashas.data.applicable} birthIso={birthUtc} refIso={refUtc}
+              refLabel={rectify ? `the event date (${prettyDate(refUtc)})` : `the transit date (${prettyDate(refUtc)})`} />
+          : <p className="muted">Laying out the periods…</p>)}
+      </AnalysisTabs>
       {rectify && <IndicativePanel periods={indicative.data?.periods ?? null} loading={indicative.loading} />}
     </main>
   );

@@ -18,6 +18,13 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   with a "Jump to best fit" button, and a panel lists indicative periods for
   marriage, children, career and relocation. Events are kept per chart in
   this browser only.
+- **Analysis tabs**: Positions, Yogas (grouped, with the evidence for each and
+  its source text; cancelled ones listed apart), Ashtakavarga (bindus in house
+  order, by reduction stage, with pindas), Shadbala (components in rupas and
+  each planet's ratio to the required strength), and Dashas (a lifetime
+  timeline for Vimshottari, Ashtottari, Yogini or Chara, opening on the event
+  or transit date, with antardashas and pratyantars). In rectify mode they
+  follow the birth time on the ribbon.
 - **Transits**: the birth chart stays fixed; the ribbon moves the sky (±3 days,
   ±1 year, ±12 years) and shows today's planets in the birth houses, with the
   periods running on that date.

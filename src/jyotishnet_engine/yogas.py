@@ -98,6 +98,16 @@ class Context:
     def malefics(self) -> list[str]:
         return [p for p in GRAHAS9 if p not in self.benefics]
 
+    @staticmethod
+    def label(spec, exclude=()) -> str:
+        """Readable name of a planet group, for evidence strings."""
+        if isinstance(spec, list):
+            return "/".join(spec)
+        name = {"grahas7": "planets", "grahas9": "planets or nodes", "benefics": "benefics",
+                "malefics": "malefics", "malefics7": "malefics",
+                "benefics_no_moon": "benefics other than the Moon"}.get(spec, spec)
+        return f"{name} other than {'/'.join(exclude)}" if exclude else name
+
     def group(self, spec) -> list[str]:
         if isinstance(spec, list):
             return list(spec)
@@ -201,7 +211,8 @@ def occupants(ctx: Context, a: dict) -> Result:
         ok = ok and len(there) >= a["min"]
     hs = "/".join(ordinal(h) for h in a["houses"])
     desc = ", ".join(there) if there else "none"
-    return ok, [f"{a.get('of', 'grahas7')} in {hs} from {ctx.name(ref)}: {desc}"]
+    who = ctx.label(a.get("of", "grahas7"), a.get("exclude", ()))
+    return ok, [f"{who} in the {hs} from {ctx.name(ref)}: {desc}"]
 
 
 @predicate
@@ -298,7 +309,8 @@ def parivartana(ctx: Context, a: dict) -> Result:
 def sign_count(ctx: Context, a: dict) -> Result:
     grp = ctx.group(a.get("of", "grahas7"))
     n = len({ctx.signs[p] for p in grp})
-    return n == a["count"], [f"{a.get('of', 'grahas7')} occupy {n} signs"]
+    return n == a["count"], [f"the seven planets occupy {n} signs" if a.get("of", "grahas7") == "grahas7"
+                             else f"{ctx.label(a['of'])} occupy {n} signs"]
 
 
 @predicate
@@ -306,7 +318,7 @@ def all_in_modality(ctx: Context, a: dict) -> Result:
     grp = ctx.group(a.get("of", "grahas7"))
     want = {"movable": 0, "fixed": 1, "dual": 2}[a["modality"]]
     ok = all(modality(ctx.signs[p]) == want for p in grp)
-    return ok, [f"{a.get('of', 'grahas7')} all in {a['modality']} signs" if ok else "mixed modalities"]
+    return ok, [f"all seven planets in {a['modality']} signs" if ok else "planets in mixed modalities"]
 
 
 @predicate
@@ -316,7 +328,7 @@ def houses_exactly(ctx: Context, a: dict) -> Result:
     hs = {ctx.house(p) for p in grp}
     want = set(a["houses"])
     ok = hs == want if a.get("all_occupied", True) else hs <= want
-    return ok, [f"{a.get('of', 'grahas7')} in houses {sorted(hs)}"]
+    return ok, [f"the seven planets in houses {', '.join(map(str, sorted(hs)))}"]
 
 
 @predicate
@@ -325,7 +337,7 @@ def distinct_houses(ctx: Context, a: dict) -> Result:
     grp = ctx.group(a["of"])
     hs = [ctx.house(p) for p in grp]
     ok = all(h in a["houses"] for h in hs) and len(set(hs)) == a["count"]
-    return ok, [f"{'/'.join(grp)} in houses {sorted(set(hs))}"]
+    return ok, [f"{'/'.join(grp)} in houses {', '.join(map(str, sorted(set(hs))))}"]
 
 
 @predicate
@@ -333,7 +345,7 @@ def houses_occupied_by(ctx: Context, a: dict) -> Result:
     """At least `min` of `houses` hold a planet from the group (from the Lagna)."""
     grp = ctx.group(a["of"])
     held = sorted({ctx.house(p) for p in grp if ctx.house(p) in a["houses"]})
-    return len(held) >= a["min"], [f"{a['of']} occupy houses {held}"]
+    return len(held) >= a["min"], [f"{ctx.label(a['of'])} in houses {', '.join(map(str, held)) or 'none'}"]
 
 
 @predicate
@@ -360,7 +372,8 @@ def kartari(ctx: Context, a: dict) -> Result:
     grp = [p for p in ctx.group(a["by"]) if p != ref]
     h2 = [p for p in grp if ctx.house(p, ref) == 2]
     h12 = [p for p in grp if ctx.house(p, ref) == 12]
-    return bool(h2 and h12), [f"{a['by']} in 2nd from {ctx.name(ref)}: {h2 or 'none'}; in 12th: {h12 or 'none'}"]
+    return bool(h2 and h12), [f"{ctx.label(a['by'])} in the 2nd from {ctx.name(ref)}: {', '.join(h2) or 'none'}; "
+                            f"in the 12th: {', '.join(h12) or 'none'}"]
 
 
 # ------------------------------------------------------------------- evaluator
@@ -452,7 +465,7 @@ def find_yogas(chart_or_ctx: Chart | Context, rules: list[Rule] | None = None,
         if present and r.cancelled_by:
             cancelled, cev = evaluate(r.cancelled_by, ctx)
             if cancelled:
-                ev = ev + [f"cancelled: {x}" for x in cev]
+                ev = ev + [f"Cancelled: {x}" for x in cev]
         if present or include_absent:
             out.append(YogaResult(r.id, r.name, r.group, present, cancelled, ev, r.summary,
                                   r.source, r.status))
