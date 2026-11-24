@@ -135,3 +135,22 @@ def test_sun_and_moon_never_at_war():
     from jyotishnet_engine.shadbala import planetary_wars
     lons = {"Ma": 10.0, "Me": 50.0, "Ju": 100.0, "Ve": 150.0, "Sa": 200.0, "Su": 10.2, "Mo": 50.1}
     assert planetary_wars(lons) == []
+
+
+def test_mercury_jhora_aspect_rule():
+    # JHora's rule (read from jhora.exe): conjunction within 15 deg, opposition
+    # 165-195, special aspects at 0.75; untouched is benefic, a zero tie malefic.
+    from jyotishnet_engine.shadbala import mercury_is_malefic
+    far = {"Su": 100.0, "Mo": 130.0, "Ma": 250.0, "Ju": 200.0, "Ve": 60.0, "Sa": 330.0}
+
+    def malefic(me, moon_good=True, **moved):
+        return mercury_is_malefic({}, moon_good, lons={**far, **moved, "Me": me})
+
+    assert not malefic(0.0)                          # untouched: benefic
+    assert malefic(0.0, Su=355.0)                    # Sun within 15 deg
+    assert not malefic(0.0, Ju=345.0)                # Jupiter at exactly 15 deg
+    assert malefic(0.0, Su=355.0, Ve=10.0)           # +1 -1 = 0 with contact: malefic
+    assert not malefic(0.0, Su=355.0, Ve=10.0, Ju=180.0)   # Jupiter opposite tips it
+    assert malefic(0.0, Ve=10.0, Sa=290.0, Ma=150.0)  # +1 -0.75 (Sa 70 deg) -0.75 (Ma 210)
+    assert not malefic(0.0, Ve=10.0, Sa=255.0)       # Saturn 105 deg behind: no aspect
+    assert malefic(0.0, False, Mo=5.0)               # malefic Moon conjunct

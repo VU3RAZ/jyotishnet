@@ -20,7 +20,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Special lagnas | Bhava, Hora, Ghati Lagna and Pranapada (sunrise mode configurable) |
 | Dashas | Vimshottari (3 levels), Ashtottari (3 levels, with applicability check), Yogini (2 levels), Chara (K. N. Rao, 2 levels, two cycles; Jaimini rasi drishti and co-lord rules); configurable year length |
 | Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
-| Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik, Yuddha (planetary war, BPHS); rupas and required minimums. Matches Jagannatha Hora on 21 charts to its printed precision except Yuddha and Cheshta (decided differences) |
+| Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik, Yuddha (planetary war, BPHS); rupas and required minimums. Matches Jagannatha Hora on 23 charts to its printed precision except Yuddha and Cheshta (decided differences) |
 | Vimshopaka bala | Shadvarga, Saptavarga, Dashavarga and Shodashavarga schemes for the nine grahas; Saptavarga weights per BPHS by default, JHora's as an option; with that option matches Jagannatha Hora on all 31 golden charts (`docs/DECISIONS.md`) |
 | Rectification helpers | 12 event types in YAML (`rules/btr_events.yaml`, cited, draft) with governing vargas and karakas; event check table (dasha lords linked by lordship, occupancy or karaka in D1 and the event varga, Jupiter-Saturn double transit, score and verdict), fit curve over the birth window with best fit, indicative periods for marriage, children, career and relocation. Death and illness are check-only, never predicted |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
@@ -76,11 +76,11 @@ behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
   Positions match within 2.2", Navamsa all, Ashtakavarga and all pindas
   exactly, Vimshottari antardashas within 1 day, Vimshopaka (four schemes, nine
   grahas, JHora's Saptavarga weights) within 0.005. Shadbala against JHora's
-  breakdown (21 charts): every component and every Kala part
+  breakdown (23 charts): every component and every Kala part
   (`tests/golden/jhora_shadbala/kala/`) to JHora's printed precision, except
-  Yuddha (BPHS, which JHora omits) and Cheshta (#16). Waiting in
-  `tests/golden/pending/`: two future charts (2050, 2100; Delta T, #22) and two
-  Shadbala breakdowns (Mercury's nature, #23).
+  Yuddha (BPHS, which JHora omits) and Cheshta (#16). Kept in
+  `tests/golden/pending/`: two future charts (2050, 2100) that differ by Delta T
+  (decided, #22).
 
 ## Run the workbench on your computer
 

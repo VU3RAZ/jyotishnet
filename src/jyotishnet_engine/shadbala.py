@@ -71,13 +71,14 @@ class ShadbalaOptions:
     # Ashtami to Krishna Ashtami, i.e. at least 90 degrees from the Sun.
     moon_benefic: str = "ashtami"
     # Mercury's nature.
-    # "jhora": Mercury's associates are the grahas within `mercury_orb_deg` of it
-    #   (either side); it is benefic only when Jupiter, Venus and a benefic Moon among
-    #   them outnumber the Sun, Mars, Saturn, Rahu, Ketu and a malefic Moon. Mercury
-    #   alone, or with as many benefics as malefics, is malefic. Reproduces JHora on
-    #   all 20 golden Shadbala charts; the orb fits anywhere from 14.97 deg (Venus
-    #   counted in aurobindo_ghosh) to 17.80 deg (the Sun not counted in edge_23)
-    #   (decision "Shadbala benefics").
+    # "jhora" (as Jagannatha Hora 8.0's code, read from jhora.exe): the Sun, Moon,
+    #   Mars, Jupiter, Venus and Saturn score +1 if benefic, -1 if malefic (the Moon by
+    #   `moon_benefic`). Each adds its score when Mercury is within 15 deg of it or
+    #   165-195 deg from it, and 0.75 x its score when Mercury falls within 15 deg of
+    #   its special aspect (Mars 90/210, Jupiter 120/240, Saturn 60/270 deg ahead of
+    #   it); one planet can add more than once. Mercury is malefic when the total is
+    #   negative, or zero with at least one planet counted; untouched, it is benefic.
+    #   The nodes are not counted (decision "Shadbala benefics").
     # "bhava": the same count among grahas in Mercury's equal bhava (Lagna at the
     #   middle of the 1st, each Lagna + 30n +/- 15 deg), alone or a tie benefic; fitted
     #   to 13 charts, failed edge_42 and edge_43.
@@ -85,7 +86,6 @@ class ShadbalaOptions:
     # "any": malefic with any of `mercury_malefic_with` in its sign (Moon only when
     #   malefic).
     mercury_rule: str = "jhora"
-    mercury_orb_deg: float = 15.0
     mercury_malefic_with: tuple[str, ...] = ("Mo", "Ma", "Sa", "Ra", "Ke")
     # Days added to the Kali-epoch ahargana for Abda and Masa lords. -13 is the only
     # value (mod 360) that reproduces JHora's year and month lords on all five golden
@@ -494,24 +494,43 @@ def equal_bhava(lon: float, lagna: float) -> int:
     return int(((lon - lagna + 15.0) % 360.0) // 30.0)
 
 
+# JHora's Mercury rule: natural score of each counted planet (Moon set per chart)
+# and the special aspects, in degrees from the planet forward to Mercury.
+_MERCURY_SCORE = {"Su": -1, "Ma": -1, "Ju": 1, "Ve": 1, "Sa": -1}
+_SPECIAL_ASPECTS = {"Ma": (90.0, 210.0), "Ju": (120.0, 240.0), "Sa": (60.0, 270.0)}
+
+
+def _mercury_aspect_score(lons: dict[str, float], moon_good: bool) -> tuple[float, bool]:
+    """(total, any planet counted) for JHora's aspect rule on Mercury."""
+    total, touched = 0.0, False
+    for p in ("Su", "Mo", "Ma", "Ju", "Ve", "Sa"):
+        score = (1 if moon_good else -1) if p == "Mo" else _MERCURY_SCORE[p]
+        d = (lons["Me"] - lons[p]) % 360
+        if d <= 15.0 or d >= 345.0:
+            total, touched = total + score, True
+        if 165.0 <= d <= 195.0:
+            total, touched = total + score, True
+        for a in _SPECIAL_ASPECTS.get(p, ()):
+            if a - 15.0 <= d <= a + 15.0:
+                total, touched = total + 0.75 * score, True
+    return total, touched
+
+
 def mercury_is_malefic(signs: dict[str, int], moon_good: bool,
                        opts: ShadbalaOptions = DEFAULT_OPTIONS,
                        bhavas: dict[str, int] | None = None,
                        lons: dict[str, float] | None = None) -> bool:
-    """Mercury's nature from the grahas associated with it (see ShadbalaOptions)."""
-    grahas = ("Su", "Mo", "Ma", "Ju", "Ve", "Sa", "Ra", "Ke")
+    """Mercury's nature (see ShadbalaOptions.mercury_rule)."""
     rule = opts.mercury_rule
     if rule == "jhora":
         if lons is None:
             raise ValueError("mercury_rule 'jhora' needs longitudes")
-        mates = [p for p in grahas if p in lons
-                 and abs((lons[p] - lons["Me"] + 180) % 360 - 180) <= opts.mercury_orb_deg]
-    else:
-        where = bhavas if (rule == "bhava" and bhavas is not None) else signs
-        mates = [p for p in grahas if p in where and where[p] == where["Me"]]
+        total, touched = _mercury_aspect_score(lons, moon_good)
+        return total < 0 or (total == 0 and touched)
+    grahas = ("Su", "Mo", "Ma", "Ju", "Ve", "Sa", "Ra", "Ke")
+    where = bhavas if (rule == "bhava" and bhavas is not None) else signs
+    mates = [p for p in grahas if p in where and where[p] == where["Me"]]
     good = sum(1 for p in mates if p in ("Ju", "Ve") or (p == "Mo" and moon_good))
-    if rule == "jhora":
-        return len(mates) - good >= good
     if rule in ("majority", "bhava"):
         return len(mates) - good > good
     if rule == "any":

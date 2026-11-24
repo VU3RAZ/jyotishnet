@@ -25,13 +25,13 @@ boundaries, high latitudes, pre-1955 Indian zones, and the southern hemisphere.
 | Navamsa | 80/80 | |
 | Ashtakavarga BAV, Sodhya/Rasi/Graha pinda | all exact | PVR variant, seven grahas occupy, Virgo x5 |
 | Vimshottari antardasha starts | 584/648 exact, rest within 1 day | solar (Sun's sidereal motion) year |
-| Shadbala components (21 charts) | every component and Kala part to JHora's printed precision, except Yuddha and Cheshta | kranti table on sidereal + 23 deg (#13); Mercury provisional (#23) |
+| Shadbala components (23 charts) | every component and Kala part to JHora's printed precision, except Yuddha and Cheshta | kranti table on sidereal + 23 deg (#13); Mercury by JHora's aspect rule (read from its code) |
 | Shadbala totals | differ by Cheshta (#16) and Yuddha (BPHS; JHora applies none) | |
 
 ## Edge-case charts (phase 1 gate)
 
 The design doc asks for about 50 golden charts chosen for edge cases. These 49
-(47 passing, two pending) fill the gaps the first eight leave. None is a real person. Their inputs are in
+(47 passing, two kept in pending as a record) fill the gaps the first eight leave. None is a real person. Their inputs are in
 `jhd/`; they were exported from JHora 8.0 under Wine on 24 November 2026 (see
 `tools/jhora/README.md`; `tools/jhora/make_jhd.py` writes `.jhd` files from a list).
 
@@ -61,10 +61,6 @@ them:
   2050, 125 s in 2100), so the Moon differs by 27" and 75" and Vimshottari dates
   by about 2 days. Decided (#22): we keep Swiss Ephemeris's model; these stay
   here as a record of the difference.
-- `pending/jhora_shadbala/edge_48_*`, `edge_50_*` (and `kala/`): Mercury's
-  nature for Paksha and Drik bala. JHora calls Mercury benefic with Venus 15.5
-  and 17.3 deg away but malefic at 16.4 deg (edge_49, live), so its rule is not a
-  distance; no rule tried fits all 23 charts. Open decision #23.
 
 Chart 12 (Tromso, polar night) was dropped: polar births are out of scope
 (`docs/DECISIONS.md`). JHora gave no usable reference for it either: it printed
