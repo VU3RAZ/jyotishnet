@@ -67,6 +67,14 @@ pytest -q
 uvicorn jyotishnet_api.main:app --reload
 ```
 
+Workbench UI (charts, live time slider, transits): with the API running,
+
+```bash
+cd web && npm ci && npm run dev    # http://localhost:3000
+```
+
+See [web/README.md](web/README.md).
+
 ```bash
 curl -s localhost:8000/v1/chart -H 'content-type: application/json' -d '{
   "birth": {"local_datetime": "1990-01-15T06:30:00", "latitude": 28.61, "longitude": 77.21},

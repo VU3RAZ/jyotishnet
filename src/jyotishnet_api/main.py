@@ -7,9 +7,11 @@ Run: uvicorn jyotishnet_api.main:app --reload
 
 from __future__ import annotations
 
+import os
 from datetime import datetime
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from jyotishnet_engine import (
@@ -21,6 +23,13 @@ from jyotishnet_engine.constants import MODEL_VARGAS, SHODASHAVARGA
 from jyotishnet_engine.timeutil import jd_to_datetime
 
 app = FastAPI(title="JyotishNet API", version="0.1.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[o for o in os.environ.get(
+        "JYOTISHNET_CORS", "http://localhost:3000,http://127.0.0.1:3000").split(",") if o],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 
 class ConfigIn(BaseModel):
@@ -133,7 +142,8 @@ def dasha(req: DashaRequest) -> dict:
             c.lagna.sign, {k: p.sign for k, p in c.grahas.items()})
     if req.at:
         from jyotishnet_engine.timeutil import datetime_to_jd
-        out["running"] = [{"lord": p.lord, "level": p.level, "end": _iso(p.end_jd)}
+        out["running"] = [{"lord": p.lord, "name": p.name, "level": p.level,
+                           "start": _iso(p.start_jd), "end": _iso(p.end_jd)}
                           for p in running(periods, datetime_to_jd(req.at))]
     return out
 
