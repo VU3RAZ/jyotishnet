@@ -59,13 +59,17 @@ def main() -> int:
                                               drik.Place("x", lat, lon, tz),
                                               return_exact_bounds=True)
         theirs = [((PID[r[0][0]], PID[r[0][1]]), r[1] - tz / 24.0) for r in rows]
-        # Align on the first common (maha, antar) key.
-        keys = [k for k, _ in theirs]
-        try:
-            off = keys.index(ours[0][0])
-        except ValueError:
+        # Align on the first of our periods that PyJHora also lists at about the
+        # same time. With the Moon on a nakshatra boundary one list can start with
+        # a dasha that has almost no balance left while the other starts with the
+        # next; matching by key alone then lands a whole 108-year cycle away.
+        start = next(((j, i) for j, (ko, jo) in enumerate(ours[:16])
+                      for i, (kt, jt) in enumerate(theirs) if ko == kt and abs(jo - jt) < 30), None)
+        if start is None:
             seq_bad += 1
             continue
+        first, off = start
+        ours = ours[first:]
         for (ko, jo), (kt, jt) in zip(ours, theirs[off:]):
             n += 1
             if ko != kt:

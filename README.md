@@ -56,6 +56,16 @@ behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
   where PyJHora treats Mercury in Virgo as own sign rather than exalted, adds
   a year to a lord in its own sign, or picks a Scorpio/Aquarius co-lord by a
   rule-2 slip (it compares a planet number with a sign number).
+- **Release run** (`.github/workflows/release-crosscheck.yml`, on version tags
+  and on demand): every check above on 100,000 charts, drawn by
+  `tools/sampling.py` from Indian cities, latitudes up to ±66° in both
+  hemispheres, and births nudged onto varga, nakshatra and pada boundaries.
+  Run of 24 November 2026: **0 hard mismatches in 16,000,000 varga placements**
+  (3,432 within 7" of a boundary, ephemeris noise); Ashtakavarga all match
+  (221 charts skipped with a D1 sign on a boundary); Shadbala no strict
+  mismatches (126 births within 3 minutes of a Tribhaga boundary skipped);
+  Ashtottari sequence exact, starts within 1.6 days; Chara antardasha order
+  exact, mahadasha lengths differ in 0.9% (the variants above).
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
 - **Jagannatha Hora golden set**: 8 JHora exports (1836-1970) in `tests/golden/jhora`.
   Positions match within 2.2", Navamsa 80/80, Ashtakavarga and all pindas
