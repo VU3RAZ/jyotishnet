@@ -34,7 +34,8 @@ export function PlanetTable({ chart, varga }: { chart: Chart; varga: number }) {
             </td>
             <td className="num">{dms(p.degree)}</td>
             <td>{p.nakshatra} {p.pada}</td>
-            <td>{SIGNS[p.vargas[String(varga)]]}{p.vargottama && varga === 9 ? " (vargottama)" : ""}</td>
+            <td>{p.vargas[String(varga)] === undefined ? "…"
+              : SIGNS[p.vargas[String(varga)]]}{p.vargottama && varga === 9 ? " (vargottama)" : ""}</td>
           </tr>
         ))}
       </tbody>

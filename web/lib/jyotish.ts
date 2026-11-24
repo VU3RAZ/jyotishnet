@@ -23,15 +23,18 @@ export function dms(deg: number): string {
 
 export type Placement = { code: string; label: string; retro: boolean; dignity: string | null };
 
-/** Group the chart's points by sign for one varga. */
+/** Group the chart's points by sign for one varga, or null when the chart was
+ * computed without that varga (e.g. the previous response while a new one loads). */
 export function placements(chart: { lagna: { vargas: Record<string, number> };
   grahas: Record<string, { vargas: Record<string, number>; retrograde: boolean | null; dignity: string | null }> },
-  varga: number): { lagnaSign: number; bySign: Placement[][] } {
+  varga: number): { lagnaSign: number; bySign: Placement[][] } | null {
+  if (chart.lagna.vargas[String(varga)] === undefined) return null;
   const bySign: Placement[][] = Array.from({ length: 12 }, () => []);
   for (const code of GRAHA_ORDER) {
     const g = chart.grahas[code];
     if (!g) continue;
     const s = g.vargas[String(varga)];
+    if (s === undefined) continue;
     bySign[s].push({ code, label: code, retro: !!g.retrograde && code !== "Ra" && code !== "Ke",
       dignity: varga === 1 ? g.dignity : null });
   }
