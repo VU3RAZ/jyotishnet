@@ -5,7 +5,7 @@
 | # | Decision | Current default in code | Needed by |
 | --- | --- | --- | --- |
 | 1 | House system for the model's frame | Whole-sign; others selectable | Phase 1, week 1 |
-| 3 | Narayana and Chara dashas as model token streams | Not yet implemented | Before phase 2 |
+| 3 | Chara dasha method and Narayana dasha | Chara: K. N. Rao (start at Lagna, direction by the 9th; lord count; +1 exalted / -1 debilitated, none when the lord is in the sign; second cycle 12 minus first; antardasha table as PyJHora). PVN Rao (Parashara) and Iranganti variants not yet; Narayana not yet | Before phase 2, expert |
 | 4 | Gender-dependent rules | Not yet implemented (rules engine pending) | Before phase 4 |
 | 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
 | 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |

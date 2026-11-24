@@ -59,7 +59,7 @@ class ChartRequest(BaseModel):
 class DashaRequest(BaseModel):
     birth: BirthIn
     config: ConfigIn = ConfigIn()
-    system: str = Field("vimshottari", pattern="^(vimshottari|ashtottari|yogini)$")
+    system: str = Field("vimshottari", pattern="^(vimshottari|ashtottari|yogini|chara)$")
     levels: int = Field(3, ge=1, le=3)
     at: datetime | None = Field(None, description="UTC moment for the running-period lookup")
 
@@ -117,6 +117,11 @@ def dasha(req: DashaRequest) -> dict:
     moon = c.grahas["Mo"].longitude
     if req.system == "vimshottari":
         periods = vimshottari(moon, c.jd_ut, cfg, levels=req.levels)
+    elif req.system == "chara":
+        from jyotishnet_engine.jaimini import chara_dasha
+        periods = chara_dasha(c.lagna.sign, {k: p.sign for k, p in c.grahas.items()},
+                              {k: p.longitude for k, p in c.grahas.items()}, c.jd_ut, cfg,
+                              levels=min(req.levels, 2))
     elif req.system == "ashtottari":
         periods = ashtottari(moon, c.jd_ut, cfg, levels=req.levels)
     else:

@@ -20,13 +20,16 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from jyotishnet_engine import BirthData, SchoolConfig, build_chart  # noqa: E402
 from jyotishnet_engine.dasha import ashtottari  # noqa: E402
+from jyotishnet_engine.jaimini import chara_dasha, stronger_co_lord  # noqa: E402
 
 with contextlib.redirect_stdout(io.StringIO()):
     from jhora import const, utils  # noqa: E402
     from jhora.horoscope.dhasa.graha import ashtottari as j_ash  # noqa: E402
+    from jhora.horoscope.dhasa.raasi import chara as j_chara  # noqa: E402
     from jhora.panchanga import drik  # noqa: E402
 
 drik.set_ayanamsa_mode("LAHIRI")
+drik.set_planet_list(set_rahu_ketu_as_true_nodes=False)
 PID = {0: "Su", 1: "Mo", 2: "Ma", 3: "Me", 4: "Ju", 5: "Ve", 6: "Sa", 7: "Ra", 8: "Ke"}
 
 
@@ -72,7 +75,55 @@ def main() -> int:
             worst = max(worst, abs(jo - jt))
     print(f"Ashtottari: {args.charts} charts, {n} antardashas compared, "
           f"sequence mismatches {seq_bad}, worst start difference {worst:.3f} days")
-    return 0 if seq_bad == 0 and worst <= args.tol_days else 1
+    ok = seq_bad == 0 and worst <= args.tol_days
+
+    # Chara dasha (K. N. Rao), first cycle.
+    rng = random.Random(args.seed + 1)
+    md_bad, ad_bad, colord_charts, n_md = 0, 0, 0, 0
+    worst = 0.0
+    for _ in range(args.charts):
+        dt = datetime(rng.randint(1900, 2030), rng.randint(1, 12), rng.randint(1, 28),
+                      rng.randint(0, 23), rng.randint(0, 59))
+        lat, lon, tz = 28.61, 77.21, 5.5
+        c = build_chart(BirthData(dt, lat, lon, utc_offset_hours=tz), cfg, [1])
+        signs = {k: p.sign for k, p in c.grahas.items()}
+        degs = {k: p.longitude for k, p in c.grahas.items()}
+        ours = chara_dasha(c.lagna.sign, signs, degs, c.jd_ut, cfg, cycles=1)
+        with contextlib.redirect_stdout(io.StringIO()):
+            rows = j_chara.get_dhasa_antardhasa((dt.year, dt.month, dt.day), (dt.hour, dt.minute, 0),
+                                                drik.Place("x", lat, lon, tz),
+                                                chara_method=const.CHARA_TYPE.KN_RAO,
+                                                return_exact_bounds=True)
+        theirs_md, seen = [], set()
+        for r in rows:
+            if r[0][0] not in seen:
+                seen.add(r[0][0])
+                theirs_md.append((r[0][0], r[3] if False else None))
+        # Maha lengths from their antardasha rows: sum per maha sign.
+        lengths = {}
+        for r in rows:
+            lengths[r[0][0]] = lengths.get(r[0][0], 0.0) + r[3]
+        theirs = [(s, round(lengths[s], 6)) for s, _ in theirs_md]
+        mine = [(int(p.lord), p.end_years - p.start_years) for p in ours]
+        uses_colord = any(s in (7, 10) for s, _ in mine)
+        chart_bad = False
+        for (so, yo), (st, yt) in zip(mine, theirs):
+            n_md += 1
+            if so != st or abs(yo - yt) > 1e-3:
+                md_bad += 1
+                chart_bad = True
+        colord_charts += chart_bad and uses_colord
+        for md, (st, _) in zip(ours, theirs):
+            want = [r[0][1] for r in rows if r[0][0] == st]
+            if [int(ch.lord) for ch in md.children] != want:
+                ad_bad += 1
+        for md in ours:
+            r0 = next(r for r in rows if r[0][0] == int(md.lord))
+            worst = max(worst, abs(md.start_jd - (r0[1] - tz / 24.0)))
+    print(f"Chara (K. N. Rao): {args.charts} charts, {n_md} mahadashas, "
+          f"length/sign mismatches {md_bad}, "
+          f"antardasha order mismatches {ad_bad}, worst maha start difference {worst:.2f} days")
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":

@@ -73,3 +73,10 @@ def test_ashtottari_api():
     assert r.status_code == 200
     j = r.json()
     assert isinstance(j["applicable"], bool) and j["periods"][0]["children"]
+
+
+def test_chara_api():
+    r = client.post("/v1/dasha", json={"birth": BIRTH, "system": "chara", "levels": 2})
+    assert r.status_code == 200
+    ps = r.json()["periods"]
+    assert len(ps) >= 12 and ps[0]["name"] and len(ps[0]["children"]) == 12

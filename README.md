@@ -17,7 +17,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Nakshatra, pada, dignity | Exaltation, moolatrikona, own, natural relationship; vargottama |
 | Aspects | Parashari graha drishti; optional Rahu/Ketu 5th/9th |
 | Special lagnas | Bhava, Hora, Ghati Lagna and Pranapada (sunrise mode configurable) |
-| Dashas | Vimshottari (3 levels), Ashtottari (3 levels, with applicability check), Yogini (2 levels); configurable year length |
+| Dashas | Vimshottari (3 levels), Ashtottari (3 levels, with applicability check), Yogini (2 levels), Chara (K. N. Rao, 2 levels, two cycles; Jaimini rasi drishti and co-lord rules); configurable year length |
 | Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
 | Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik, Yuddha (planetary war, BPHS); rupas and required minimums |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
@@ -48,6 +48,10 @@ A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
 - **Dasha cross-check**: `tools/crosscheck_dashas.py` matches PyJHora's
   Ashtottari maha/antar sequence exactly; start dates within 1.5 days (PyJHora
   counts the dasha year by the tropical Sun, we by the sidereal Sun as JHora).
+  Chara (K. N. Rao): antardasha order exact; mahadasha lengths agree except
+  where PyJHora treats Mercury in Virgo as own sign rather than exalted, adds
+  a year to a lord in its own sign, or picks a Scorpio/Aquarius co-lord by a
+  rule-2 slip (it compares a planet number with a sign number).
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
 - **Jagannatha Hora golden set**: 8 JHora exports (1836-1970) in `tests/golden/jhora`.
   Positions match within 2.2", Navamsa 80/80, Ashtakavarga and all pindas
