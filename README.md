@@ -13,7 +13,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | --- | --- |
 | Planets, ascendant, house cusps | Swiss Ephemeris; Lahiri, Raman, KP, True Chitra, Yukteshwar, Fagan-Bradley ayanamsas; mean or true nodes; apparent or true positions |
 | House systems | Whole-sign (default), Sripati, Placidus, Koch, Equal, Porphyry |
-| Vargas | All 16 Parashari Shodashavarga (D1-D60), with varga longitudes |
+| Vargas | All 16 Parashari Shodashavarga (D1-D60), with varga longitudes; D2 as Uma-Shambhu (JHora default) or Parashari hora |
 | Nakshatra, pada, dignity | Exaltation, moolatrikona, own, natural relationship; vargottama |
 | Aspects | Parashari graha drishti; optional Rahu/Ketu 5th/9th |
 | Special lagnas | Bhava, Hora, Ghati Lagna and Pranapada (sunrise mode configurable) |
@@ -43,8 +43,9 @@ A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
 - **Jagannatha Hora golden set**: 8 JHora exports (1836-1970) in `tests/golden/jhora`.
   Positions match within 2.2", Navamsa 80/80, Ashtakavarga and all pindas
-  exactly, Vimshottari antardashas within 1 day (584/648 exact). Shadbala totals
-  still differ; see `docs/DECISIONS.md`.
+  exactly, Vimshottari antardashas within 1 day (584/648 exact). Shadbala against
+  JHora's breakdown (3 charts): Sthana and Naisargika exact, Dig/Kala/Drik within
+  a few virupas; Cheshta differs (see `docs/DECISIONS.md` #16).
 
 ## Quick start
 

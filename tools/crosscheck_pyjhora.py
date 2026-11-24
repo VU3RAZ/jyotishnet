@@ -84,8 +84,9 @@ def main() -> int:
         jd = utils.julian_day_number((dt.year, dt.month, dt.day), (dt.hour, dt.minute, dt.second))
         for n in SHODASHAVARGA:
             with contextlib.redirect_stdout(io.StringIO()):
-                # D2: method 2 = traditional Parashari hora (Leo/Cancer only), the engine default.
-                theirs = charts.divisional_chart(jd, place, n, chart_method=2 if n == 2 else None)
+                # D2: PyJHora method 1 = Uma-Shambhu (parivritti, even signs reversed),
+                # the engine's and Jagannatha Hora's default.
+                theirs = charts.divisional_chart(jd, place, n, chart_method=1 if n == 2 else None)
             for item in theirs:
                 key, (sign, _) = item[0], item[1]
                 code = "La" if key == "L" else GRAHAS[key]

@@ -63,14 +63,15 @@ class Chart:
         }
 
 
-def _point(code: str, lon: float, lagna_sign: int, vargas: list[int]) -> Point:
+def _point(code: str, lon: float, lagna_sign: int, vargas: list[int],
+           hora_scheme: str = "uma_shambhu") -> Point:
     nk = nakshatra_of(lon)
     sign = int(lon // 30)
     return Point(
         code=code, longitude=lon, sign=sign, degree=lon - sign * 30,
         nakshatra=nk.name, pada=nk.pada, nakshatra_lord=nk.lord,
         house=(sign - lagna_sign) % 12 + 1,
-        vargas={n: varga_sign(lon, n) for n in vargas},
+        vargas={n: varga_sign(lon, n, hora_scheme) for n in vargas},
     )
 
 
@@ -80,11 +81,11 @@ def build_chart(birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
     jd = birth.jd_ut()
     asc = ascendant(jd, birth.latitude, birth.longitude, cfg)
     lagna_sign = int(asc // 30)
-    lagna = _point("La", asc, lagna_sign, vargas)
+    lagna = _point("La", asc, lagna_sign, vargas, cfg.hora_scheme)
 
     grahas: dict[str, Point] = {}
     for code, pos in planets(jd, cfg).items():
-        p = _point(code, pos.longitude, lagna_sign, vargas)
+        p = _point(code, pos.longitude, lagna_sign, vargas, cfg.hora_scheme)
         p.speed = pos.speed
         p.retrograde = pos.retrograde if code not in ("Ra", "Ke") else True
         p.dignity = dignity(code, pos.longitude)
@@ -97,10 +98,10 @@ def build_chart(birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
 
     sl = special_lagnas(jd, birth.latitude, birth.longitude, birth.altitude_m, cfg)
     special = {
-        "BL": _point("BL", sl.bhava_lagna, lagna_sign, vargas),
-        "HL": _point("HL", sl.hora_lagna, lagna_sign, vargas),
-        "GL": _point("GL", sl.ghati_lagna, lagna_sign, vargas),
-        "PP": _point("PP", sl.pranapada, lagna_sign, vargas),
+        "BL": _point("BL", sl.bhava_lagna, lagna_sign, vargas, cfg.hora_scheme),
+        "HL": _point("HL", sl.hora_lagna, lagna_sign, vargas, cfg.hora_scheme),
+        "GL": _point("GL", sl.ghati_lagna, lagna_sign, vargas, cfg.hora_scheme),
+        "PP": _point("PP", sl.pranapada, lagna_sign, vargas, cfg.hora_scheme),
     }
 
     house_lords = {h: SIGN_LORD[(lagna_sign + h - 1) % 12] for h in range(1, 13)}

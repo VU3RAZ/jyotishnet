@@ -135,11 +135,12 @@ def uchcha_bala(p: str, lon: float) -> float:
 
 
 def saptavargaja_bala(p: str, lon: float, d1_signs: dict[str, int],
-                      varga_signs: dict[int, dict[str, int]] | None = None) -> float:
+                      varga_signs: dict[int, dict[str, int]] | None = None,
+                      hora_scheme: str = "uma_shambhu") -> float:
     total = 0.0
     for n in SAPTAVARGA:
         rel_signs = varga_signs[n] if varga_signs else d1_signs
-        sign = varga_sign(lon, n)
+        sign = varga_sign(lon, n, hora_scheme)
         if n == 1:
             mt_sign, mt_a, mt_b = MOOLATRIKONA[p]
             if sign == mt_sign and mt_a <= lon % 30 < mt_b:
@@ -386,7 +387,7 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
                "Ju": True, "Ve": True, "Sa": False}
     varga_signs = None
     if opts.saptavarga_relation == "varga":
-        varga_signs = {n: {k: varga_sign(chart.grahas[k].longitude, n) for k in chart.grahas}
+        varga_signs = {n: {k: varga_sign(chart.grahas[k].longitude, n, cfg.hora_scheme) for k in chart.grahas}
                        for n in SAPTAVARGA}
 
     asc = chart.lagna.longitude
@@ -402,7 +403,7 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
         ps = PlanetStrength()
         ps.sthana = {
             "uchcha": uchcha_bala(p, lon),
-            "saptavargaja": saptavargaja_bala(p, lon, d1, varga_signs),
+            "saptavargaja": saptavargaja_bala(p, lon, d1, varga_signs, cfg.hora_scheme),
             "ojayugma": ojayugma_bala(p, lon),
             "kendra": kendra_bala(chart.grahas[p].house),
             "drekkana": drekkana_bala(p, lon),

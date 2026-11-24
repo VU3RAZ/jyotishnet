@@ -9,7 +9,7 @@
 | 4 | Gender-dependent rules | Not yet implemented (rules engine pending) | Before phase 4 |
 | 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
 | 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |
-| 16 | Shadbala vs Jagannatha Hora | Against JHora's component table (3 charts): Naisargika exact, Dig within 2.8, Kala within 5.4, Drik within 7.3 virupas. Sthana (RMS 13, steps of Saptavargaja grades) and Cheshta (RMS 16; JHora uses its own mean-longitude tables) still differ | JHora's Sthana sub-components (Uchcha, Saptavargaja, Ojayugma, Kendra, Drekkana) for 1-2 charts |
+| 16 | Shadbala vs Jagannatha Hora | Sthana and Naisargika exact; Dig within 2.8, Kala within 5.4, Drik within 7.3 virupas. Cheshta differs (RMS 16): JHora uses its own mean-longitude tables and, in one chart, averages longitudes across 0 deg Aries numerically. Decide: keep the astronomical version (current) or emulate JHora | Owner's choice |
 | 15 | Shadbala: Sun/Moon Cheshta | Undoubled Ayana (Sun) and Paksha (Moon) bala | Phase 1, expert |
 
 ## Decided
@@ -30,4 +30,5 @@
 | Shadbala benefics | Moon benefic from Shukla to Krishna Ashtami (at least 90 deg from the Sun); Mercury malefic in a sign with a malefic Moon, Mars, Saturn, Rahu or Ketu (JHora component match) |
 | Shadbala Abda/Masa | Kali ahargana + 1 day (JHora's year and month lords) |
 | Moon's Cheshta | Distance from the Sun / 3 (JHora) |
+| D2 (Hora) scheme | Uma-Shambhu (parivritti, even signs reversed), as JHora's D-2 and Saptavargaja (21/21 exact); Parashari Leo/Cancer hora optional |
 | Test oracle | PyJHora in a separate environment (AGPL; never imported) |

@@ -38,10 +38,18 @@ def test_drekkana_aries():
 
 
 def test_hora_parashari():
-    assert varga_sign(5, 2) == 4      # Aries (odd), first half: Sun's hora, Leo
-    assert varga_sign(20, 2) == 3     # Aries, second half: Cancer
-    assert varga_sign(35, 2) == 3     # Taurus (even), first half: Cancer
-    assert varga_sign(50, 2) == 4
+    h = lambda x: varga_sign(x, 2, "parashara")
+    assert h(5) == 4      # Aries (odd), first half: Sun's hora, Leo
+    assert h(20) == 3     # Aries, second half: Cancer
+    assert h(35) == 3     # Taurus (even), first half: Cancer
+    assert h(50) == 4
+
+
+def test_hora_uma_shambhu():
+    # Parivritti hora, counted backwards in even signs (Jagannatha Hora's D-2).
+    assert [varga_sign(x, 2) for x in (5, 20)] == [0, 1]      # Aries: Ar, Ta
+    assert [varga_sign(x, 2) for x in (35, 50)] == [3, 2]     # Taurus: Cn, Ge (reversed)
+    assert [varga_sign(x, 2) for x in (65, 80)] == [4, 5]     # Gemini: Le, Vi
 
 
 def test_trimsamsa_parts():

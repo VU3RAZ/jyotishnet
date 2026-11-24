@@ -28,8 +28,19 @@ def _parts(lon: float, n: int) -> tuple[int, int, float]:
     return sign, part, frac
 
 
-def varga_sign(lon: float, n: int) -> int:
+HORA_SCHEMES = ("uma_shambhu", "parashara")
+
+
+def varga_sign(lon: float, n: int, hora_scheme: str = "uma_shambhu") -> int:
+    """Sign of `lon` in Dn.
+
+    D2 defaults to the Uma-Shambhu hora (parivritti, reversed in even signs), which
+    Jagannatha Hora uses for its D-2 chart and in Saptavargaja bala (golden set:
+    21/21 exact). "parashara" is the classic Leo/Cancer hora.
+    """
     sign, part, _ = _parts(lon, n)
+    if n == 2 and hora_scheme == "uma_shambhu":
+        return (sign * 2 + (part if is_odd_sign(sign) else 1 - part)) % 12
     odd = is_odd_sign(sign)
     mod = modality(sign)
 
@@ -95,7 +106,7 @@ def _trimsamsa(lon: float) -> int:
     return _trimsamsa_bounds(lon)[2]
 
 
-def varga_longitude(lon: float, n: int) -> float:
+def varga_longitude(lon: float, n: int, hora_scheme: str = "uma_shambhu") -> float:
     """Longitude in the varga chart: target sign plus scaled position in the part."""
     if n == 1:
         return lon % 360.0
@@ -105,7 +116,7 @@ def varga_longitude(lon: float, n: int) -> float:
         frac = (within - start) / (end - start)
         return target * 30.0 + frac * 30.0
     _, _, frac = _parts(lon, n)
-    return varga_sign(lon, n) * 30.0 + frac * 30.0
+    return varga_sign(lon, n, hora_scheme) * 30.0 + frac * 30.0
 
 
 def is_vargottama(lon: float) -> bool:

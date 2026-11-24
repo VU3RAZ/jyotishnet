@@ -57,6 +57,8 @@ class SchoolConfig:
     dasha_year_days: float = 365.25
     node_special_aspects: bool = False
     chara_karakas: int = 8
+    # D2 scheme: "uma_shambhu" (Jagannatha Hora's default) or "parashara" (Leo/Cancer).
+    hora_scheme: str = "uma_shambhu"
     # True (geometric) positions, as Jagannatha Hora and PyJHora use: the JHora
     # golden set matches within 2.2 arc-seconds this way, against 48 with apparent
     # positions (light-time and aberration), the astronomical standard.

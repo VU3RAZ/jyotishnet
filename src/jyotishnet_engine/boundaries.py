@@ -75,11 +75,11 @@ class _Tracker:
         jd = self.jd0 + offset_min / MIN_PER_DAY
         b = self.birth
         asc = ascendant(jd, b.latitude, b.longitude, self.cfg)
-        out: dict[str, object] = {f"D{n}.lagna": varga_sign(asc, n) for n in self.vargas}
+        out: dict[str, object] = {f"D{n}.lagna": varga_sign(asc, n, self.cfg.hora_scheme) for n in self.vargas}
         if self.track_moon or self.track_pada:
             moon = body_longitude(jd, "Mo", self.cfg)
             if self.track_moon:
-                out.update({f"D{n}.moon": varga_sign(moon, n) for n in self.vargas})
+                out.update({f"D{n}.moon": varga_sign(moon, n, self.cfg.hora_scheme) for n in self.vargas})
             if self.track_pada:
                 nk = nakshatra_of(moon)
                 out["moon.pada"] = (nk.index, nk.pada)
