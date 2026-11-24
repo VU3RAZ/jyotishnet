@@ -153,3 +153,37 @@ def previous_sunrise(jd_ut: float, lat: float, lon: float, alt: float, cfg: Scho
                 break
             rise = tret2[0]
     return rise
+
+
+def midheaven(jd_ut: float, lat: float, lon: float, cfg: SchoolConfig) -> float:
+    """Sidereal longitude of the MC (10th cusp in quadrant systems)."""
+    with _LOCK:
+        swe.set_sid_mode(_SIDM[cfg.ayanamsa], 0, 0)
+        _, ascmc = swe.houses_ex(jd_ut, lat, lon, b"P", swe.FLG_SIDEREAL)
+    return norm(ascmc[1])
+
+
+def declination(jd_ut: float, code: str, cfg: SchoolConfig) -> float:
+    """Declination (degrees, north positive) of a graha; frame-independent."""
+    flags = _base_flags(cfg) | swe.FLG_EQUATORIAL
+    with _LOCK:
+        xx, _ = swe.calc_ut(jd_ut, _BODIES[code], flags)
+    return xx[1]
+
+
+def sun_event_after(jd_ut: float, lat: float, lon: float, alt: float, cfg: SchoolConfig,
+                    event: str) -> float:
+    """Next sunrise, sunset, upper or lower meridian transit after jd_ut."""
+    base = {"rise": swe.CALC_RISE, "set": swe.CALC_SET,
+            "upper": swe.CALC_MTRANSIT, "lower": swe.CALC_ITRANSIT}[event]
+    rsmi = base
+    if event in ("rise", "set"):
+        if cfg.sunrise == SunriseMode.DISC_CENTER_NO_REFRACTION:
+            rsmi |= swe.BIT_DISC_CENTER | swe.BIT_NO_REFRACTION
+        elif cfg.sunrise == SunriseMode.DISC_CENTER_REFRACTION:
+            rsmi |= swe.BIT_DISC_CENTER
+    with _LOCK:
+        res, tret = swe.rise_trans(jd_ut, swe.SUN, rsmi, (lon, lat, alt), 0.0, 0.0, _base_flags())
+    if res != 0:
+        raise ValueError(f"No solar {event} found at this latitude.")
+    return tret[0]

@@ -19,8 +19,9 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Special lagnas | Bhava, Hora, Ghati Lagna and Pranapada (sunrise mode configurable) |
 | Dashas | Vimshottari (3 levels), Yogini (2 levels); configurable year length |
 | Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
+| Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik; rupas and required minimums. Yuddha bala pending |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
-| API | FastAPI: `/v1/chart`, `/v1/dasha`, `/v1/ashtakavarga`, `/v1/boundaries` |
+| API | FastAPI: `/v1/chart`, `/v1/dasha`, `/v1/ashtakavarga`, `/v1/shadbala`, `/v1/boundaries` |
 
 A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
 
@@ -34,6 +35,11 @@ A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
 - **Ashtakavarga cross-check**: `tools/crosscheck_ashtakavarga.py` compares BAV,
   SAV, both reductions and Shodhya pinda with PyJHora: **all components match
   on 300 random charts** (PVR variant, PyJHora's occupancy rule).
+- **Shadbala cross-check**: `tools/crosscheck_shadbala.py` matches PyJHora on
+  Uchcha, Tribhaga, Naisargika and in-range Paksha bala (150 charts). PyJHora
+  5.0.6 returns out-of-range Dig and Paksha values in many charts, so those and
+  Drik bala are reported rather than checked; Shadbala needs the Jagannatha
+  Hora golden set for absolute verification.
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
 - **Jagannatha Hora golden set**: `tests/golden/`, to be filled by hand.
 

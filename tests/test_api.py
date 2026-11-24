@@ -49,3 +49,11 @@ def test_ashtakavarga():
     r = client.post("/v1/ashtakavarga", json={"birth": BIRTH, "variant": "pvr"})
     assert r.status_code == 200
     assert sum(r.json()["sav"]) == 337
+
+
+def test_shadbala():
+    r = client.post("/v1/shadbala", json={"birth": BIRTH})
+    assert r.status_code == 200
+    body = r.json()["planets"]
+    assert set(body) == {"Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"}
+    assert body["Su"]["naisargika"] == 60

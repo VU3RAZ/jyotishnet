@@ -145,3 +145,19 @@ def ashtakavarga_endpoint(req: AshtakavargaRequest) -> dict:
     out = asdict(av)
     out.pop("prastara")
     return out
+
+
+@app.post("/v1/shadbala")
+def shadbala_endpoint(req: ChartRequest) -> dict:
+    from jyotishnet_engine.shadbala import REQUIRED_RUPAS, shadbala
+    birth, cfg = req.birth.to_birth(), req.config.to_config()
+    c = build_chart(birth, cfg, [1, 2, 3, 7, 9, 12, 30])
+    out = {}
+    for p, s in shadbala(c, birth, cfg).items():
+        out[p] = {
+            "sthana": s.sthana, "dig": s.dig, "kala": s.kala, "cheshta": s.cheshta,
+            "naisargika": s.naisargika, "drik": s.drik, "total_virupas": s.total,
+            "rupas": s.rupas, "required_rupas": REQUIRED_RUPAS[p],
+            "ratio": s.rupas / REQUIRED_RUPAS[p],
+        }
+    return {"planets": out, "note": "Yuddha bala not yet implemented (reported as 0)."}

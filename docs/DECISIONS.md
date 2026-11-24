@@ -14,6 +14,11 @@
 | 8 | Ashtakavarga BAV variant | `bphs` (Raman's reading); `pvr` (PVR Narasimha Rao, PyJHora default) differs for Moon and Venus | Phase 1, with the expert reviewer |
 | 9 | Ekadhipatya "occupied" signs | Seven grahas; options add Rahu/Ketu, or Rahu/Ketu and Lagna (PyJHora) | Phase 1, with the expert reviewer |
 | 10 | Shodhya pinda Virgo multiplier | 5 (common references); 6 in PVR's book | Phase 1 |
+| 11 | Shadbala: Mercury benefic or malefic | Malefic when sharing a sign with Mars, Saturn, Rahu or Ketu | Phase 1, expert |
+| 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
+| 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |
+| 14 | Shadbala: Abda/Masa epoch | Kali Yuga epoch, 360-day years and 30-day months | Phase 1, golden set |
+| 15 | Shadbala: Sun/Moon Cheshta | Undoubled Ayana (Sun) and Paksha (Moon) bala | Phase 1, expert |
 
 ## Decided
 
