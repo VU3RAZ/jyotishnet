@@ -2,10 +2,13 @@
 # Copyright (C) 2026 Rahul Sathe
 import pytest
 
-from jyotishnet_engine import DEFAULT_CONFIG, running, vimshottari, yogini
+from jyotishnet_engine import SchoolConfig, running, vimshottari, yogini
 from jyotishnet_engine.constants import NAKSHATRA_SPAN
 from jyotishnet_engine.nakshatra import nakshatra_of
 
+# Fixed 365.25-day years keep these rule checks exact; the solar year is tested
+# against Jagannatha Hora in test_jhora_golden.py.
+DEFAULT_CONFIG = SchoolConfig(dasha_year_mode="fixed", dasha_year_days=365.25)
 YEAR = DEFAULT_CONFIG.dasha_year_days
 BIRTH = 2447906.5  # arbitrary Julian day
 

@@ -1,35 +1,27 @@
 # Jagannatha Hora golden set
 
-Charts entered by hand in Jagannatha Hora (JHora), with its outputs transcribed
-here. They are the final authority when the engine and PyJHora disagree.
+`jhora/*.txt` are Jagannatha Hora "Natal Chart" text exports (eight charts, born
+1836-1970). `jhora_parser.py` reads them; `tests/test_jhora_golden.py` checks the
+engine against them; `tools/compare_jhora.py` compares candidate settings.
 
-Target: 50 charts chosen for edge cases (design doc, Layer 0 verification):
+## Adding a chart
 
-- planets within 0.1 deg of a sign or nakshatra boundary
-- high latitudes (Srinagar, Leh) and the far south (Kanyakumari)
-- pre-1955 Indian time zones and war time (1942-45)
-- southern-hemisphere and western-hemisphere births
+In Jagannatha Hora, open the chart and export the natal chart report as text,
+then save it here as `firstname_lastname.txt`. The parser reads the date, time,
+time zone, place, ayanamsa, sunrise, body table, Ashtakavarga, pindas, Shadbala
+totals and Vimshottari dasha. Useful additions: births near sign or nakshatra
+boundaries, high latitudes, pre-1955 Indian zones, and the southern hemisphere.
 
-## How to add a chart
+## What the set confirmed (November 2026)
 
-Add an object to `jhora_golden.json`:
-
-```json
-{
-  "id": "delhi-1990-01-15",
-  "note": "Why this chart is an edge case",
-  "birth": {"local_datetime": "1990-01-15T06:30:00", "latitude": 28.61,
-            "longitude": 77.21, "utc_offset_hours": 5.5},
-  "config": {"ayanamsa": "lahiri", "node_type": "mean", "true_positions": false},
-  "expect": {
-    "longitudes": {"La": 258.349, "Su": 270.896},
-    "vargas": {"9": {"La": 5, "Su": 9}},
-    "vimshottari_md": [{"lord": "Ve", "end": "2003-01-02"}]
-  },
-  "tolerance_deg": 0.01
-}
-```
-
-Signs are 0-11 from Aries. Only fill in the fields you transcribed; the test
-checks whatever is present. Record the JHora settings used (ayanamsa, node
-type, true or apparent positions, year length) in `config`.
+| Item | Result | Setting |
+| --- | --- | --- |
+| Ayanamsa | within 0.1" | Lahiri |
+| Planets | within 2.2" | true (geometric) positions |
+| Rahu/Ketu | within 0.1" | mean nodes |
+| Lagna | within 17" | |
+| Bhava/Hora/Ghati Lagna, Pranapada | within 0.1' / 0.4' / 1.9' / 7.6' | sunrise: disc centre, no refraction |
+| Navamsa | 80/80 | |
+| Ashtakavarga BAV, Sodhya/Rasi/Graha pinda | all exact | PVR variant, seven grahas occupy, Virgo x5 |
+| Vimshottari antardasha starts | 584/648 exact, rest within 1 day | solar (Sun's sidereal motion) year |
+| Shadbala totals | differ by up to ~100 virupas | open: needs JHora's component table |

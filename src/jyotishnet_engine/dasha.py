@@ -2,8 +2,13 @@
 # Copyright (C) 2026 Rahul Sathe
 """Dasha systems: Vimshottari (three levels) and Yogini.
 
-Periods are returned with Julian-day start and end so callers can convert to
-any calendar. Year length comes from SchoolConfig.dasha_year_days.
+Periods are computed in years from birth, then converted to Julian days by the
+configured year definition:
+
+- "solar" (default; Jagannatha Hora's default): a dasha year is the time the Sun
+  takes to move 360 degrees of sidereal longitude, so fractions of a year follow
+  the Sun's actual (uneven) motion.
+- "fixed": a year is `cfg.dasha_year_days` days (365.25, 360, ...).
 """
 
 from __future__ import annotations
@@ -12,9 +17,12 @@ from dataclasses import dataclass, field
 
 from .config import SchoolConfig
 from .constants import VIMSHOTTARI_LORDS, VIMSHOTTARI_YEARS, YOGINIS
+from .ephemeris import body_longitude
 from .nakshatra import nakshatra_of
 
 VIMSHOTTARI_TOTAL = 120.0
+SIDEREAL_YEAR_DAYS = 365.256363
+SUN_MEAN_MOTION = 360.0 / SIDEREAL_YEAR_DAYS
 
 
 @dataclass
@@ -25,78 +33,110 @@ class Period:
     level: int                      # 1 = maha, 2 = antar, 3 = pratyantar
     name: str | None = None         # Yogini name, when relevant
     children: list["Period"] = field(default_factory=list)
+    start_years: float = 0.0        # offset from birth in dasha years
+    end_years: float = 0.0
 
     def contains(self, jd: float) -> bool:
         return self.start_jd <= jd < self.end_jd
 
 
-def _subdivide(parent: Period, sequence: list[str], years: dict[str, float], total: float,
-               levels_left: int) -> None:
+class YearClock:
+    """Converts 'years after birth' to Julian days under the configured year."""
+
+    def __init__(self, birth_jd: float, cfg: SchoolConfig):
+        self.birth_jd = birth_jd
+        self.cfg = cfg
+        self.solar = cfg.dasha_year_mode == "solar"
+        if self.solar:
+            self.sun0 = body_longitude(birth_jd, "Su", cfg)
+        self._cache: dict[float, float] = {}
+
+    def jd(self, years: float) -> float:
+        if not self.solar:
+            return self.birth_jd + years * self.cfg.dasha_year_days
+        key = round(years, 12)
+        if key in self._cache:
+            return self._cache[key]
+        target = 360.0 * years
+        jd = self.birth_jd + years * SIDEREAL_YEAR_DAYS
+        for _ in range(6):
+            approx = (jd - self.birth_jd) * SUN_MEAN_MOTION
+            delta = (body_longitude(jd, "Su", self.cfg) - self.sun0 - approx + 180) % 360 - 180
+            err = target - (approx + delta)
+            jd += err / SUN_MEAN_MOTION
+            if abs(err) < 1e-7:
+                break
+        self._cache[key] = jd
+        return jd
+
+
+def _subdivide_years(parent: Period, start_idx: int, seq: list[str], years: dict[str, float],
+                     total: float, levels_left: int) -> None:
     if levels_left <= 0:
         return
-    span = parent.end_jd - parent.start_jd
-    start_idx = sequence.index(parent.lord)
-    t = parent.start_jd
-    for i in range(len(sequence)):
-        lord = sequence[(start_idx + i) % len(sequence)]
-        length = span * years[lord] / total
-        child = Period(lord, t, t + length, parent.level + 1)
-        _subdivide(child, sequence, years, total, levels_left - 1)
+    span = parent.end_years - parent.start_years
+    t = parent.start_years
+    for i in range(len(seq)):
+        idx = (start_idx + i) % len(seq)
+        length = span * years[seq[idx]] / total
+        child = Period(seq[idx], 0, 0, parent.level + 1, start_years=t, end_years=t + length)
+        _subdivide_years(child, idx, seq, years, total, levels_left - 1)
         parent.children.append(child)
         t += length
+
+
+def _build(seq: list[str], years: dict[str, float], total: float, first_index: int,
+           first_start_years: float, span_years: float, levels: int, clock: YearClock) -> list[Period]:
+    """Generic nakshatra-dasha builder working in years from birth."""
+    out: list[Period] = []
+    t = first_start_years
+    i = 0
+    while t < span_years:
+        idx = (first_index + i) % len(seq)
+        md = Period(seq[idx], 0, 0, 1, start_years=t, end_years=t + years[seq[idx]])
+        _subdivide_years(md, idx, seq, years, total, levels - 1)
+        out.append(md)
+        t = md.end_years
+        i += 1
+    _assign_jd(out, clock)
+    return out
+
+
+def _assign_jd(periods: list[Period], clock: YearClock) -> None:
+    for p in periods:
+        p.start_jd = clock.jd(p.start_years)
+        p.end_jd = clock.jd(p.end_years)
+        _assign_jd(p.children, clock)
 
 
 def vimshottari(moon_lon: float, birth_jd: float, cfg: SchoolConfig,
                 levels: int = 3, span_years: float = 120.0) -> list[Period]:
     """Mahadashas from the one running at birth until span_years after birth."""
-    year = cfg.dasha_year_days
     nk = nakshatra_of(moon_lon)
     idx = VIMSHOTTARI_LORDS.index(nk.lord)
-    first_len = VIMSHOTTARI_YEARS[nk.lord] * year
-    start = birth_jd - nk.fraction * first_len     # the first maha began before birth
-    out: list[Period] = []
-    t = start
-    i = 0
-    while t < birth_jd + span_years * year:
-        lord = VIMSHOTTARI_LORDS[(idx + i) % 9]
-        length = VIMSHOTTARI_YEARS[lord] * year
-        md = Period(lord, t, t + length, 1)
-        _subdivide(md, VIMSHOTTARI_LORDS, VIMSHOTTARI_YEARS, VIMSHOTTARI_TOTAL, levels - 1)
-        out.append(md)
-        t += length
-        i += 1
-    return out
+    first_start = -nk.fraction * VIMSHOTTARI_YEARS[nk.lord]   # the first maha began before birth
+    years = {k: float(v) for k, v in VIMSHOTTARI_YEARS.items()}
+    return _build(VIMSHOTTARI_LORDS, years, VIMSHOTTARI_TOTAL, idx, first_start, span_years,
+                  levels, YearClock(birth_jd, cfg))
 
 
 def yogini(moon_lon: float, birth_jd: float, cfg: SchoolConfig,
            levels: int = 2, span_years: float = 108.0) -> list[Period]:
-    year = cfg.dasha_year_days
     nk = nakshatra_of(moon_lon)
     n = (nk.index + 1 + 3) % 8
     first = (n - 1) % 8                      # 0-based index into YOGINIS; 0 maps to Sankata
     names = [y[0] for y in YOGINIS]
-    years = {y[0]: float(y[2]) for y in YOGINIS}
     lords = {y[0]: y[1] for y in YOGINIS}
-    first_len = years[names[first]] * year
-    t = birth_jd - nk.fraction * first_len
-    out: list[Period] = []
-    i = 0
-    while t < birth_jd + span_years * year:
-        nm = names[(first + i) % 8]
-        length = years[nm] * year
-        md = Period(lords[nm], t, t + length, 1, name=nm)
-        if levels > 1:
-            span = length
-            tt = t
-            for j in range(8):
-                sub = names[(first + i + j) % 8]
-                sl = span * years[sub] / 36.0
-                md.children.append(Period(lords[sub], tt, tt + sl, 2, name=sub))
-                tt += sl
-        out.append(md)
-        t += length
-        i += 1
-    return out
+    years = {y[0]: float(y[2]) for y in YOGINIS}
+    periods = _build(names, years, 36.0, first, -nk.fraction * years[names[first]], span_years,
+                     levels, YearClock(birth_jd, cfg))
+
+    def relabel(ps: list[Period]) -> None:   # built on Yogini names; expose the lord too
+        for p in ps:
+            p.name, p.lord = p.lord, lords[p.lord]
+            relabel(p.children)
+    relabel(periods)
+    return periods
 
 
 def running(periods: list[Period], jd: float) -> list[Period]:

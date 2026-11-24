@@ -41,7 +41,10 @@ A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
   Drik bala are reported rather than checked; Shadbala needs the Jagannatha
   Hora golden set for absolute verification.
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
-- **Jagannatha Hora golden set**: `tests/golden/`, to be filled by hand.
+- **Jagannatha Hora golden set**: 8 JHora exports (1836-1970) in `tests/golden/jhora`.
+  Positions match within 2.2", Navamsa 80/80, Ashtakavarga and all pindas
+  exactly, Vimshottari antardashas within 1 day (584/648 exact). Shadbala totals
+  still differ; see `docs/DECISIONS.md`.
 
 ## Quick start
 

@@ -27,8 +27,10 @@ class ConfigIn(BaseModel):
     node_type: NodeType = NodeType.MEAN
     house_system: HouseSystem = HouseSystem.WHOLE_SIGN
     sunrise: SunriseMode = SunriseMode.DISC_CENTER_NO_REFRACTION
+    dasha_year_mode: str = Field("solar", pattern="^(solar|fixed)$")
     dasha_year_days: float = 365.25
     node_special_aspects: bool = False
+    true_positions: bool = True
 
     def to_config(self) -> SchoolConfig:
         return SchoolConfig(**self.model_dump())
@@ -64,7 +66,7 @@ class DashaRequest(BaseModel):
 class AshtakavargaRequest(BaseModel):
     birth: BirthIn
     config: ConfigIn = ConfigIn()
-    variant: str = Field("bphs", pattern="^(bphs|pvr)$")
+    variant: str = Field("pvr", pattern="^(bphs|pvr)$")
     occupancy: str = Field("grahas7", pattern="^(grahas7|grahas9|all)$")
     virgo_multiplier: int = Field(5, ge=5, le=6)
 

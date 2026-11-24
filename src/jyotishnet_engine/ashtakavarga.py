@@ -69,7 +69,8 @@ BAV_TABLE: dict[str, dict[str, list[int]]] = {
 }
 
 # Textual variants. "bphs" is the table above (B. V. Raman's reading of BPHS);
-# "pvr" follows PVR Narasimha Rao (also PyJHora's default). Totals are unchanged.
+# "pvr" follows PVR Narasimha Rao and is the default: Jagannatha Hora uses it, and
+# all eight JHora golden charts match it exactly. Totals are unchanged.
 VARIANTS: dict[str, list[tuple[str, str, int, bool]]] = {
     "bphs": [],
     "pvr": [
@@ -80,7 +81,7 @@ VARIANTS: dict[str, list[tuple[str, str, int, bool]]] = {
 }
 
 
-def bav_table(variant: str = "bphs") -> dict[str, dict[str, list[int]]]:
+def bav_table(variant: str = "pvr") -> dict[str, dict[str, list[int]]]:
     table = {t: {c: list(h) for c, h in row.items()} for t, row in BAV_TABLE.items()}
     for target, contrib, house, add in VARIANTS[variant]:
         houses = set(table[target][contrib])
@@ -114,7 +115,7 @@ def _positions(chart: Chart) -> dict[str, int]:
     return pos
 
 
-def bhinnashtakavarga(positions: dict[str, int], variant: str = "bphs"
+def bhinnashtakavarga(positions: dict[str, int], variant: str = "pvr"
                       ) -> tuple[dict[str, list[int]], dict]:
     table = bav_table(variant)
     bav: dict[str, list[int]] = {}
@@ -187,7 +188,7 @@ def ekadhipatya_shodhana(row: list[int], occupied: set[int]) -> list[int]:
     return out
 
 
-def ashtakavarga(chart: Chart, variant: str = "bphs", virgo_multiplier: int = 5,
+def ashtakavarga(chart: Chart, variant: str = "pvr", virgo_multiplier: int = 5,
                  occupancy: str = "grahas7") -> Ashtakavarga:
     """Full Ashtakavarga.
 

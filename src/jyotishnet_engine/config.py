@@ -51,13 +51,16 @@ class SchoolConfig:
     node_type: NodeType = NodeType.MEAN
     house_system: HouseSystem = HouseSystem.WHOLE_SIGN
     sunrise: SunriseMode = SunriseMode.DISC_CENTER_NO_REFRACTION
+    # Dasha years: "solar" (Sun's sidereal motion; Jagannatha Hora's default) or
+    # "fixed" (dasha_year_days per year).
+    dasha_year_mode: str = "solar"
     dasha_year_days: float = 365.25
     node_special_aspects: bool = False
     chara_karakas: int = 8
-    # Apparent positions (with light-time and aberration) are the astronomical
-    # standard; True positions (FLG_TRUEPOS) differ by about 20 arc-seconds and are
-    # what PyJHora uses. Open decision: match whichever the JHora golden set uses.
-    true_positions: bool = False
+    # True (geometric) positions, as Jagannatha Hora and PyJHora use: the JHora
+    # golden set matches within 2.2 arc-seconds this way, against 48 with apparent
+    # positions (light-time and aberration), the astronomical standard.
+    true_positions: bool = True
 
     def key(self) -> str:
         """Stable hash used for caching results per configuration."""
