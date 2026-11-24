@@ -25,8 +25,8 @@ boundaries, high latitudes, pre-1955 Indian zones, and the southern hemisphere.
 | Navamsa | 80/80 | |
 | Ashtakavarga BAV, Sodhya/Rasi/Graha pinda | all exact | PVR variant, seven grahas occupy, Virgo x5 |
 | Vimshottari antardasha starts | 584/648 exact, rest within 1 day | solar (Sun's sidereal motion) year |
-| Shadbala components (12 charts) | within 0.05 virupa except Ayana, Yuddha, Cheshta | see `docs/DECISIONS.md` |
-| Shadbala totals | differ (Cheshta, decision #16; Ayana, #13) | |
+| Shadbala components (13 charts) | within 0.05 virupa; Ayana within 0.73 | BPHS kranti table (#13); Mercury by bhava majority |
+| Shadbala totals | differ by Cheshta (#16) and Yuddha (BPHS; JHora applies none) | |
 
 ## Edge-case charts (phase 1 gate)
 
@@ -44,24 +44,18 @@ the equinoxes and solstices, for Ayana bala (decision #13).
 
 **Result:** 23 of 24 pass every check in `tests/test_jhora_golden.py` (planets,
 Lagna, special lagnas, Navamsa, Ashtakavarga and pindas, Vimshottari), including
-the boundary cases. Shadbala totals stay expected failures (Cheshta and Ayana
-bala). `jhora_shadbala/` holds JHora's Shadbala breakdowns of the first three and of 5, 6, 17-22 and
-24, and `jhora_shadbala/kala/` their Kaala Bala tables, which
-`tests/test_jhora_shadbala.py` checks part by part.
+the boundary cases. Shadbala totals stay expected failures (Cheshta, #16).
+`jhora_shadbala/` holds JHora's Shadbala breakdowns of the first three charts
+and of 5, 6 and 17-24, and `jhora_shadbala/kala/` their Kaala Bala tables,
+which `tests/test_jhora_shadbala.py` checks part by part; all 13 pass.
 
-Files in `pending/` wait for the engine or a decision; the tests do not read
-them:
+`pending/` holds a file that waits for the engine or a decision; the tests do
+not read it:
 
 - `pending/jhora/edge_12_polar_night_tromso.txt`: the engine cannot build a
   chart without a sunrise (`tests/test_high_latitude.py`). JHora's export is no
   reference for the sunrise-based items either: it prints "Sunrise: 13:00:00
   (November 24)", a time on the day of the export, not near the birth.
-- `pending/jhora_shadbala/edge_23_*` (and `kala/`): Mercury's Paksha bala.
-  JHora counts Mercury benefic (16.13, as Jupiter and Venus); the engine
-  malefic (43.87). Mercury is in Leo with Venus, aspected by Mars (4th); the
-  Moon is Sukla Panchami, 48 deg from the Sun. The Moon's Drik bala (10.6
-  virupas off) probably follows from Mercury's nature. Move the files up a
-  level once the engine agrees.
 
 Boundary times below were found with the engine (Lahiri, mean nodes). Margins
 are wider than the known JHora differences (Lagna 17", planets 2.2"), so a sign

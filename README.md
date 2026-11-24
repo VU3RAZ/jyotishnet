@@ -73,10 +73,10 @@ behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
   solstices and equinoxes, high latitudes, the southern hemisphere). Positions
   match within 2.2", Navamsa all, Ashtakavarga and all pindas exactly,
   Vimshottari antardashas within 1 day. Shadbala against JHora's breakdown
-  (12 charts): Sthana, Dig, Drik and Naisargika within 0.05 virupa, and every
-  Kala part within 0.05 (`tests/golden/jhora_shadbala/kala/`) except Ayana
-  (`docs/DECISIONS.md` #13) and Yuddha (BPHS, which JHora omits); Cheshta
-  differs (#16). One more breakdown waits in `tests/golden/pending/`.
+  (13 charts): Sthana, Dig, Drik and Naisargika within 0.05 virupa; every Kala
+  part within 0.05 (`tests/golden/jhora_shadbala/kala/`) except Ayana, within
+  0.73 (`docs/DECISIONS.md` #13), and Yuddha (BPHS, which JHora omits); Kala
+  total within 2.5. Cheshta differs (#16).
 
 ## Run the workbench on your computer
 
