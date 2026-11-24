@@ -1,8 +1,9 @@
 # JyotishNet
 
 A professional Vedic astrology workbench for astrologers, with a smaller
-consumer edition planned on the same platform. This repository starts with
-**phase 1: the verified calculation core (Layer 0)** and its HTTP API.
+consumer edition planned on the same platform. This repository holds
+**phase 1: the verified calculation core (Layer 0)**, its HTTP API, and a first
+version of the **workbench UI** (charts, live time slider, transits).
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 [docs/DECISIONS.md](docs/DECISIONS.md) for open decisions.
@@ -22,9 +23,11 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik, Yuddha (planetary war, BPHS); rupas and required minimums |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
 | Yogas | 56 rules in YAML (`src/jyotishnet_engine/rules/yogas/`), each citing text and section, with evidence and cancellation: Pancha Mahapurusha, Chandra, Surya, Raja, Viparita, Neecha Bhanga, Parivartana, Dhana, Lakshmi, Amala, Saraswati, Parvata, Kahala, Kartari, Nabhasa (Sankhya, Ashraya, Dala, Akriti). All `draft` pending expert review |
-| API | FastAPI: `/v1/chart`, `/v1/dasha`, `/v1/ashtakavarga`, `/v1/shadbala`, `/v1/yogas`, `/v1/boundaries` |
+| API | FastAPI: `/v1/chart`, `/v1/dasha` (vimshottari, ashtottari, yogini, chara), `/v1/ashtakavarga`, `/v1/shadbala` (lists planetary wars), `/v1/yogas`, `/v1/boundaries`; CORS via `JYOTISHNET_CORS` |
+| Workbench UI | Next.js app in `web/`: North and South Indian charts for any varga; time ribbon for birth-time rectification (±20 min / ±2 h, with Lagna-change marks) and transits (±3 days to ±12 years); sign changes flash; positions table; Vimshottari periods on an event date; the 8 JHora charts as presets. See [web/README.md](web/README.md) |
 
-A full chart takes about 8 ms; a +/-60 minute boundary map about 0.1 s.
+A full chart with all 16 vargas takes about 8 ms; the D1 + one varga request
+behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
 
 ## Verification
 
@@ -67,13 +70,16 @@ pytest -q
 uvicorn jyotishnet_api.main:app --reload
 ```
 
-Workbench UI (charts, live time slider, transits): with the API running,
+Workbench UI: with the API running on port 8000,
 
 ```bash
 cd web && npm ci && npm run dev    # http://localhost:3000
 ```
 
-See [web/README.md](web/README.md).
+CI runs the tests, the PyJHora cross-checks, and the web build and type-check
+on every push.
+
+API and library examples:
 
 ```bash
 curl -s localhost:8000/v1/chart -H 'content-type: application/json' -d '{
@@ -116,7 +122,8 @@ Notes:
 src/jyotishnet_engine/   Layer 0 calculation core
 src/jyotishnet_api/      FastAPI service
 tests/                   unit, property, API and golden tests
-tools/                   PyJHora cross-check
+src/jyotishnet_engine/rules/yogas/   yoga rules (YAML, cited)
+tools/                   PyJHora cross-checks (vargas, ashtakavarga, shadbala, yogas, dashas)
 docs/                    architecture summary and decisions
-web/                     workbench front end (next)
+web/                     workbench UI (Next.js + TypeScript)
 ```

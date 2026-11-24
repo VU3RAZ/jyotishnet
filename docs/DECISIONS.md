@@ -6,11 +6,13 @@
 | --- | --- | --- | --- |
 | 1 | House system for the model's frame | Whole-sign; others selectable | Phase 1, week 1 |
 | 3 | Chara dasha method and Narayana dasha | Chara: K. N. Rao (start at Lagna, direction by the 9th; lord count; +1 exalted / -1 debilitated, none when the lord is in the sign; second cycle 12 minus first; antardasha table as PyJHora). PVN Rao (Parashara) and Iranganti variants not yet; Narayana not yet | Before phase 2, expert |
-| 4 | Gender-dependent rules | Not yet implemented (rules engine pending) | Before phase 4 |
+| 4 | Gender-dependent rules | Not yet implemented; the yoga engine has no gender input yet | Before phase 4 |
 | 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
 | 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |
-| 17 | Yuddha bala: winner and orb | BPHS: within 1 deg; the planet with more Sthana + Dig + Kala (to Hora) wins; amount = difference / disc-diameter difference. Surya Siddhanta instead picks the more northerly planet. Not in the golden set (no wars in the 8 charts) | Phase 1, expert + a JHora chart with a war |
 | 15 | Shadbala: Sun/Moon Cheshta | Undoubled Ayana (Sun) and Paksha (Moon) bala | Phase 1, expert |
+| 17 | Yuddha bala: winner and orb | BPHS: within 1 deg; the planet with more Sthana + Dig + Kala (to Hora) wins; amount = difference / disc-diameter difference. Surya Siddhanta instead picks the more northerly planet. Not in the golden set (no wars in the 8 charts) | Phase 1, expert + a JHora chart with a war |
+| 18 | Yoga definitions | 56 rules marked `draft`; variant readings in each rule's `notes`. Not yet checked: strong Lagna lord (Lakshmi, Kahala), Gajakesari's extra conditions | Expert review of `rules/yogas/*.yaml` |
+| 19 | Chara dasha: Mercury in Virgo | Counted as exalted (BPHS), so +1 year where it is the counted lord outside its own sign; PyJHora treats it as own sign | With #3 |
 
 ## Decided
 
@@ -20,7 +22,6 @@
 | Calculation location | Deterministic Layer 0 outside the network |
 | Zodiac frame | Lagna rotated to 0 deg for the model |
 | Vargas encoded by the model | 13: D1, D2, D3, D4, D7, D9, D10, D12, D16, D20, D24, D30, D60 |
-| D2 method | Traditional Parashari hora (Leo/Cancer) as default; variants to be added as options |
 | Golden reference | Jagannatha Hora exports in `tests/golden/jhora` (8 charts) |
 | Ayanamsa, nodes, positions | Lahiri, mean nodes, true (geometric) positions: JHora match within 2.2" |
 | Sunrise for special lagnas | Disc centre, no refraction (JHora) |
@@ -33,3 +34,6 @@
 | D2 (Hora) scheme | Uma-Shambhu (parivritti, even signs reversed), as JHora's D-2 and Saptavargaja (21/21 exact); Parashari Leo/Cancer hora optional |
 | Cheshta bala | Astronomical mean positions (modern orbital elements), not JHora's tables. Known difference from JHora (RMS 16 virupas on 3 charts); show a note in the UI. Revisit later |
 | Test oracle | PyJHora in a separate environment (AGPL; never imported) |
+| Yoga rule format | YAML files of predicates (all/any/not) with `source: {text, section}`, `status`, `notes` and optional `cancelled_by`; results carry evidence strings |
+| Ashtottari | Lords Su, Mo, Ma, Me, Sa, Ju, Ra, Ve from Ardra; balance by the Moon's progress through the lord's whole nakshatra run; antardashas from the dasha lord (JHora/PyJHora) |
+| Front-end stack | Next.js + React + TypeScript, plain CSS; fonts Martel and Hind (Latin + Devanagari); the slider calls the API (latest-wins) until the WebAssembly engine exists |

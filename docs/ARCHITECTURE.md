@@ -14,7 +14,7 @@ edition uses the same API with a stricter output profile.
 
 | Layer | Role | Status |
 | --- | --- | --- |
-| 0. Verified calculation core | Ephemeris, vargas, dashas, special lagnas, yogas (YAML rules), boundary map; deterministic and tested | **In progress (this repo)** |
+| 0. Verified calculation core | Ephemeris, vargas, dashas, special lagnas, yogas (YAML rules), boundary map; deterministic and tested | **Largely built (this repo)**; see status below |
 | 1. Uncertainty-aware input | Birth-time window, 16-chart ensemble, stability scores, reliability gates | Planned |
 | 2. Encoders | Relational graph transformer over 37 nodes per chart (9 grahas, 4 Lagna-type, 12 bhavas, 12 rashis), 10 edge types incl. a free edge; shared encoder over 13 vargas; temporal encoder for dashas and transits | Planned |
 | 3. De-confounding | Cohort adversary (gradient reversal), covariate baseline | Planned (research mode) |
@@ -23,17 +23,44 @@ edition uses the same API with a stricter output profile.
 About 11.4M core parameters; exported as two ONNX graphs (natal encoder, cached;
 temporal encoder and heads, re-run as time moves).
 
+## Status (November 2026)
+
+Built and tested in Layer 0:
+
+- Positions, houses, all 16 vargas, nakshatras, dignities, aspects, special
+  lagnas, boundary map.
+- Dashas: Vimshottari, Ashtottari (with applicability), Yogini, Chara
+  (K. N. Rao) on a Jaimini module (rasi drishti, stronger co-lord).
+- Ashtakavarga and Shadbala, including Yuddha bala.
+- Yoga engine: 56 YAML rules citing text and section, with evidence strings
+  and cancellation; all marked `draft` until an expert reviews them.
+
+Verification: 8 Jagannatha Hora exports are golden tests; PyJHora runs as an
+external oracle for vargas, Ashtakavarga, Shadbala, yogas and dashas.
+Remaining differences are documented in the README and in DECISIONS.md.
+
+Workbench UI v0 (`web/`, built ahead of phase 4 so the engine can be used and
+reviewed): charts, the rectification and transit time ribbon, positions,
+running dashas.
+
+Not yet: Narayana and other Jaimini dashas, Tajika, KP, Prashna, Muhurta,
+match-making, Panchanga; strength conditions inside some yogas; Layers 1-4.
+
 ## Real-time slider and rectification
 
-The calc engine also runs in the browser (WebAssembly build of Swiss Ephemeris)
-so the time slider recalculates every frame. The boundary map splits a birth
-window into segments where nothing time-sensitive changes; the model runs once
-per segment. Rectification helpers score known life events against dasha and
-transit rules for each candidate time.
+The slider currently calls the API: one D1 + varga request takes about 3 ms,
+and the UI keeps at most one request in flight, so dragging stays smooth on a
+local or nearby server. The planned next step is the calc engine in the
+browser (WebAssembly build of Swiss Ephemeris in a Web Worker) for offline,
+every-frame recalculation. The boundary map splits a birth window into
+segments where nothing time-sensitive changes; the ribbon already marks the
+Lagna changes, and the model will run once per segment. Rectification helpers
+will score known life events against dasha and transit rules for each
+candidate time; the UI already shows the periods running on an event date.
 
 ## Build phases
 
-1. Calculation core + golden tests (now)
+1. Calculation core + golden tests (largely done; workbench UI v0 started)
 2. Synthetic data and pretraining
 3. Uncertainty layer
 4. Interpretation heads, reading generator, workbench
