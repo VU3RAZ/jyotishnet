@@ -191,8 +191,9 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
 
 
 class VimshopakaRequest(ChartRequest):
-    saptavarga_weights: str = Field("jhora", pattern="^(jhora|bphs)$",
-                                    description="jhora (D7 1, D9 2.5, D12 4.5, D30 2) or bphs")
+    saptavarga_weights: str = Field("bphs", pattern="^(bphs|jhora)$",
+                                    description="bphs (D7 2.5, D9 4.5, D12 2, D30 1) or jhora "
+                                                "(D7 1, D9 2.5, D12 4.5, D30 2)")
 
 
 @app.post("/v1/vimshopaka")

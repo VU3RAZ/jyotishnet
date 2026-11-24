@@ -65,9 +65,9 @@ def test_vimshopaka():
     body = r.json()
     assert set(body["planets"]) == {"Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke"}
     assert all(0 < v <= 20 for p in body["planets"].values() for v in p.values())
-    assert body["weights"]["saptavarga"]["D7"] == 1
-    r = client.post("/v1/vimshopaka", json={"birth": BIRTH, "saptavarga_weights": "bphs"})
-    assert r.json()["weights"]["saptavarga"]["D7"] == 2.5
+    assert body["weights"]["saptavarga"]["D7"] == 2.5
+    r = client.post("/v1/vimshopaka", json={"birth": BIRTH, "saptavarga_weights": "jhora"})
+    assert r.json()["weights"]["saptavarga"]["D7"] == 1
     assert client.post("/v1/vimshopaka", json={"birth": BIRTH, "saptavarga_weights": "x"}).status_code == 422
 
 

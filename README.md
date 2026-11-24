@@ -21,7 +21,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Dashas | Vimshottari (3 levels), Ashtottari (3 levels, with applicability check), Yogini (2 levels), Chara (K. N. Rao, 2 levels, two cycles; Jaimini rasi drishti and co-lord rules); configurable year length |
 | Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
 | Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik, Yuddha (planetary war, BPHS); rupas and required minimums. Matches Jagannatha Hora on 13 charts to 0.01 virupa except Ayana (#13), Yuddha and Cheshta (decided differences) |
-| Vimshopaka bala | Shadvarga, Saptavarga, Dashavarga and Shodashavarga schemes for the nine grahas; matches Jagannatha Hora on all 31 golden charts (Saptavarga weights: `docs/DECISIONS.md` #21) |
+| Vimshopaka bala | Shadvarga, Saptavarga, Dashavarga and Shodashavarga schemes for the nine grahas; Saptavarga weights per BPHS by default, JHora's as an option; with that option matches Jagannatha Hora on all 31 golden charts (`docs/DECISIONS.md`) |
 | Rectification helpers | 12 event types in YAML (`rules/btr_events.yaml`, cited, draft) with governing vargas and karakas; event check table (dasha lords linked by lordship, occupancy or karaka in D1 and the event varga, Jupiter-Saturn double transit, score and verdict), fit curve over the birth window with best fit, indicative periods for marriage, children, career and relocation. Death and illness are check-only, never predicted |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
 | Yogas | 56 rules in YAML (`src/jyotishnet_engine/rules/yogas/`), each citing text and section, with evidence and cancellation: Pancha Mahapurusha, Chandra, Surya, Raja, Viparita, Neecha Bhanga, Parivartana, Dhana, Lakshmi, Amala, Saraswati, Parvata, Kahala, Kartari, Nabhasa (Sankhya, Ashraya, Dala, Akriti). All `draft` pending expert review |
@@ -74,7 +74,7 @@ behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
   solstices and equinoxes, high latitudes, the southern hemisphere). Positions
   match within 2.2", Navamsa all, Ashtakavarga and all pindas exactly,
   Vimshottari antardashas within 1 day, Vimshopaka (four schemes, nine
-  grahas) within 0.005. Shadbala against JHora's breakdown
+  grahas, JHora's Saptavarga weights) within 0.005. Shadbala against JHora's breakdown
   (13 charts): Sthana, Dig, Drik and Naisargika within 0.05 virupa; every Kala
   part within 0.05 (`tests/golden/jhora_shadbala/kala/`) except Ayana, within
   0.73 (`docs/DECISIONS.md` #13), and Yuddha (BPHS, which JHora omits); Kala

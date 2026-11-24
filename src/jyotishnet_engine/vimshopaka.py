@@ -14,7 +14,7 @@ Back-solved from Jagannatha Hora's Vimsopaka table on 31 golden charts (all
   Jupiter as neutral, the Sun, Moon and Mars as enemies.
 - JHora's Saptavarga weights are D1 5, D2 2, D3 3, D7 1, D9 2.5, D12 4.5, D30 2.
   BPHS gives D7 2.5, D9 4.5, D12 2, D30 1 (JHora's last four look shifted by one
-  varga). Both are available; see docs/DECISIONS.md.
+  varga). BPHS is the default (the user's decision); "jhora" reproduces JHora.
 """
 
 from __future__ import annotations
@@ -47,10 +47,10 @@ NODE_ENEMIES = ("Su", "Mo", "Ma")
 
 @dataclass(frozen=True)
 class VimshopakaOptions:
-    """School choices in Vimshopaka bala; defaults reproduce Jagannatha Hora."""
-    # Saptavarga weights: "jhora" (D7 1, D9 2.5, D12 4.5, D30 2) or "bphs"
-    # (D7 2.5, D9 4.5, D12 2, D30 1).
-    saptavarga_weights: str = "jhora"
+    """School choices in Vimshopaka bala (see docs/DECISIONS.md)."""
+    # Saptavarga weights: "bphs" (D7 2.5, D9 4.5, D12 2, D30 1; default, the user's
+    # decision) or "jhora" (D7 1, D9 2.5, D12 4.5, D30 2, as Jagannatha Hora 8.0).
+    saptavarga_weights: str = "bphs"
 
 
 DEFAULT_VIMSHOPAKA = VimshopakaOptions()
