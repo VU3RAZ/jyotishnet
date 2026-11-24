@@ -61,6 +61,10 @@ The parser also reads the 23 North Indian chart drawings in each export
 body only when it lies within its position tolerance of a part boundary (up to 11
 of 550 in D81-D144, mostly the Lagna). `jhora_nadiamsa/` holds JHora's D-150 Amsa
 rulers table (division, index, name; `tests/test_jhora_nadiamsa.py`).
+The body table's special lagnas, upagrahas and Bhrigu Bindu are checked by
+`tests/test_jhora_upagrahas.py` (tolerances from the position and sunrise
+differences, explained there); `jhora_yogi/` holds JHora's Yogi, Sahayogi and
+Avayogi table (`tests/test_jhora_yogi.py`).
 
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:

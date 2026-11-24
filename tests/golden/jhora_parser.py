@@ -13,7 +13,11 @@ SIGNS = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"]
 BODY_CODES = {"Lagna": "La", "Sun": "Su", "Moon": "Mo", "Mars": "Ma", "Mercury": "Me",
               "Jupiter": "Ju", "Venus": "Ve", "Saturn": "Sa", "Rahu": "Ra", "Ketu": "Ke",
               "Bhava Lagna": "BL", "Hora Lagna": "HL", "Ghati Lagna": "GL",
-              "Pranapada Lagna": "PP"}
+              "Pranapada Lagna": "PP", "Vighati Lagna": "ViL", "Varnada Lagna": "VL",
+              "Sree Lagna": "SL", "Indu Lagna": "IL", "Bhrigu Bindu": "BB",
+              "Maandi": "Md", "Gulika": "Gk", "Kaala": "Kl", "Mrityu": "Mr",
+              "Artha Prahara": "AP", "Yama Ghantaka": "YG", "Dhooma": "Dh",
+              "Vyatipata": "Vy", "Parivesha": "Pv", "Indra Chapa": "IC", "Upaketu": "UK"}
 DASHA_CODES = {"Sun": "Su", "Moon": "Mo", "Mars": "Ma", "Merc": "Me", "Jup": "Ju",
                "Ven": "Ve", "Sat": "Sa", "Rah": "Ra", "Ket": "Ke"}
 PLANET_ROWS = ["As", "Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"]
@@ -81,7 +85,7 @@ def parse(path: str | Path) -> JHoraChart:
     )
 
     body_re = re.compile(
-        r"""^(Lagna|Sun|Moon|Mars|Mercury|Jupiter|Venus|Saturn|Rahu|Ketu|Bhava Lagna|Hora Lagna|Ghati Lagna|Pranapada Lagna)"""
+        r"^(" + "|".join(sorted(BODY_CODES, key=len, reverse=True)) + r")"
         r"""(\s+\(R\))?(?:\s+-\s+\w+)?\s+(\d+)\s+(\w\w)\s+(\d+)'\s+([\d.]+)"\s+\S+\s+\d\s+\w\w\s+(\w\w)""", re.M)
     for m in body_re.finditer(text):
         code = BODY_CODES[m.group(1)]

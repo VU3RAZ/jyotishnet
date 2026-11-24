@@ -6,6 +6,7 @@ import { BirthForm } from "@/components/BirthForm";
 import { ChartCard } from "@/components/ChartCard";
 import { DashaPanel } from "@/components/DashaPanel";
 import { PlanetTable } from "@/components/PlanetTable";
+import { SpecialPoints } from "@/components/SpecialPoints";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
 import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, LifeEvent } from "@/lib/api";
 import { EventPanel } from "@/components/EventPanel";
@@ -209,6 +210,7 @@ export default function Workbench() {
               <div className="table-wrap">
                 <h2>{mode === "rectify" ? "Positions at this birth time" : "Transit positions"}</h2>
                 <PlanetTable chart={chart} varga={varga} />
+                <SpecialPoints chart={chart} />
               </div>
             )}
             <DashaPanel running={dasha.data?.running ?? null} loading={dasha.loading}

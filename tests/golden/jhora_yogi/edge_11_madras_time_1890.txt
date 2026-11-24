@@ -1,0 +1,6 @@
+Title    Planet in this chart Longitude
+
+Yogi     Jupiter              21 Li 19' 26.25"
+Sahayogi Venus                -
+Avayogi  Sun                  27 Ar 59' 26.25"
+

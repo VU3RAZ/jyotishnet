@@ -1,0 +1,6 @@
+Title    Planet in this chart Longitude
+
+Yogi     Venus                25 Le 11' 54.15"
+Sahayogi Sun                  -
+Avayogi  Jupiter               1 Pi 51' 54.15"
+

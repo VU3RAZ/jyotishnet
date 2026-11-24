@@ -1,0 +1,6 @@
+Title    Planet in this chart Longitude
+
+Yogi     Venus                24 Ar 15' 53.55"
+Sahayogi Mars                 -
+Avayogi  Jupiter               0 Sc 55' 53.55"
+

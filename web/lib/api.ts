@@ -31,6 +31,7 @@ export type Chart = {
   lagna: Point;
   grahas: Record<string, Point>;
   special?: Record<string, Point>;
+  yogi?: { point: number; yogi: string; sahayogi: string; avayogi_point: number; avayogi: string };
   sunrise_utc: string;
   warnings?: string[];
 };

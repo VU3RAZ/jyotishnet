@@ -46,7 +46,8 @@ def test_aspects(chart):
 
 
 def test_special_lagnas_present(chart):
-    assert set(chart.special) == {"BL", "HL", "GL", "PP"}
+    assert set(chart.special) == {"BL", "HL", "GL", "PP", "ViL", "SL", "IL", "VL", "BB", "Dh", "Vy", "Pv",
+                                  "IC", "UK", "Kl", "Mr", "AP", "YG", "Gk", "Md"}
     assert chart.sunrise_jd < chart.jd_ut
 
 

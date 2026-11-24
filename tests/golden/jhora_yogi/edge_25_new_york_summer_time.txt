@@ -1,0 +1,6 @@
+Title    Planet in this chart Longitude
+
+Yogi     Jupiter               2 Pi 44' 12.28"
+Sahayogi Jupiter              -
+Avayogi  Sun                   9 Vi 24' 12.28"
+

@@ -1,0 +1,6 @@
+Title    Planet in this chart Longitude
+
+Yogi     Mercury              20 Cn 21' 05.54"
+Sahayogi Moon                 -
+Avayogi  Mars                 27 Cp 01' 05.54"
+

@@ -378,3 +378,7 @@ button, input, select { font: inherit; color: inherit; }
 .period-list li.current button { font-weight: 600; box-shadow: inset 3px 0 0 var(--saffron); }
 .period-list .years { color: var(--muted); font-size: var(--step--1); }
 .period-list > p { margin: 0; font-size: var(--step--1); }
+
+.special-points { margin-top: 1rem; }
+.special-points summary { cursor: pointer; font-weight: 600; }
+.special-points p { margin: 0.5rem 0; }

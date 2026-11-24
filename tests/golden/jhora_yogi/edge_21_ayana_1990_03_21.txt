@@ -1,0 +1,6 @@
+Title    Planet in this chart Longitude
+
+Yogi     Saturn                5 Pi 36' 43.18"
+Sahayogi Jupiter              -
+Avayogi  Moon                 12 Vi 16' 43.18"
+

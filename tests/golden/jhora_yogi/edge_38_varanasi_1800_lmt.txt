@@ -1,0 +1,6 @@
+Title    Planet in this chart Longitude
+
+Yogi     Jupiter              23 Aq 45' 17.10"
+Sahayogi Saturn               -
+Avayogi  Sun                   0 Vi 25' 17.10"
+

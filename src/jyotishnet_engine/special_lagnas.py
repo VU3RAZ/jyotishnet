@@ -11,6 +11,8 @@ expert sign-off and cross-checking against PyJHora / Jagannatha Hora.
 - Ghati Lagna: Sun at sunrise + 1 sign per ghati (24 minutes).
 - Pranapada:   1 sign per 15 vighatis (6 minutes), counted from the Sun when the
                Sun is in a movable sign, from the 9th when fixed, the 5th when dual.
+- Vighati Lagna: Sun at sunrise + 1 sign per 15 vighatis (6 minutes), as Jagannatha
+               Hora 8.0 (matched on its 55 golden charts).
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ class SpecialLagnas:
     hora_lagna: float
     ghati_lagna: float
     pranapada: float
+    vighati_lagna: float
 
 
 def special_lagnas(jd_ut: float, lat: float, lon: float, alt: float, cfg: SchoolConfig) -> SpecialLagnas:
@@ -43,4 +46,5 @@ def special_lagnas(jd_ut: float, lat: float, lon: float, alt: float, cfg: School
 
     offset = {0: 0.0, 1: 240.0, 2: 120.0}[modality(int(sun_now // 30))]
     pp = (sun_now + offset + minutes / 6.0 * 30.0) % 360.0
-    return SpecialLagnas(rise, bl, hl, gl, pp)
+    vl = (sun_rise + minutes / 6.0 * 30.0) % 360.0
+    return SpecialLagnas(rise, bl, hl, gl, pp, vl)

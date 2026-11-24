@@ -14,6 +14,8 @@ from .dignity import dignity
 from .ephemeris import ascendant, ayanamsa, house_cusps, planets
 from .nakshatra import nakshatra_of
 from .special_lagnas import special_lagnas
+from .upagrahas import (bhrigu_bindu, indu_lagna, sree_lagna, sun_upagrahas, time_upagrahas,
+                        varnada_lagna, yogi)
 from .timeutil import BirthData
 from .vargas import is_vargottama, nadiamsa, varga_sign
 
@@ -45,10 +47,11 @@ class Chart:
     config_key: str
     lagna: Point
     grahas: dict[str, Point]
-    special: dict[str, Point]
+    special: dict[str, Point]       # special lagnas, upagrahas, Bhrigu Bindu (upagrahas.NAMES)
     house_lords: dict[int, str]
     house_cusps: list[float]
     sunrise_jd: float
+    yogi: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -106,14 +109,23 @@ def build_chart(birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
         "HL": _point("HL", sl.hora_lagna, lagna_sign, vargas, cfg),
         "GL": _point("GL", sl.ghati_lagna, lagna_sign, vargas, cfg),
         "PP": _point("PP", sl.pranapada, lagna_sign, vargas, cfg),
+        "ViL": _point("ViL", sl.vighati_lagna, lagna_sign, vargas, cfg),
     }
+    lons = {k: g.longitude for k, g in grahas.items()}
+    points = {
+        "SL": sree_lagna(asc, lons["Mo"]), "IL": indu_lagna(asc, lons["Mo"]),
+        "VL": varnada_lagna(asc, sl.hora_lagna), "BB": bhrigu_bindu(lons["Mo"], lons["Ra"]),
+        **sun_upagrahas(lons["Su"]),
+        **time_upagrahas(jd, birth.latitude, birth.longitude, birth.altitude_m, cfg),
+    }
+    special.update({k: _point(k, v, lagna_sign, vargas, cfg) for k, v in points.items()})
 
     house_lords = {h: SIGN_LORD[(lagna_sign + h - 1) % 12] for h in range(1, 13)}
     return Chart(
         jd_ut=jd, ayanamsa=ayanamsa(jd, cfg), config_key=cfg.key(), lagna=lagna,
         grahas=grahas, special=special, house_lords=house_lords,
         house_cusps=house_cusps(jd, birth.latitude, birth.longitude, cfg),
-        sunrise_jd=sl.sunrise_jd,
+        sunrise_jd=sl.sunrise_jd, yogi=asdict(yogi(lons["Su"], lons["Mo"])),
     )
 
 
