@@ -95,14 +95,25 @@ def test_vimshottari(pair):
         assert abs((best[2] - start).days) <= 1, (md, ad, start, best[2])
 
 
-@pytest.mark.xfail(reason="Totals differ from JHora only by Cheshta bala (astronomical, decision "
-                          "#16) plus small Ayana (#13) and Yuddha (BPHS) differences; every other "
-                          "component matches (tests/test_jhora_shadbala.py)", strict=False)
+@pytest.mark.xfail(reason="Totals pass on 41 of 55 charts; the rest differ by the Cheshta bala of "
+                          "Mars to Saturn (astronomical, decision #16) or Yuddha (BPHS); every "
+                          "other component matches (tests/test_jhora_shadbala.py)", strict=False)
 def test_shadbala_totals(pair):
     c, b, ch = pair
     sb = shadbala(ch, b, DEFAULT_CONFIG)
     for p in PLANETS7:
         assert abs(sb[p].total - c.shadbala[p]) < 5, p
+
+
+def test_ishta_kashta_luminaries(pair):
+    """Ishta and Kashta phala of the Sun and Moon (their Uchcha and Cheshta bala match
+    JHora's); the other five follow their Cheshta bala (decision #16), so only the
+    formula is checked for them, in tests/test_jhora_shadbala.py."""
+    c, b, ch = pair
+    sb = shadbala(ch, b, DEFAULT_CONFIG)
+    for p in ("Su", "Mo"):
+        assert abs(sb[p].ishta - c.ishta[p]) <= 0.06, (p, sb[p].ishta, c.ishta[p])
+        assert abs(sb[p].kashta - c.kashta[p]) <= 0.06, (p, sb[p].kashta, c.kashta[p])
 
 
 def test_vimshopaka(pair):

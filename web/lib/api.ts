@@ -114,7 +114,7 @@ export type Ashtakavarga = {
 export type PlanetStrength = {
   sthana: Record<string, number>; dig: number; kala: Record<string, number>; cheshta: number;
   naisargika: number; drik: number; total_virupas: number; rupas: number;
-  required_rupas: number; ratio: number;
+  required_rupas: number; ratio: number; cheshta_counted: boolean; ishta: number; kashta: number;
 };
 export type Shadbala = {
   planets: Record<string, PlanetStrength>;

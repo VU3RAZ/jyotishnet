@@ -57,6 +57,7 @@ def test_shadbala():
     body = r.json()["planets"]
     assert set(body) == {"Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"}
     assert body["Su"]["naisargika"] == 60
+    assert body["Su"]["cheshta_counted"] is False and 0 <= body["Ma"]["ishta"] <= 60
     houses = r.json()["houses"]
     assert [h["house"] for h in houses] == list(range(1, 13))
     assert all(abs(h["total_virupas"] - h["lord_virupas"] - h["dig"] - h["drik"]) < 1e-9 for h in houses)

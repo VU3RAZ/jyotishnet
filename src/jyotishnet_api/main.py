@@ -199,6 +199,7 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
             "sthana": s.sthana, "dig": s.dig, "kala": s.kala, "cheshta": s.cheshta,
             "naisargika": s.naisargika, "drik": s.drik, "total_virupas": s.total,
             "rupas": s.rupas, "required_rupas": REQUIRED_RUPAS[p],
+            "cheshta_counted": s.cheshta_counted, "ishta": s.ishta, "kashta": s.kashta,
             "ratio": s.rupas / REQUIRED_RUPAS[p],
         }
     from jyotishnet_engine.shadbala import planetary_wars

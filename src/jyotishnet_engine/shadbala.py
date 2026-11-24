@@ -118,6 +118,15 @@ class ShadbalaOptions:
     ayana_fixed_ayanamsa: float | None = 23.0
     # Moon's Cheshta: "elongation" (arc from the Sun / 3) or "paksha" (its Paksha bala).
     moon_cheshta: str = "elongation"
+    # Sun's Cheshta: "jhora" = the Sun's arc from the winter solstice point taken as
+    # sidereal 270 - `ayana_fixed_ayanamsa` (247 deg with 23), / 3; read from
+    # jhora.exe, exact on 23 golden charts. "ayana" = half its (doubled) Ayana bala.
+    sun_cheshta: str = "jhora"
+    # Whether the Sun's and Moon's Cheshta count in their Shadbala totals. JHora
+    # shows them but leaves them out of the totals (read from jhora.exe; the totals
+    # then match within JHora's rounding on 23 charts), as BPHS's Cheshta stands in
+    # for the luminaries' Ayana and Paksha bala, which are already counted.
+    luminary_cheshta_in_total: bool = False
     # Planetary war: two of Ma, Me, Ju, Ve, Sa within this many degrees of longitude.
     yuddha_orb: float = 1.0
 
@@ -133,11 +142,22 @@ class PlanetStrength:
     cheshta: float = 0.0
     naisargika: float = 0.0
     drik: float = 0.0
+    cheshta_counted: bool = True     # False: shown but left out of the total
 
     @property
     def total(self) -> float:
         return (sum(self.sthana.values()) + self.dig + sum(self.kala.values())
-                + self.cheshta + self.naisargika + self.drik)
+                + (self.cheshta if self.cheshta_counted else 0.0) + self.naisargika + self.drik)
+
+    @property
+    def ishta(self) -> float:
+        """Ishta phala: sqrt(Uchcha bala x Cheshta bala) (BPHS ch. 27; JHora)."""
+        return math.sqrt(max(self.sthana["uchcha"], 0.0) * max(self.cheshta, 0.0))
+
+    @property
+    def kashta(self) -> float:
+        """Kashta phala: sqrt((60 - Uchcha) x (60 - Cheshta))."""
+        return math.sqrt(max(60.0 - self.sthana["uchcha"], 0.0) * max(60.0 - self.cheshta, 0.0))
 
     @property
     def rupas(self) -> float:
@@ -592,7 +612,13 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
         }
         ps.dig = dig_bala(p, lon, asc, (asc - 90.0) % 360 if opts.dig_tenth == "lagna" else mc)
         ps.kala = dict(kala[p])
-        ps.cheshta = cheshta_bala(p, chart.jd_ut, (lon + ayan) % 360, kala, moon_arc)
+        if p == "Su" and opts.sun_cheshta == "jhora":
+            fixed = 23.0 if opts.ayana_fixed_ayanamsa is None else opts.ayana_fixed_ayanamsa
+            ps.cheshta = _arc(lon, 270.0 - fixed) / 3.0
+        else:
+            ps.cheshta = cheshta_bala(p, chart.jd_ut, (lon + ayan) % 360, kala, moon_arc)
+        if p in ("Su", "Mo"):
+            ps.cheshta_counted = opts.luminary_cheshta_in_total
         ps.naisargika = NAISARGIKA[p]
         ps.drik = drik[p]
         out[p] = ps

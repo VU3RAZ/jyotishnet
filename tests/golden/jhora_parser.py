@@ -37,6 +37,8 @@ class JHoraChart:
     pindas: dict[str, tuple[int, int, int]] = field(default_factory=dict)  # sodhya, rasi, graha
     shadbala: dict[str, float] = field(default_factory=dict)         # virupas
     shadbala_rupas: dict[str, float] = field(default_factory=dict)
+    ishta: dict[str, float] = field(default_factory=dict)            # Ishta phala
+    kashta: dict[str, float] = field(default_factory=dict)           # Kashta phala
     vimshottari: list[tuple[str, str, date]] = field(default_factory=list)  # (md, ad, start)
     # {graha: {scheme: points}}; schemes dashavarga, shodashavarga, saptavarga, shadvarga
     vimshopaka: dict[str, dict[str, float]] = field(default_factory=dict)
@@ -97,9 +99,11 @@ def parse(path: str | Path) -> JHoraChart:
 
     for name, code in [("Sun", "Su"), ("Moon", "Mo"), ("Mars", "Ma"), ("Mercury", "Me"),
                        ("Jupiter", "Ju"), ("Venus", "Ve"), ("Saturn", "Sa")]:
-        m = re.search(rf"^{name}\s+([\d.]+)\s+([\d.]+)\s+[\d.]+\s+[\d.]+\s+[\d.]+\s*$", text, re.M)
+        m = re.search(rf"^{name}\s+([\d.]+)\s+([\d.]+)\s+[\d.]+\s+([\d.]+)\s+([\d.]+)\s*$", text, re.M)
         chart.shadbala[code] = float(m.group(1))
         chart.shadbala_rupas[code] = float(m.group(2))
+        chart.ishta[code] = float(m.group(3))
+        chart.kashta[code] = float(m.group(4))
 
     if "Vimsopaka Dasa Varga" in text:
         block = text.split("Vimsopaka Dasa Varga")[1].split("Planet  Age")[0]

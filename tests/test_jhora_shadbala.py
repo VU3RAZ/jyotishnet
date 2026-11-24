@@ -97,3 +97,17 @@ def test_kala_parts(path):
                 if k == "yuddha":
                     continue
                 assert abs(sb[p].kala[k] - v) <= 0.05, (p, k, sb[p].kala[k], v)
+
+
+def test_ishta_kashta_formula(case):
+    """Ishta = sqrt(Uchcha x Cheshta), Kashta = sqrt((60 - Uchcha)(60 - Cheshta)), as
+    jhora.exe computes them: checked with JHora's own Uchcha and Cheshta against the
+    Ishta/Kashta it prints (two decimals in, so up to 0.04 out)."""
+    import math
+    jh, _ = case
+    name = [f for f in FILES if load_breakdown(f) == jh][0].stem
+    c = parse(GOLDEN / "jhora" / f"{name}.txt")
+    for p in PLANETS7:
+        u, ch = jh[p]["uchcha"], jh[p]["cheshta"]
+        assert abs(math.sqrt(u * ch) - c.ishta[p]) <= 0.04, p
+        assert abs(math.sqrt((60 - u) * (60 - ch)) - c.kashta[p]) <= 0.04, p

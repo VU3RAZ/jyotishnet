@@ -63,6 +63,14 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
               <th scope="row">Required</th>
               {GRAHAS7.map((g) => <td key={g} className="num">{p[g].required_rupas.toFixed(1)}</td>)}
             </tr>
+            <tr>
+              <th scope="row">Ishta phala</th>
+              {GRAHAS7.map((g) => <td key={g} className="num">{p[g].ishta.toFixed(2)}</td>)}
+            </tr>
+            <tr>
+              <th scope="row">Kashta phala</th>
+              {GRAHAS7.map((g) => <td key={g} className="num">{p[g].kashta.toFixed(2)}</td>)}
+            </tr>
           </tbody>
         </table>
       </div>
@@ -92,7 +100,8 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
         </table>
       </div>
       <p className="rules-note">Cheshta bala uses astronomical mean motions rather than Jagannatha
-        Hora&apos;s tables, so totals can differ from JHora by a few tenths of a rupa. A house&apos;s
+        Hora&apos;s tables, so totals can differ from JHora by a few tenths of a rupa. The Sun&apos;s and Moon&apos;s
+        Cheshta bala are not counted in their totals (as JHora); they still feed Ishta and Kashta phala. A house&apos;s
         Bhava bala is its lord&apos;s Shadbala plus its Dig and Drik bala (BPHS ch. 27).</p>
     </div>
   );
