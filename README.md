@@ -78,6 +78,18 @@ behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
   (`docs/DECISIONS.md` #13) and Yuddha (BPHS, which JHora omits); Cheshta
   differs (#16). One more breakdown waits in `tests/golden/pending/`.
 
+## Run the workbench on your computer
+
+Needs Python 3.11+ and Node.js 20+. From the repository folder:
+
+- macOS or Linux: `./scripts/start.sh`
+- Windows: double-click `scripts\start.bat`
+
+The first run installs everything (a few minutes); later runs start in seconds
+and rebuild only what changed after a `git pull`. Your browser opens at
+http://localhost:3000. Ctrl+C (or closing the window) stops it. Both servers
+listen on 127.0.0.1 only, so nothing is reachable from other machines.
+
 ## Quick start
 
 ```bash
