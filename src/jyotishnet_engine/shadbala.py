@@ -63,6 +63,27 @@ _MEAN_ELEMENTS = {
 }
 
 
+@dataclass(frozen=True)
+class ShadbalaOptions:
+    """School choices inside Shadbala. Defaults reproduce Jagannatha Hora where the
+    golden set shows its convention (see docs/DECISIONS.md)."""
+    # Moon is benefic when "waxing" (elongation < 180), or per "ashtami": from Shukla
+    # Ashtami to Krishna Ashtami, i.e. at least 90 degrees from the Sun.
+    moon_benefic: str = "ashtami"
+    # Mercury turns malefic when sharing a sign with any of these (the Moon only
+    # when it is itself malefic). The Sun is not counted: Mercury is never far from it.
+    mercury_malefic_with: tuple[str, ...] = ("Mo", "Ma", "Sa", "Ra", "Ke")
+    # Days added to the Kali-epoch ahargana for Abda and Masa lords.
+    ahargana_offset_days: int = 1
+    # Temporal relationships for Saptavargaja: from D1 ("d1") or within each varga.
+    saptavarga_relation: str = "d1"
+    # Moon's Cheshta: "elongation" (arc from the Sun / 3) or "paksha" (its Paksha bala).
+    moon_cheshta: str = "elongation"
+
+
+DEFAULT_OPTIONS = ShadbalaOptions()
+
+
 @dataclass
 class PlanetStrength:
     sthana: dict[str, float] = field(default_factory=dict)
@@ -113,9 +134,11 @@ def uchcha_bala(p: str, lon: float) -> float:
     return min(d, 360 - d) / 3.0
 
 
-def saptavargaja_bala(p: str, lon: float, d1_signs: dict[str, int]) -> float:
+def saptavargaja_bala(p: str, lon: float, d1_signs: dict[str, int],
+                      varga_signs: dict[int, dict[str, int]] | None = None) -> float:
     total = 0.0
     for n in SAPTAVARGA:
+        rel_signs = varga_signs[n] if varga_signs else d1_signs
         sign = varga_sign(lon, n)
         if n == 1:
             mt_sign, mt_a, mt_b = MOOLATRIKONA[p]
@@ -126,7 +149,7 @@ def saptavargaja_bala(p: str, lon: float, d1_signs: dict[str, int]) -> float:
             total += SAPTAVARGA_POINTS["own"]
             continue
         lord = SIGN_LORD[sign]
-        total += SAPTAVARGA_POINTS[compound_relation(p, lord, d1_signs)]
+        total += SAPTAVARGA_POINTS[compound_relation(p, lord, rel_signs)]
     return total
 
 
@@ -171,14 +194,20 @@ def _arc(a: float, b: float) -> float:
     return min(d, 360 - d)
 
 
-def paksha_values(sun: float, moon: float, mercury_malefic: bool) -> dict[str, float]:
-    elong = (moon - sun) % 360
+def moon_is_benefic(sun: float, moon: float, rule: str = "ashtami") -> bool:
+    if rule == "waxing":
+        return (moon - sun) % 360 < 180
+    return _arc(moon, sun) >= 90.0
+
+
+def paksha_values(sun: float, moon: float, mercury_malefic: bool,
+                  moon_rule: str = "waxing") -> dict[str, float]:
     benefic_pts = _arc(moon, sun) / 3.0
-    waxing = elong < 180
+    moon_good = moon_is_benefic(sun, moon, moon_rule)
     out = {}
     for p in PLANETS7:
         if p == "Mo":
-            out[p] = 2 * (benefic_pts if waxing else 60 - benefic_pts)
+            out[p] = 2 * (benefic_pts if moon_good else 60 - benefic_pts)
         elif p in ("Ju", "Ve") or (p == "Me" and not mercury_malefic):
             out[p] = benefic_pts
         else:
@@ -192,7 +221,8 @@ def _weekday(jd_civil_midnight: float) -> int:
 
 
 def kala_components(birth: BirthData, chart: Chart, cfg: SchoolConfig,
-                    mercury_malefic: bool) -> dict[str, dict[str, float]]:
+                    mercury_malefic: bool, opts: ShadbalaOptions = DEFAULT_OPTIONS
+                    ) -> dict[str, dict[str, float]]:
     jd = chart.jd_ut
     lat, lon, alt = birth.latitude, birth.longitude, birth.altitude_m
 
@@ -229,7 +259,7 @@ def kala_components(birth: BirthData, chart: Chart, cfg: SchoolConfig,
     hora_lord = HORA_ORDER[(start + hora_idx) % 7]
 
     # Abda and Masa: weekday on which the current 360-day year / 30-day month began.
-    ahargana = int(math.floor(sunrise_local_day + 0.5 - KALI_EPOCH_JD))
+    ahargana = int(math.floor(sunrise_local_day + 0.5 - KALI_EPOCH_JD)) + opts.ahargana_offset_days
     year_start = sunrise_local_day - (ahargana % 360)
     month_start = sunrise_local_day - (ahargana % 30)
     abda_lord = WEEKDAY_LORD[_weekday(year_start)]
@@ -237,7 +267,7 @@ def kala_components(birth: BirthData, chart: Chart, cfg: SchoolConfig,
 
     sun = chart.grahas["Su"].longitude
     moon = chart.grahas["Mo"].longitude
-    paksha = paksha_values(sun, moon, mercury_malefic)
+    paksha = paksha_values(sun, moon, mercury_malefic, opts.moon_benefic)
 
     out: dict[str, dict[str, float]] = {}
     for p in PLANETS7:
@@ -280,10 +310,13 @@ def _mean_lon(code: str, jd: float) -> float:
     return (l0 + rate * t) % 360
 
 
-def cheshta_bala(p: str, jd: float, true_tropical: float, kala: dict[str, dict[str, float]]) -> float:
+def cheshta_bala(p: str, jd: float, true_tropical: float, kala: dict[str, dict[str, float]],
+                 moon_elongation_arc: float | None = None) -> float:
     if p == "Su":
         return kala["Su"]["ayana"] / 2.0     # Sun's own Ayana bala (undoubled)
     if p == "Mo":
+        if moon_elongation_arc is not None:  # JHora: Moon's distance from the Sun / 3
+            return moon_elongation_arc / 3.0
         return kala["Mo"]["paksha"] / 2.0    # Moon's own Paksha bala (undoubled)
     mean_sun = (_mean_lon("Ea", jd) + 180) % 360
     if p in ("Ma", "Ju", "Sa"):
@@ -342,20 +375,24 @@ def drik_bala(lons: dict[str, float], benefic: dict[str, bool]) -> dict[str, flo
 
 # --------------------------------------------------------------------- total
 
-def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG
-             ) -> dict[str, PlanetStrength]:
+def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
+             opts: ShadbalaOptions = DEFAULT_OPTIONS) -> dict[str, PlanetStrength]:
     lons = {p: chart.grahas[p].longitude for p in PLANETS7}
     d1 = {p: chart.grahas[p].sign for p in chart.grahas}
-    # Mercury is treated as malefic when it shares a sign with Mars, Saturn,
-    # Rahu or Ketu (the Sun is excluded: Mercury is never far from it).
-    mercury_malefic = any(d1[m] == d1["Me"] for m in ("Ma", "Sa", "Ra", "Ke"))
-    waxing = (lons["Mo"] - lons["Su"]) % 360 < 180
-    benefic = {"Su": False, "Mo": waxing, "Ma": False, "Me": not mercury_malefic,
+    moon_good = moon_is_benefic(lons["Su"], lons["Mo"], opts.moon_benefic)
+    companions = [m for m in opts.mercury_malefic_with if not (m == "Mo" and moon_good)]
+    mercury_malefic = any(d1[m] == d1["Me"] for m in companions)
+    benefic = {"Su": False, "Mo": moon_good, "Ma": False, "Me": not mercury_malefic,
                "Ju": True, "Ve": True, "Sa": False}
+    varga_signs = None
+    if opts.saptavarga_relation == "varga":
+        varga_signs = {n: {k: varga_sign(chart.grahas[k].longitude, n) for k in chart.grahas}
+                       for n in SAPTAVARGA}
 
     asc = chart.lagna.longitude
     mc = midheaven(chart.jd_ut, birth.latitude, birth.longitude, cfg)
-    kala = kala_components(birth, chart, cfg, mercury_malefic)
+    kala = kala_components(birth, chart, cfg, mercury_malefic, opts)
+    moon_arc = _arc(lons["Mo"], lons["Su"]) if opts.moon_cheshta == "elongation" else None
     drik = drik_bala(lons, benefic)
     ayan = chart.ayanamsa
 
@@ -365,14 +402,14 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG
         ps = PlanetStrength()
         ps.sthana = {
             "uchcha": uchcha_bala(p, lon),
-            "saptavargaja": saptavargaja_bala(p, lon, d1),
+            "saptavargaja": saptavargaja_bala(p, lon, d1, varga_signs),
             "ojayugma": ojayugma_bala(p, lon),
             "kendra": kendra_bala(chart.grahas[p].house),
             "drekkana": drekkana_bala(p, lon),
         }
         ps.dig = dig_bala(p, lon, asc, mc)
         ps.kala = dict(kala[p])
-        ps.cheshta = cheshta_bala(p, chart.jd_ut, (lon + ayan) % 360, kala)
+        ps.cheshta = cheshta_bala(p, chart.jd_ut, (lon + ayan) % 360, kala, moon_arc)
         ps.naisargika = NAISARGIKA[p]
         ps.drik = drik[p]
         out[p] = ps

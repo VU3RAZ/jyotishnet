@@ -7,11 +7,9 @@
 | 1 | House system for the model's frame | Whole-sign; others selectable | Phase 1, week 1 |
 | 3 | Narayana and Chara dashas as model token streams | Not yet implemented | Before phase 2 |
 | 4 | Gender-dependent rules | Not yet implemented (rules engine pending) | Before phase 4 |
-| 11 | Shadbala: Mercury benefic or malefic | Malefic when sharing a sign with Mars, Saturn, Rahu or Ketu | Phase 1, expert |
 | 12 | Shadbala: Kendra bala houses | Whole-sign houses (option: Sripati bhava) | Phase 1, expert |
 | 13 | Shadbala: Ayana bala | Ephemeris declination (BPHS uses kranti tables) | Phase 1, golden set |
-| 16 | Shadbala vs Jagannatha Hora | Totals differ by up to ~100 virupas on the 8 golden charts; documented variants did not reduce it | Needs JHora's Shadbala component table for 2-3 charts |
-| 14 | Shadbala: Abda/Masa epoch | Kali Yuga epoch, 360-day years and 30-day months | Phase 1, golden set |
+| 16 | Shadbala vs Jagannatha Hora | Against JHora's component table (3 charts): Naisargika exact, Dig within 2.8, Kala within 5.4, Drik within 7.3 virupas. Sthana (RMS 13, steps of Saptavargaja grades) and Cheshta (RMS 16; JHora uses its own mean-longitude tables) still differ | JHora's Sthana sub-components (Uchcha, Saptavargaja, Ojayugma, Kendra, Drekkana) for 1-2 charts |
 | 15 | Shadbala: Sun/Moon Cheshta | Undoubled Ayana (Sun) and Paksha (Moon) bala | Phase 1, expert |
 
 ## Decided
@@ -29,4 +27,7 @@
 | Ashtakavarga | PVR variant; seven grahas occupy in Ekadhipatya; Virgo multiplier 5 (JHora: all pindas exact) |
 | Vimshottari year | Solar year by the Sun's sidereal motion (JHora: 584/648 exact, rest within 1 day); fixed years optional |
 | Pranapada formula | Sun-modality offset, one sign per 6 minutes (JHora match within 7.6', from a ~1 s sunrise difference) |
+| Shadbala benefics | Moon benefic from Shukla to Krishna Ashtami (at least 90 deg from the Sun); Mercury malefic in a sign with a malefic Moon, Mars, Saturn, Rahu or Ketu (JHora component match) |
+| Shadbala Abda/Masa | Kali ahargana + 1 day (JHora's year and month lords) |
+| Moon's Cheshta | Distance from the Sun / 3 (JHora) |
 | Test oracle | PyJHora in a separate environment (AGPL; never imported) |
