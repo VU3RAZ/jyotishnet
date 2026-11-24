@@ -24,12 +24,13 @@ import os
 import random
 import sys
 from collections import Counter
-from datetime import datetime
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from jyotishnet_engine import BirthData, NodeType, SchoolConfig, build_chart  # noqa: E402
+from jyotishnet_engine import NodeType, SchoolConfig, build_chart  # noqa: E402
+from jyotishnet_engine.ephemeris import previous_sunrise, sun_event_after  # noqa: E402
 from jyotishnet_engine.shadbala import PLANETS7, ShadbalaOptions, shadbala  # noqa: E402
+from sampling import add_arguments, sample  # noqa: E402
 
 with contextlib.redirect_stdout(io.StringIO()):
     from jhora import utils  # noqa: E402
@@ -43,28 +44,39 @@ CFG = SchoolConfig(node_type=NodeType.TRUE, true_positions=True)
 # PyJHora treats the Moon as benefic when waxing; the engine's default follows
 # Jagannatha Hora's Ashtami rule. Compare like with like.
 OPTS = ShadbalaOptions(moon_benefic="waxing")
-CITIES = [(28.61, 77.21), (19.08, 72.88), (13.08, 80.27), (22.57, 88.36)]
 TOL = 0.1
+# Sunrise and sunset differ between the programs by seconds (more at high
+# latitudes), so a birth this close to a third of the day or night is noise.
+TRIBHAGA_EDGE_MIN = 3.0
+
+
+def tribhaga_margin_minutes(b) -> float:
+    """Minutes from the birth to the nearest boundary between thirds of the day or night."""
+    jd = b.jd_ut()
+    rise = previous_sunrise(jd, b.latitude, b.longitude, b.altitude_m, CFG)
+    sset = sun_event_after(rise, b.latitude, b.longitude, b.altitude_m, CFG, "set")
+    nxt = sun_event_after(rise + 0.01, b.latitude, b.longitude, b.altitude_m, CFG, "rise")
+    a, z = (rise, sset) if jd < sset else (sset, nxt)
+    return min(abs(jd - (a + (z - a) * k / 3)) for k in range(4)) * 1440
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--charts", type=int, default=100)
-    ap.add_argument("--seed", type=int, default=5)
+    add_arguments(ap, charts=100, seed=5)
     args = ap.parse_args()
     rng = random.Random(args.seed)
     bad = Counter()
     info = Counter()
     out_of_range = Counter()
+    near_edge = Counter()
     n = 0
     for _ in range(args.charts):
-        lat, lon = rng.choice(CITIES)
-        dt = datetime(rng.randint(1950, 2030), rng.randint(1, 12), rng.randint(1, 28),
-                      rng.randint(0, 23), rng.randint(0, 59))
-        b = BirthData(dt, lat, lon, utc_offset_hours=5.5)
+        smp = sample(rng, args.sample, years=(1950, 2030))
+        b = smp.birth()
         ours = shadbala(build_chart(b, CFG, [1, 2, 3, 7, 9, 12, 30]), b, CFG, OPTS)
-        place = drik.Place("x", lat, lon, 5.5)
-        jd = utils.julian_day_number((dt.year, dt.month, dt.day), (dt.hour, dt.minute, 0))
+        place = drik.Place("x", smp.lat, smp.lon, smp.tz)
+        jd = utils.julian_day_number(smp.ymd(), smp.hms())
+        tribhaga_edge = tribhaga_margin_minutes(b) < TRIBHAGA_EDGE_MIN
         with contextlib.redirect_stdout(io.StringIO()):
             theirs = {
                 "uchcha": st._uchcha_bala(charts.rasi_chart(jd, place)),
@@ -91,11 +103,14 @@ def main() -> int:
                 # Mercury's benefic/malefic status is a school choice: informational.
                 if k in ("dig", "drik") or (k == "paksha" and p == "Me"):
                     info[(k, p)] += 1
+                elif k == "tribhaga" and tribhaga_edge:
+                    near_edge[k] += 1
                 else:
                     bad[(k, p)] += 1
                 assert (k == "paksha" or 0 <= v <= hi or k == "drik"), (k, p, v)
     print(f"charts: {n}")
     print(f"PyJHora values outside BPHS range (skipped): {dict(out_of_range)}")
+    print(f"births within {TRIBHAGA_EDGE_MIN:g} min of a tribhaga boundary (skipped): {dict(near_edge)}")
     print(f"informational differences (dig, drik, Mercury paksha): {sum(info.values())}")
     print(f"strict mismatches beyond {TOL} virupa:")
     for k, v in sorted(bad.items()):

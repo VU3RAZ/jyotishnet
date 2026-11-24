@@ -27,12 +27,12 @@ import os
 import random
 import sys
 from collections import Counter
-from datetime import datetime
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from jyotishnet_engine import BirthData, NodeType, SchoolConfig, build_chart  # noqa: E402
+from jyotishnet_engine import NodeType, SchoolConfig, build_chart  # noqa: E402
 from jyotishnet_engine.constants import GRAHAS, SHODASHAVARGA  # noqa: E402
+from sampling import add_arguments, sample  # noqa: E402
 
 with contextlib.redirect_stdout(io.StringIO()):
     from jhora import utils  # noqa: E402
@@ -41,11 +41,6 @@ with contextlib.redirect_stdout(io.StringIO()):
 
 drik.set_ayanamsa_mode("LAHIRI")
 
-CITIES = [
-    ("New Delhi", 28.61, 77.21), ("Mumbai", 19.08, 72.88), ("Chennai", 13.08, 80.27),
-    ("Kolkata", 22.57, 88.36), ("Bengaluru", 12.97, 77.59), ("Srinagar", 34.08, 74.80),
-    ("Guwahati", 26.14, 91.74), ("Thiruvananthapuram", 8.52, 76.94),
-]
 
 
 def near_edge(lon: float, n: int, tol: float) -> bool:
@@ -60,8 +55,7 @@ def near_edge(lon: float, n: int, tol: float) -> bool:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--charts", type=int, default=200)
-    ap.add_argument("--seed", type=int, default=7)
+    add_arguments(ap, charts=200, seed=7)
     ap.add_argument("--edge-tol", type=float, default=0.002)
     ap.add_argument("--nodes", choices=["mean", "true"], default="true",
                     help="PyJHora defaults to true nodes; the engine defaults to mean")
@@ -76,12 +70,11 @@ def main() -> int:
     checks = 0
     examples = []
     for _ in range(args.charts):
-        name, lat, lon = rng.choice(CITIES)
-        dt = datetime(rng.randint(1900, 2030), rng.randint(1, 12), rng.randint(1, 28),
-                      rng.randint(0, 23), rng.randint(0, 59), rng.randint(0, 59))
-        ours = build_chart(BirthData(dt, lat, lon, utc_offset_hours=5.5), cfg, vargas=SHODASHAVARGA)
-        place = drik.Place(name, lat, lon, 5.5)
-        jd = utils.julian_day_number((dt.year, dt.month, dt.day), (dt.hour, dt.minute, dt.second))
+        s = sample(rng, args.sample)
+        dt, name = s.local, s.name
+        ours = build_chart(s.birth(), cfg, vargas=SHODASHAVARGA)
+        place = drik.Place(name, s.lat, s.lon, s.tz)
+        jd = utils.julian_day_number(s.ymd(), s.hms())
         for n in SHODASHAVARGA:
             with contextlib.redirect_stdout(io.StringIO()):
                 # D2: PyJHora method 1 = Uma-Shambhu (parivritti, even signs reversed),
