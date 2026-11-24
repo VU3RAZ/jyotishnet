@@ -19,6 +19,7 @@ from jyotishnet_engine import BirthData, DEFAULT_CONFIG, build_chart, vimshottar
 from jyotishnet_engine.ashtakavarga import PLANETS7, ashtakavarga  # noqa: E402
 from jyotishnet_engine.shadbala import shadbala  # noqa: E402
 from jyotishnet_engine.timeutil import jd_to_datetime  # noqa: E402
+from jyotishnet_engine.vimshopaka import vimshopaka  # noqa: E402
 
 CHARTS = load_all()
 IDS = [c.name for c in CHARTS]
@@ -102,3 +103,13 @@ def test_shadbala_totals(pair):
     sb = shadbala(ch, b, DEFAULT_CONFIG)
     for p in PLANETS7:
         assert abs(sb[p].total - c.shadbala[p]) < 5, p
+
+
+def test_vimshopaka(pair):
+    """All four schemes for the nine grahas; JHora prints two decimals."""
+    c, _, ch = pair
+    ours = vimshopaka(ch, DEFAULT_CONFIG)
+    assert set(c.vimshopaka) == set(ours)
+    for p, schemes in c.vimshopaka.items():
+        for s, v in schemes.items():
+            assert abs(ours[p][s] - v) <= 0.006, (p, s, ours[p][s], v)

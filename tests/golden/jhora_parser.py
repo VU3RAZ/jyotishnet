@@ -38,6 +38,8 @@ class JHoraChart:
     shadbala: dict[str, float] = field(default_factory=dict)         # virupas
     shadbala_rupas: dict[str, float] = field(default_factory=dict)
     vimshottari: list[tuple[str, str, date]] = field(default_factory=list)  # (md, ad, start)
+    # {graha: {scheme: points}}; schemes dashavarga, shodashavarga, saptavarga, shadvarga
+    vimshopaka: dict[str, dict[str, float]] = field(default_factory=dict)
 
 
 def _dms(d: str, m: str, s: str) -> float:
@@ -98,6 +100,17 @@ def parse(path: str | Path) -> JHoraChart:
         m = re.search(rf"^{name}\s+([\d.]+)\s+([\d.]+)\s+[\d.]+\s+[\d.]+\s+[\d.]+\s*$", text, re.M)
         chart.shadbala[code] = float(m.group(1))
         chart.shadbala_rupas[code] = float(m.group(2))
+
+    if "Vimsopaka Dasa Varga" in text:
+        block = text.split("Vimsopaka Dasa Varga")[1].split("Planet  Age")[0]
+        names = {"Sun": "Su", "Moon": "Mo", "Mars": "Ma", "Mercury": "Me", "Jupiter": "Ju",
+                 "Venus": "Ve", "Saturn": "Sa", "Rahu": "Ra", "Ketu": "Ke"}
+        schemes = ["dashavarga", "shodashavarga", "saptavarga", "shadvarga"]
+        for line in block.splitlines():
+            parts = line.split()
+            if parts and parts[0] in names:
+                vals = [float(x) for x in parts[1:] if not x.startswith("(")]
+                chart.vimshopaka[names[parts[0]]] = dict(zip(schemes, vals))
 
     vim = text.split("Vimsottari Dasa")[1].split("Moola Dasa")[0]
     md = None

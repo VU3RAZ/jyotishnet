@@ -12,6 +12,7 @@
 | 18 | Yoga definitions | 56 rules marked `draft`; variant readings in each rule's `notes`. Not yet checked: strong Lagna lord (Lakshmi, Kahala), Gajakesari's extra conditions | Expert review of `rules/yogas/*.yaml` |
 | 19 | Chara dasha: Mercury in Virgo | Counted as exalted (BPHS), so +1 year where it is the counted lord outside its own sign; PyJHora treats it as own sign | With #3 |
 | 20 | Rectification event rules | 12 event types (design table), draft. A dasha lord is linked if, in D1 or the event's varga, it lords or occupies an event house or is the karaka; D2 and D30 add no house links; Rahu and Ketu link only by occupancy (no dispositor rule yet); double transit = Jupiter and Saturn both occupy or aspect an event house in D1 | Expert review of `rules/btr_events.yaml` |
+| 21 | Vimshopaka: Saptavarga weights | JHora's: D1 5, D2 2, D3 3, D7 1, D9 2.5, D12 4.5, D30 2 (fits all 31 golden charts within 0.005). BPHS gives D7 2.5, D9 4.5, D12 2, D30 1; JHora's last four look shifted by one varga, possibly a slip in JHora. Option `saptavarga_weights="bphs"` | User |
 
 ## Decided
 
@@ -42,3 +43,4 @@
 | Front-end stack | Next.js + React + TypeScript, plain CSS; fonts Martel and Hind (Latin + Devanagari); the slider calls the API (latest-wins) until the WebAssembly engine exists |
 | Yuddha bala (#17) | Keep BPHS: within 1 deg, the planet with more Sthana + Dig + Kala (to Hora) wins; amount = difference / disc-diameter difference. Known difference from JHora 8.0, which applies none (golden charts edge_05, edge_06: 0.74 and 1.27 virupas, inside the Kala tolerance). Decided by the user, 24 Nov 2026 |
 | Polar births | Out of scope: no sunrise in polar night or midnight sun, so the special lagnas, Tribhaga, vara and hora have no base. The API rejects latitudes beyond +/-66 deg; the JHora golden chart for Tromso was dropped. Decided by the user, 24 Nov 2026 |
+| Vimshopaka bala | Own sign 20; otherwise compound relationship with the sign lord (18/15/10/7/5), temporal part within each varga; Shad-, Dasha- and Shodashavarga weights as BPHS. Rahu and Ketu own no sign; friends Venus, Saturn; neutral Mercury, Jupiter; enemies Sun, Moon, Mars (back-solved from JHora, the only fit among all own-sign and relationship combinations). Matches JHora on all 1,116 golden values |

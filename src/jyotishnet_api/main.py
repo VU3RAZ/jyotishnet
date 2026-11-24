@@ -190,6 +190,23 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
     return {"planets": out, "wars": wars}
 
 
+class VimshopakaRequest(ChartRequest):
+    saptavarga_weights: str = Field("jhora", pattern="^(jhora|bphs)$",
+                                    description="jhora (D7 1, D9 2.5, D12 4.5, D30 2) or bphs")
+
+
+@app.post("/v1/vimshopaka")
+def vimshopaka_endpoint(req: VimshopakaRequest) -> dict:
+    """Vimshopaka bala (points out of 20) in the Shad-, Sapta-, Dasha- and
+    Shodashavarga schemes, for the nine grahas."""
+    from jyotishnet_engine.vimshopaka import SCHEMES, VimshopakaOptions, scheme_weights, vimshopaka
+    birth, cfg = req.birth.to_birth(), req.config.to_config()
+    opts = VimshopakaOptions(saptavarga_weights=req.saptavarga_weights)
+    c = build_chart(birth, cfg, [1])
+    return {"planets": vimshopaka(c, cfg, opts),
+            "weights": {s: {f"D{n}": w for n, w in scheme_weights(s, opts).items()} for s in SCHEMES}}
+
+
 class YogaRequest(ChartRequest):
     include_absent: bool = False
 
