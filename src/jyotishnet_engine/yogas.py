@@ -58,10 +58,11 @@ class Context:
         degs = {k: p.longitude for k, p in chart.grahas.items()}
         arc = abs((degs["Mo"] - degs["Su"] + 180) % 360 - 180)
         moon_benefic = arc >= 90.0              # Shukla to Krishna Ashtami (JHora's rule)
-        # Same rule as Shadbala (majority of natural benefics vs malefics with Mercury).
-        from .shadbala import mercury_is_malefic
+        # Mercury is malefic in a sign with Mars, Saturn, Rahu, Ketu or a malefic Moon.
+        # (Shadbala follows JHora's own convention instead; see ShadbalaOptions.)
+        from .shadbala import ShadbalaOptions, mercury_is_malefic
         return cls(chart.lagna.sign, signs, degs, moon_benefic,
-                   not mercury_is_malefic(signs, moon_benefic))
+                   not mercury_is_malefic(signs, moon_benefic, ShadbalaOptions(mercury_rule="any")))
 
     @classmethod
     def from_signs(cls, lagna: int, signs: dict[str, int], **kw) -> "Context":

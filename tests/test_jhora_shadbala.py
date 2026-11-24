@@ -46,10 +46,12 @@ def case(request):
     return load_breakdown(f), shadbala(build_chart(b, DEFAULT_CONFIG), b, DEFAULT_CONFIG)
 
 
-# Tolerances in virupas reflect current agreement; tighten as gaps are closed.
+# Tolerances in virupas. Dig, Drik and Sthana match JHora to its printed precision.
+# Kala keeps 6 for Ayana bala (ephemeris declination, decision #13) and Yuddha bala
+# (BPHS, which JHora does not apply); the other Kala parts are checked exactly below.
 # Naisargika: JHora prints the BPHS table values (e.g. 25.70 for 180/7 = 25.714).
-@pytest.mark.parametrize("component,tol", [("naisargika", 0.02), ("dig", 3.0),
-                                           ("kala", 6.0), ("drik", 8.0), ("sthana", 0.05)])
+@pytest.mark.parametrize("component,tol", [("naisargika", 0.02), ("dig", 0.05),
+                                           ("kala", 6.0), ("drik", 0.05), ("sthana", 0.05)])
 def test_component(case, component, tol):
     jh, sb = case
     for p in PLANETS7:
@@ -72,3 +74,25 @@ def test_cheshta(case):
     jh, sb = case
     for p in PLANETS7:
         assert abs(sb[p].cheshta - jh[p]["cheshta"]) <= 1.0, p
+
+
+KALA_FILES = sorted((GOLDEN / "jhora_shadbala" / "kala").glob("*.txt"))
+KALA_PARTS = ["nathonnatha", "paksha", "tribhaga", "abda", "masa", "vara", "hora", "ayana", "yuddha"]
+
+
+@pytest.mark.parametrize("path", KALA_FILES, ids=[f.stem for f in KALA_FILES])
+def test_kala_parts(path):
+    """Every Kala part against JHora's Kaala Bala table, except Ayana (#13) and
+    Yuddha (BPHS kept; JHora applies none)."""
+    c = parse(GOLDEN / "jhora" / path.name)
+    b = BirthData(c.local, c.latitude, c.longitude, utc_offset_hours=c.utc_offset_hours,
+                  altitude_m=c.altitude_m)
+    sb = shadbala(build_chart(b, DEFAULT_CONFIG), b, DEFAULT_CONFIG)
+    for line in path.read_text().splitlines():
+        parts = line.split()
+        if parts and parts[0] in NAMES:
+            p = NAMES[parts[0]]
+            for k, v in zip(KALA_PARTS, map(float, parts[3:12])):
+                if k in ("ayana", "yuddha"):
+                    continue
+                assert abs(sb[p].kala[k] - v) <= 0.05, (p, k, sb[p].kala[k], v)

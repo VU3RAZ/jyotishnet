@@ -41,8 +41,10 @@ EXALTATION = {
 }
 
 # Moolatrikona: sign and degree range [start, end).
+# Moon: Taurus 4-20 deg (as Jagannatha Hora: golden charts edge_18-20 place the end
+# between 17.2 and 20.2 deg); BPHS readings that run to 30 deg are a school option.
 MOOLATRIKONA = {
-    "Su": (4, 0.0, 20.0), "Mo": (1, 4.0, 30.0), "Ma": (0, 0.0, 12.0),
+    "Su": (4, 0.0, 20.0), "Mo": (1, 4.0, 20.0), "Ma": (0, 0.0, 12.0),
     "Me": (5, 16.0, 20.0), "Ju": (8, 0.0, 10.0), "Ve": (6, 0.0, 15.0),
     "Sa": (10, 0.0, 20.0),
 }

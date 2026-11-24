@@ -70,12 +70,15 @@ class ShadbalaOptions:
     # Moon is benefic when "waxing" (elongation < 180), or per "ashtami": from Shukla
     # Ashtami to Krishna Ashtami, i.e. at least 90 degrees from the Sun.
     moon_benefic: str = "ashtami"
-    # Mercury's nature. "majority" (JHora; PVR Narasimha Rao): benefic when alone or
-    # with at least as many natural benefics as malefics in its sign, malefic when
-    # malefics outnumber them. Malefics: Sun, Mars, Saturn, Rahu, Ketu and a malefic
-    # Moon; benefics: Jupiter, Venus and a benefic Moon. "any": malefic with any of
-    # `mercury_malefic_with` (the Moon only when malefic).
-    mercury_rule: str = "majority"
+    # Mercury's nature.
+    # "jhora": malefic when the Moon is malefic (see moon_benefic), or when it shares
+    #   a sign with Mars, Saturn, Rahu or Ketu; the Sun is not counted. Reproduces
+    #   JHora on all 9 golden Shadbala charts (decision "Shadbala benefics").
+    # "majority" (PVR Narasimha Rao's text): malefic when the Sun, Mars, Saturn, Rahu,
+    #   Ketu and a malefic Moon in its sign outnumber Jupiter, Venus and a benefic Moon.
+    # "any": malefic with any of `mercury_malefic_with` in its sign (Moon only when
+    #   malefic).
+    mercury_rule: str = "jhora"
     mercury_malefic_with: tuple[str, ...] = ("Mo", "Ma", "Sa", "Ra", "Ke")
     # Days added to the Kali-epoch ahargana for Abda and Masa lords. -13 is the only
     # value (mod 360) that reproduces JHora's year and month lords on all five golden
@@ -83,6 +86,19 @@ class ShadbalaOptions:
     ahargana_offset_days: int = -13
     # Temporal relationships for Saptavargaja: from D1 ("d1") or within each varga.
     saptavarga_relation: str = "d1"
+    # Dig bala's 10th/4th points: "lagna" = Lagna -/+ 90 deg (JHora; back-solved from
+    # golden charts edge_18-20, where the meridian is 16 deg away) or "meridian" (MC/IC).
+    dig_tenth: str = "lagna"
+    # Nathonnatha: "lagna" = from the Sun's distance to Lagna - 90 deg (JHora: equals
+    # the Sun's Dig bala; matches all 6 charts with Kaala Bala tables) or "time" =
+    # hours from apparent midnight (the Sun's lower transit), as BPHS describes.
+    nathonnatha: str = "lagna"
+    # Drishti (aspect) strength for Drik bala: "jhora" = straight lines between the
+    # BPHS values at every 30 deg, with a special aspect's point raised to 60 (Mars
+    # 90/210, Jupiter 120/240, Saturn 60/270); fitted to JHora's Drik bala on 9
+    # golden charts. "bphs_add" = the base curve plus BPHS's flat additions (+15
+    # Mars, +30 Jupiter, +45 Saturn) in the special-aspect signs.
+    drishti: str = "jhora"
     # Moon's Cheshta: "elongation" (arc from the Sun / 3) or "paksha" (its Paksha bala).
     moon_cheshta: str = "elongation"
     # Planetary war: two of Ma, Me, Ju, Ve, Sa within this many degrees of longitude.
@@ -292,6 +308,9 @@ def kala_components(birth: BirthData, chart: Chart, cfg: SchoolConfig,
     hours = (jd - lower) * 24.0
     from_midnight = hours if hours <= 12 else 24 - hours
     day_pts = 60.0 * from_midnight / 12.0
+    if opts.nathonnatha == "lagna":
+        noon_point = (chart.lagna.longitude - 90.0) % 360
+        day_pts = 60.0 - _arc(chart.grahas["Su"].longitude, noon_point) / 3.0
 
     # Day/night and tribhaga.
     sunrise = previous_sunrise(jd, lat, lon, alt, cfg)
@@ -390,8 +409,26 @@ def cheshta_bala(p: str, jd: float, true_tropical: float, kala: dict[str, dict[s
 
 # ------------------------------------------------------------------ drik bala
 
+# Aspect strength at 0, 30, ..., 330 degrees ahead of the aspecting planet.
+_DRISHTI_POINTS = [0, 0, 15, 45, 30, 0, 60, 45, 30, 15, 0, 0]
+_SPECIAL_POINTS = {"Ma": (3, 7), "Ju": (4, 8), "Sa": (2, 9)}   # indices of 90/210, 120/240, 60/270
+
+
+def drishti_value_jhora(aspecting: str, d: float) -> float:
+    """Aspect strength by linear interpolation between 30-degree points, a special
+    aspect's points set to 60 (Jagannatha Hora)."""
+    pts = list(_DRISHTI_POINTS)
+    for i in _SPECIAL_POINTS.get(aspecting, ()):
+        pts[i] = 60
+    d %= 360
+    i = int(d // 30)
+    f = (d - 30 * i) / 30.0
+    return pts[i] + (pts[(i + 1) % 12] - pts[i]) * f
+
+
 def drishti_value(aspecting: str, d: float) -> float:
-    """Aspect strength (virupas) of `aspecting` on a point d degrees ahead of it."""
+    """Aspect strength (virupas) of `aspecting` on a point d degrees ahead of it,
+    base curve plus BPHS's flat special-aspect additions."""
     d %= 360
     if d < 30 or d >= 300:
         v = 0.0
@@ -416,14 +453,16 @@ def drishti_value(aspecting: str, d: float) -> float:
     return min(v, 60.0)
 
 
-def drik_bala(lons: dict[str, float], benefic: dict[str, bool]) -> dict[str, float]:
+def drik_bala(lons: dict[str, float], benefic: dict[str, bool],
+              method: str = "jhora") -> dict[str, float]:
+    value = drishti_value_jhora if method == "jhora" else drishti_value
     out = {}
     for target in PLANETS7:
         s = 0.0
         for src in PLANETS7:
             if src == target:
                 continue
-            v = drishti_value(src, lons[target] - lons[src])
+            v = value(src, lons[target] - lons[src])
             s += v if benefic[src] else -v
         out[target] = s / 4.0
     return out
@@ -437,6 +476,8 @@ def mercury_is_malefic(signs: dict[str, int], moon_good: bool,
     if opts.mercury_rule == "majority":
         good = sum(1 for p in mates if p in ("Ju", "Ve") or (p == "Mo" and moon_good))
         return len(mates) - good > good
+    if opts.mercury_rule == "jhora":
+        return (not moon_good) or any(p in ("Ma", "Sa", "Ra", "Ke") for p in mates)
     if opts.mercury_rule == "any":
         return any(p in opts.mercury_malefic_with and not (p == "Mo" and moon_good) for p in mates)
     raise ValueError(f"Unknown mercury_rule {opts.mercury_rule!r}")
@@ -461,7 +502,7 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
     mc = midheaven(chart.jd_ut, birth.latitude, birth.longitude, cfg)
     kala = kala_components(birth, chart, cfg, mercury_malefic, opts)
     moon_arc = _arc(lons["Mo"], lons["Su"]) if opts.moon_cheshta == "elongation" else None
-    drik = drik_bala(lons, benefic)
+    drik = drik_bala(lons, benefic, opts.drishti)
     ayan = chart.ayanamsa
 
     out: dict[str, PlanetStrength] = {}
@@ -475,7 +516,7 @@ def shadbala(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
             "kendra": kendra_bala(chart.grahas[p].house),
             "drekkana": drekkana_bala(p, lon),
         }
-        ps.dig = dig_bala(p, lon, asc, mc)
+        ps.dig = dig_bala(p, lon, asc, (asc - 90.0) % 360 if opts.dig_tenth == "lagna" else mc)
         ps.kala = dict(kala[p])
         ps.cheshta = cheshta_bala(p, chart.jd_ut, (lon + ayan) % 360, kala, moon_arc)
         ps.naisargika = NAISARGIKA[p]
