@@ -1,0 +1,72 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Rahul Sathe
+"""Browser smoke test for the workbench: fails on any page error.
+
+Needs the API and the web app running (scripts/start.sh, or uvicorn + next start)
+and Python Playwright with a Chromium:  pip install playwright && playwright install chromium
+
+    python web/e2e/smoke.py [http://localhost:3000]
+"""
+
+import asyncio
+import sys
+
+from playwright.async_api import async_playwright
+
+URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:3000"
+VARGAS = ["2", "3", "4", "7", "10", "12", "16", "20", "24", "27", "30", "40", "45", "60", "9"]
+
+
+async def main() -> int:
+    errors: list[str] = []
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page(viewport={"width": 1320, "height": 1000})
+        page.on("pageerror", lambda e: errors.append(f"page error: {e}"))
+        page.on("console", lambda m: errors.append(f"console: {m.text}") if m.type == "error" else None)
+
+        async def step(name: str, wait_ms: int = 900):
+            await page.wait_for_timeout(wait_ms)
+            if errors:
+                print(f"FAIL at {name}:\n  " + "\n  ".join(errors[:5]))
+                raise SystemExit(1)
+            print(f"ok  {name}")
+
+        await page.goto(URL)
+        await page.wait_for_selector(".chart-svg")
+        await step("load", 1500)
+
+        for style in ["South Indian", "North Indian"]:
+            for v in VARGAS:
+                await page.select_option(".varga-pick select", v)
+                await step(f"{style} D{v}", 600)
+            await page.click(f"text={style}")
+
+        # Move the ribbon, then pick a varga while charts are refreshing.
+        await page.evaluate("""() => { const i = document.querySelector('#ribbon-input');
+            const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+            for (const v of ['300', '-600', '900']) { set.call(i, v); i.dispatchEvent(new Event('input', {bubbles: true})); } }""")
+        await page.select_option(".varga-pick select", "60")
+        await step("slider + D60 while loading")
+
+        for tab in ["Yogas", "Ashtakavarga", "Shadbala", "Dashas", "Positions"]:
+            await page.click(f"[role=tab]:has-text('{tab}')")
+            await step(f"tab {tab}", 1500)
+        for system in ["Ashtottari", "Yogini", "Chara (K. N. Rao)", "Vimshottari"]:
+            await page.click(f"[role=tab]:has-text('Dashas')")
+            await page.click(f"text={system}")
+            await step(f"dasha {system}", 1200)
+
+        await page.click("text=Transits")
+        await step("transit mode", 1500)
+        await page.click("text=±12 years")
+        await step("transit ±12 years")
+        await page.click("text=Rectify birth time")
+        await step("back to rectify", 1500)
+        await browser.close()
+    print("smoke test passed")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(asyncio.run(main()))

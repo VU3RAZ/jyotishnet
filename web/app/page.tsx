@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BirthForm } from "@/components/BirthForm";
 import { ChartCard } from "@/components/ChartCard";
 import { DashaPanel } from "@/components/DashaPanel";
@@ -101,14 +101,21 @@ export default function Workbench() {
   const chart = live.data;
   const left = useMemo(() => {
     const c = mode === "rectify" ? chart : natal.data;
-    return c ? { ...placements(c, 1), degrees: degreesOf(c) } : null;
+    const pl = c ? placements(c, 1) : null;
+    return c && pl ? { ...pl, degrees: degreesOf(c) } : null;
   }, [mode, chart, natal.data]);
+  // While a newly chosen varga loads, keep showing the last chart that could be drawn.
+  const lastRight = useRef<{ mode: Mode; r: NonNullable<ReturnType<typeof placements>> } | null>(null);
   const right = useMemo(() => {
-    if (!chart) return null;
-    if (mode === "rectify") return placements(chart, varga);
-    if (!natal.data) return null;
-    // Gochara: today's planets in the natal houses.
-    return { lagnaSign: natal.data.lagna.sign, bySign: placements(chart, 1).bySign };
+    let r: ReturnType<typeof placements> = null;
+    if (chart && mode === "rectify") r = placements(chart, varga);
+    else if (chart && natal.data) {
+      // Gochara: today's planets in the natal houses.
+      const pl = placements(chart, 1);
+      r = pl ? { lagnaSign: natal.data.lagna.sign, bySign: pl.bySign } : null;
+    }
+    if (r) lastRight.current = { mode, r };
+    return r ?? (lastRight.current?.mode === mode ? lastRight.current.r : null);
   }, [mode, chart, natal.data, varga]);
 
   const error = live.error || natal.error;
