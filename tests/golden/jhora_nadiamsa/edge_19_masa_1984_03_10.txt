@@ -1,0 +1,59 @@
+Body                   Division Index In whose amsa in D-150
+
+Lagna                  16       91    Somalataa
+Sun                    133      18    Payaswini
+Moon                   100      51    Kaanthaa
+Mars                   4        147   Sragvi
+Mercury                138      13    Ghora
+Jupiter                79       4     Kaalakoota
+Venus                  6        145   Satayajnaa
+Saturn (R)             114      114   Peetha
+Rahu                   87       64    Bhoopa
+Ketu                   87       64    Bhoopa
+Bhava Lagna            80       71    Mritamsuga
+Hora Lagna             30       121   Haarini
+Ghati Lagna            27       27    Daamini
+Vighati Lagna          17       134   Mukunda
+Pranapada Lagna        18       18    Payaswini
+Sree Lagna             49       124   Dhanakari
+Indu Lagna             100      25    Paasaa
+Bhrigu Bindu           94       57    Preeta
+Kunda                  70       145   Satayajnaa
+Dhooma                 50       50    Kundini
+Vyatipata              101      26    Chambaka
+Parivesha              101      26    Chambaka
+Indra Chapa            50       50    Kundini
+Upaketu                133      133   Kunda
+Kaala                  40       111   Swaahaa
+Mrityu                 100      25    Paasaa
+Artha Prahara          47       47    Kaalaa/Karaalaa
+Yama Ghantaka          140      140   Kokilamsa
+Maandi                 59       134   Mukunda
+Gulika                 132      19    Maalaa
+Prana Sphuta           59       59    Manaadha (Maanaghna)
+Deha Sphuta            39       39    Vihwala
+Mrityu Sphuta          142      67    Gaalavee
+Sookshma TriSphuta     92       92    Mangala
+Tithi Sphuta           120      45    Surasundari
+Yoga Sphuta (Sun-Moon) 82       82    Sivadaa
+Rahu Tithi Sphuta      104      29    Kalusha
+Kshetra Sphuta         35       110   Indra
+Beeja Sphuta           65       140   Kokilamsa
+TriSphuta              98       23    Musala
+ChatusSphuta           79       72    Kaali
+PanchaSphuta           15       15    Kutila
+Yoga Sphuta            99       99    Nisaachari
+Avayoga Sphuta         133      133   Kunda
+Varnada Lagna          9        142   Kalasodbhava
+V2                     12       87    Gaadaa
+V3                     1        76    Mahaamaayaa
+V4                     4        4     Kaalakoota
+V5                     5        5     Sankari
+V6                     8        143   Viraprasoo
+V7                     9        142   Kalasodbhava
+V8                     12       87    Gaadaa
+V9                     1        76    Mahaamaayaa
+V10                    4        4     Kaalakoota
+V11                    5        5     Sankari
+V12                    8        143   Viraprasoo
+

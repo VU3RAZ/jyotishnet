@@ -41,6 +41,9 @@ class ConfigIn(BaseModel):
     dasha_year_days: float = 365.25
     node_special_aspects: bool = False
     true_positions: bool = True
+    rudramsa_scheme: str = Field("rath", pattern="^(rath|raman)$")
+    d108_scheme: str = Field("navamsa", pattern="^(navamsa|rasi)$")
+    nadiamsa_scheme: str = Field("chandra_kala", pattern="^(chandra_kala|uniform)$")
 
     def to_config(self) -> SchoolConfig:
         return SchoolConfig(**self.model_dump())

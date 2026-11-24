@@ -11,8 +11,10 @@ export const VARGA_NAME: Record<number, string> = {
   1: "Rasi", 2: "Hora", 3: "Drekkana", 4: "Chaturthamsa", 7: "Saptamsa", 9: "Navamsa",
   10: "Dasamsa", 12: "Dwadasamsa", 16: "Shodasamsa", 20: "Vimsamsa", 24: "Chaturvimsamsa",
   27: "Bhamsa", 30: "Trimsamsa", 40: "Khavedamsa", 45: "Akshavedamsa", 60: "Shashtiamsa",
+  5: "Panchamsa", 6: "Shashthamsa", 8: "Ashtamsa", 11: "Rudramsa", 81: "Navanavamsa",
+  108: "Ashtottaramsa", 144: "Dwadasa-dwadasamsa",
 };
-export const VARGAS = [1, 2, 3, 4, 7, 9, 10, 12, 16, 20, 24, 27, 30, 40, 45, 60];
+export const VARGAS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 20, 24, 27, 30, 40, 45, 60, 81, 108, 144];
 
 /** 16°53′ style degree within a sign. */
 export function dms(deg: number): string {

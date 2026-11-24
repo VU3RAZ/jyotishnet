@@ -130,3 +130,13 @@ def test_avasthas():
     body = r.json()["planets"]
     assert set(body) == {"Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke"}
     assert body["Su"]["baladi"] in ("Baala", "Kumara", "Yuva", "Vriddha", "Mrita")
+
+
+def test_chart_new_vargas_and_nadiamsa():
+    r = client.post("/v1/chart", json={"birth": BIRTH, "vargas": [1, 5, 6, 8, 11, 81, 108, 144]})
+    assert r.status_code == 200
+    la = r.json()["lagna"]
+    assert set(la["vargas"]) == {"1", "5", "6", "8", "11", "81", "108", "144"}
+    assert 1 <= la["nadiamsa"]["index"] <= 150 and la["nadiamsa"]["name"]
+    r = client.post("/v1/chart", json={"birth": BIRTH, "vargas": [150]})
+    assert r.status_code == 422

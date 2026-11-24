@@ -56,6 +56,11 @@ charts (`tests/test_jhora_bhavabala.py`): Dig bala exact, Drik bala within 0.025
 virupa (the Lagna's 17"), lord's bala equal to the lord's Shadbala total.
 `jhora_avasthas/` holds JHora's Basic Avasthas table (age, alertness, mood in
 D-1) for all 55 charts (`tests/test_jhora_avasthas.py`): all 495 planets match.
+The parser also reads the 23 North Indian chart drawings in each export
+(`JHoraChart.vargas`); `tests/test_jhora_vargas.py` checks all 22 vargas, skipping a
+body only when it lies within its position tolerance of a part boundary (up to 11
+of 550 in D81-D144, mostly the Lagna). `jhora_nadiamsa/` holds JHora's D-150 Amsa
+rulers table (division, index, name; `tests/test_jhora_nadiamsa.py`).
 
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:

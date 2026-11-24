@@ -66,3 +66,16 @@ def test_dasamsa_even_sign_starts_from_ninth():
 def test_vargottama():
     assert is_vargottama(1.0)          # Aries 1 deg: Aries in D1 and D9
     assert not is_vargottama(5.0)
+
+
+def test_new_vargas_examples():
+    # Panchamsa: odd signs Ar, Aq, Sg, Ge, Li; even Ta, Vi, Pi, Cp, Sc.
+    assert [varga_sign(6 * i + 1, 5) for i in range(5)] == [0, 10, 8, 2, 6]
+    assert [varga_sign(30 + 6 * i + 1, 5) for i in range(5)] == [1, 5, 11, 9, 7]
+    assert varga_sign(31.0, 6) == 6           # Taurus starts from Libra
+    assert varga_sign(31.0, 8) == 8           # fixed sign from Sagittarius
+    assert varga_sign(31.0, 11) == 11         # Rath: Taurus part 0 -> Pisces
+    assert varga_sign(31.0, 11, rudramsa_scheme="raman") == 0
+    assert varga_sign(1.0, 108) == 3 and varga_sign(4.0, 108) == 3   # Ar + 3; Ta + 14
+    assert varga_sign(31.0, 108, d108_scheme="rasi") == 1 + 3
+    assert varga_sign(0.3, 144) == 1          # D12 Ar, second 1/144 part

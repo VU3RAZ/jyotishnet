@@ -42,6 +42,8 @@ class JHoraChart:
     vimshottari: list[tuple[str, str, date]] = field(default_factory=list)  # (md, ad, start)
     # {graha: {scheme: points}}; schemes dashavarga, shodashavarga, saptavarga, shadvarga
     vimshopaka: dict[str, dict[str, float]] = field(default_factory=dict)
+    # {n: {body: sign 0..11}} from the North Indian chart drawings (La, Su..Ke)
+    vargas: dict[int, dict[str, int]] = field(default_factory=dict)
 
 
 def _dms(d: str, m: str, s: str) -> float:
@@ -89,6 +91,7 @@ def parse(path: str | Path) -> JHoraChart:
         chart.navamsa[code] = SIGNS.index(m.group(7))
         chart.retrograde[code] = bool(m.group(2))
 
+    chart.vargas = parse_varga_charts(text)
     av = text.split("Ashtakavarga of Rasi Chart:")[1]
     for row in PLANET_ROWS:
         m = re.search(rf"^{row}\s+((?:\d+\*?\s+){{11}}\d+\*?)", av, re.M)
@@ -125,6 +128,65 @@ def parse(path: str | Path) -> JHoraChart:
         for ad, ymd in re.findall(r"(Sun|Moon|Mars|Merc|Jup|Ven|Sat|Rah|Ket)\s+(\d{4}-\d{2}-\d{2})", line):
             chart.vimshottari.append((md, DASHA_CODES[ad], date.fromisoformat(ymd)))
     return chart
+
+
+_CHART_HEAD = re.compile(r"^\S.*?\s(D-(\d+))(?: \(\w+\))?\s*$")
+_CHART_BODIES = {"As": "La", "Su": "Su", "Mo": "Mo", "Ma": "Ma", "Me": "Me", "Ju": "Ju",
+                 "Ve": "Ve", "Sa": "Sa", "Ra": "Ra", "Ke": "Ke"}
+
+
+def _north_house(u: float, v: float) -> int:
+    """House (1..12) of a point in a North Indian chart; u, v in 0..1 from the top left."""
+    if abs(u - 0.5) + abs(v - 0.5) < 0.5:          # the four central diamonds
+        if v < u and v < 1 - u:
+            return 1
+        if u < v and u < 1 - v:
+            return 4
+        return 7 if v > u else 10
+    if u < 0.5 and v < 0.5:
+        return 2 if v < u else 3
+    if u < 0.5:
+        return 5 if v < 1 - u else 6
+    if v > 0.5:
+        return 8 if v > u else 9
+    return 12 if v < 1 - u else 11
+
+
+def parse_varga_charts(text: str) -> dict[int, dict[str, int]]:
+    """Signs of the Lagna and nine grahas in each drawn chart. JHora prints only the
+    Lagna's sign number (in the 1st house); the other signs follow in order."""
+    lines = text.splitlines()
+    out: dict[int, dict[str, int]] = {}
+    for i, line in enumerate(lines):
+        if i + 1 >= len(lines) or not lines[i + 1].startswith("+---"):
+            continue
+        m = _CHART_HEAD.match(line)
+        if m:
+            n = int(m.group(2))
+        elif line.strip() == "Rasi":
+            n = 1
+        else:
+            continue
+        end = next(j for j in range(i + 2, len(lines)) if lines[j].startswith("+---"))
+        rows = lines[i + 1:end + 1]
+        width, height = len(rows[0]) - 1, len(rows) - 1
+        houses: dict[str, int] = {}
+        lagna_sign = None
+        for r, row in enumerate(rows[1:-1], start=1):
+            for tok in re.finditer(r"[A-Za-z0-9]+", row):
+                word, col = tok.group(), (tok.start() + tok.end() - 1) / 2
+                house = _north_house(col / width, r / height)
+                if word.isdigit():
+                    if house == 1:
+                        lagna_sign = int(word) - 1
+                    continue
+                code = _CHART_BODIES.get(word[:2])
+                if code and (len(word) == 2 or word[2:] == "R"):
+                    houses[code] = house
+        if lagna_sign is None:
+            raise ValueError(f"D-{n}: no sign number in the 1st house")
+        out[n] = {b: (lagna_sign + h - 1) % 12 for b, h in houses.items()}
+    return out
 
 
 def load_all(folder: str | Path | None = None) -> list[JHoraChart]:

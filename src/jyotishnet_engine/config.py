@@ -59,6 +59,13 @@ class SchoolConfig:
     chara_karakas: int = 8
     # D2 scheme: "uma_shambhu" (Jagannatha Hora's default) or "parashara" (Leo/Cancer).
     hora_scheme: str = "uma_shambhu"
+    # D11: "rath" (zodiacal, JHora's default) or "raman" (anti-zodiacal).
+    rudramsa_scheme: str = "rath"
+    # D108: "navamsa" (navamsa in 12 parts; JHora's setting in the golden set) or
+    # "rasi" (the sign in 108 parts).
+    d108_scheme: str = "navamsa"
+    # D150: "chandra_kala" (JHora's non-uniform nadiamsas) or "uniform" (0.2 deg).
+    nadiamsa_scheme: str = "chandra_kala"
     # True (geometric) positions, as Jagannatha Hora and PyJHora use: the JHora
     # golden set matches within 2.2 arc-seconds this way, against 48 with apparent
     # positions (light-time and aberration), the astronomical standard.

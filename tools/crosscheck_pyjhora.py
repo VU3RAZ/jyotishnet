@@ -31,7 +31,7 @@ from collections import Counter
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from jyotishnet_engine import NodeType, SchoolConfig, build_chart  # noqa: E402
-from jyotishnet_engine.constants import GRAHAS, SHODASHAVARGA  # noqa: E402
+from jyotishnet_engine.constants import ALL_VARGAS, GRAHAS  # noqa: E402
 from sampling import add_arguments, sample  # noqa: E402
 
 with contextlib.redirect_stdout(io.StringIO()):
@@ -72,10 +72,10 @@ def main() -> int:
     for _ in range(args.charts):
         s = sample(rng, args.sample)
         dt, name = s.local, s.name
-        ours = build_chart(s.birth(), cfg, vargas=SHODASHAVARGA)
+        ours = build_chart(s.birth(), cfg, vargas=ALL_VARGAS)
         place = drik.Place(name, s.lat, s.lon, s.tz)
         jd = utils.julian_day_number(s.ymd(), s.hms())
-        for n in SHODASHAVARGA:
+        for n in ALL_VARGAS:
             with contextlib.redirect_stdout(io.StringIO()):
                 # D2: PyJHora method 1 = Uma-Shambhu (parivritti, even signs reversed),
                 # the engine's and Jagannatha Hora's default.

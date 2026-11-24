@@ -22,6 +22,7 @@ export type Point = {
   retrograde: boolean | null;
   dignity: string | null;
   vargottama: boolean | null;
+  nadiamsa?: { division: number; index: number; name: string };
 };
 
 export type Chart = {

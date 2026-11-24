@@ -1,0 +1,59 @@
+Body                   Division Index In whose amsa in D-150
+
+Lagna                  99       99    Nisaachari
+Sun                    1        1     Vasudha
+Moon                   137      137   Smaraa
+Mars                   40       111   Swaahaa
+Mercury                126      51    Kaanthaa
+Jupiter                64       139   Kodala
+Venus                  34       117   Saarini
+Saturn                 97       22    Dhruva
+Rahu                   50       101   Nirgatha
+Ketu                   50       101   Nirgatha
+Bhava Lagna            82       82    Sivadaa
+Hora Lagna             15       136   Kadali
+Ghati Lagna            112      37    Viswa
+Vighati Lagna          142      9     Maayaa
+Pranapada Lagna        142      9     Maayaa
+Sree Lagna             44       107   Kumaari
+Indu Lagna             137      14    Kumbhini
+Bhrigu Bindu           17       134   Mukunda
+Kunda                  120      31    Kaantaa
+Dhooma                 68       83    Sivaa
+Vyatipata              83       68    Nirmalaa
+Parivesha              83       68    Nirmalaa
+Indra Chapa            68       83    Sivaa
+Upaketu                1        76    Mahaamaayaa
+Kaala                  99       24    Mudgala
+Mrityu                 50       101   Nirgatha
+Artha Prahara          13       88    Sootana (Nootana)
+Yama Ghantaka          119      44    Sodara
+Maandi                 28       123   Dhananjaya
+Gulika                 126      126   Kachchapaa
+Prana Sphuta           14       137   Smaraa
+Deha Sphuta            19       94    Sudhaa
+Mrityu Sphuta          120      45    Surasundari
+Sookshma TriSphuta     1        1     Vasudha
+Tithi Sphuta           137      137   Smaraa
+Yoga Sphuta (Sun-Moon) 137      137   Smaraa
+Rahu Tithi Sphuta      50       101   Nirgatha
+Kshetra Sphuta         92       59    Manaadha (Maanaghna)
+Beeja Sphuta           99       99    Nisaachari
+TriSphuta              59       134   Mukunda
+ChatusSphuta           59       134   Mukunda
+PanchaSphuta           108      108   Kokilaa
+Yoga Sphuta            3        148   Paatalini
+Avayoga Sphuta         37       114   Peetha
+Varnada Lagna          6        6     Sudhakarasama
+V2                     7        144   Sangaraa
+V3                     10       85    Jwaalaa
+V4                     11       86    Gadaa
+V5                     2        149   Naagapankaja
+V6                     3        3     Braahmi
+V7                     6        145   Satayajnaa
+V8                     7        82    Sivadaa
+V9                     10       85    Jwaalaa
+V10                    11       140   Kokilamsa
+V11                    2        2     Vaishnavi
+V12                    3        3     Braahmi
+

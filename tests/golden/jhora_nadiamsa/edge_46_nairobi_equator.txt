@@ -1,0 +1,59 @@
+Body                   Division Index In whose amsa in D-150
+
+Lagna                  84       84    Balaa
+Sun                    132      19    Maalaa
+Moon                   76       76    Mahaamaayaa
+Mars                   59       134   Mukunda
+Mercury                76       1     Vasudha
+Jupiter                82       7     Saumya
+Venus                  113      38    Visirna
+Saturn                 127      127   Ambujaa
+Rahu                   97       22    Dhruva
+Ketu                   97       22    Dhruva
+Bhava Lagna            100      100   Nivriti
+Hora Lagna             71       146   Sataavari
+Ghati Lagna            132      19    Maalaa
+Vighati Lagna          135      16    Prabhaa
+Pranapada Lagna        135      135   Bharata
+Sree Lagna             13       88    Sootana (Nootana)
+Indu Lagna             76       76    Mahaamaayaa
+Bhrigu Bindu           86       65    Gadaaharaa
+Kunda                  11       11    Maadhavi
+Dhooma                 50       50    Kundini
+Vyatipata              101      26    Chambaka
+Parivesha              101      26    Chambaka
+Indra Chapa            50       50    Kundini
+Upaketu                132      132   Kalaa
+Kaala                  34       109   Kunjarakriti
+Mrityu                 121      121   Haarini
+Artha Prahara          81       70    Sudhaa
+Yama Ghantaka          32       107   Kumaari
+Maandi                 97       97    Pasyathaa
+Gulika                 40       40    Anilaa
+Prana Sphuta           9        9     Maayaa
+Deha Sphuta            41       110   Indra
+Mrityu Sphuta          118      118   Madhuraa
+Sookshma TriSphuta     17       92    Mangala
+Tithi Sphuta           95       56    Nimnaa
+Yoga Sphuta (Sun-Moon) 56       131   Sivaasivakari
+Rahu Tithi Sphuta      115      115   Yakshi
+Kshetra Sphuta         67       142   Kalasodbhava
+Beeja Sphuta           24       127   Ambujaa
+TriSphuta              51       100   Nivriti
+ChatusSphuta           31       31    Kaantaa
+PanchaSphuta           127      52    Vishaakhya (Visha)
+Yoga Sphuta            74       149   Naagapankaja
+Avayoga Sphuta         106      31    Kaantaa
+Varnada Lagna          3        78    Sukhadaa
+V2                     12       87    Gaadaa
+V3                     3        3     Braahmi
+V4                     8        8     Suraa
+V5                     7        144   Sangaraa
+V6                     4        147   Sragvi
+V7                     11       86    Gadaa
+V8                     12       87    Gaadaa
+V9                     11       11    Maadhavi
+V10                    4        4     Kaalakoota
+V11                    7        144   Sangaraa
+V12                    8        143   Viraprasoo
+

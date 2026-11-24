@@ -47,5 +47,8 @@ table, pick "Basic Avasthas (age, alertness, mood)", right-click again and
 "Copy to clipboard". JHora's default uses natural relationships for alertness
 (`UseCompundRelationshipInAvasthas=0` in jhora.ini).
 
+D-150 tables (`jhora_nadiamsa`): Basics tab > "Amsa rulers" sub-tab, right-click,
+"Nadyamsa (D-150)", right-click again, "Copy to clipboard".
+
 `xdrive.py` also takes screenshots (`xdrive.py shot out.png`) for finding new
 menu positions.

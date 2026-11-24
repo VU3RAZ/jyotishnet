@@ -16,6 +16,7 @@ export function PlanetTable({ chart, varga }: { chart: Chart; varga: number }) {
           <th scope="col" className="num">Degree</th>
           <th scope="col">Nakshatra</th>
           <th scope="col">D{varga}</th>
+          <th scope="col">Nadiamsa (D150)</th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +37,7 @@ export function PlanetTable({ chart, varga }: { chart: Chart; varga: number }) {
             <td>{p.nakshatra} {p.pada}</td>
             <td>{p.vargas[String(varga)] === undefined ? "…"
               : SIGNS[p.vargas[String(varga)]]}{p.vargottama && varga === 9 ? " (vargottama)" : ""}</td>
+            <td>{p.nadiamsa ? `${p.nadiamsa.index} ${p.nadiamsa.name}` : "…"}</td>
           </tr>
         ))}
       </tbody>
