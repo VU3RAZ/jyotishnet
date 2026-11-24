@@ -25,11 +25,12 @@ boundaries, high latitudes, pre-1955 Indian zones, and the southern hemisphere.
 | Navamsa | 80/80 | |
 | Ashtakavarga BAV, Sodhya/Rasi/Graha pinda | all exact | PVR variant, seven grahas occupy, Virgo x5 |
 | Vimshottari antardasha starts | 584/648 exact, rest within 1 day | solar (Sun's sidereal motion) year |
-| Shadbala totals | differ by up to ~100 virupas | open: needs JHora's component table |
+| Shadbala components (12 charts) | within 0.05 virupa except Ayana, Yuddha, Cheshta | see `docs/DECISIONS.md` |
+| Shadbala totals | differ (Cheshta, decision #16; Ayana, #13) | |
 
 ## Edge-case charts (phase 1 gate)
 
-The design doc asks for about 50 golden charts chosen for edge cases. These 20
+The design doc asks for about 50 golden charts chosen for edge cases. These 24
 fill the gaps the first eight leave. None is a real person. Their inputs are in
 `jhd/`; they were exported from JHora 8.0 under Wine on 24 November 2026 (see
 `tools/jhora/README.md`).
@@ -38,13 +39,15 @@ For 7-11 the zone is the historical offset, typed in: JHora's atlas gives
 every Indian place 5:30 on any date (see below), so these check that the engine
 matches JHora once both use the same offset. 17-20 (New Delhi, noon, 1984) were
 chosen so that two candidate Abda/Masa day offsets give different lords.
+21-24 (New Delhi, noon, 1990-03-21, 06-21, 09-23, 12-22) put the Sun near
+the equinoxes and solstices, for Ayana bala (decision #13).
 
-**Result:** 19 of 20 pass every check in `tests/test_jhora_golden.py` (planets,
+**Result:** 23 of 24 pass every check in `tests/test_jhora_golden.py` (planets,
 Lagna, special lagnas, Navamsa, Ashtakavarga and pindas, Vimshottari), including
-the boundary cases. Shadbala totals stay expected failures, as for the first
-eight. `jhora_shadbala/` holds the Shadbala breakdowns of 5 and 6 (both pass
-`tests/test_jhora_shadbala.py`), and `jhora_shadbala/kala/` the Kaala Bala
-table of each exported chart, for reference (the tests do not read it).
+the boundary cases. Shadbala totals stay expected failures (Cheshta and Ayana
+bala). `jhora_shadbala/` holds JHora's Shadbala breakdowns of the first three and of 5, 6, 17-22 and
+24, and `jhora_shadbala/kala/` their Kaala Bala tables, which
+`tests/test_jhora_shadbala.py` checks part by part.
 
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:
@@ -53,12 +56,12 @@ them:
   chart without a sunrise (`tests/test_high_latitude.py`). JHora's export is no
   reference for the sunrise-based items either: it prints "Sunrise: 13:00:00
   (November 24)", a time on the day of the export, not near the birth.
-- `pending/jhora_shadbala/edge_17_*` to `edge_20_*`: Abda, Masa, Vara and Hora
-  lords all agree with JHora (the -13 offset). Other components fail:
-  Mercury's Paksha bala (benefic or malefic) on all four, Moon's Saptavargaja
-  on 18 and 19 (Moon in Taurus), Dig bala on 18-20 (up to 5.4 virupas) and
-  Drik bala on 18-20 (up to 24 virupas). Move the files up a level once the
-  engine agrees or the difference is recorded as a decision.
+- `pending/jhora_shadbala/edge_23_*` (and `kala/`): Mercury's Paksha bala.
+  JHora counts Mercury benefic (16.13, as Jupiter and Venus); the engine
+  malefic (43.87). Mercury is in Leo with Venus, aspected by Mars (4th); the
+  Moon is Sukla Panchami, 48 deg from the Sun. The Moon's Drik bala (10.6
+  virupas off) probably follows from Mercury's nature. Move the files up a
+  level once the engine agrees.
 
 Boundary times below were found with the engine (Lahiri, mean nodes). Margins
 are wider than the known JHora differences (Lagna 17", planets 2.2"), so a sign

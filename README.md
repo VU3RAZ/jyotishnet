@@ -67,14 +67,16 @@ behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
   Ashtottari sequence exact, starts within 1.6 days; Chara antardasha order
   exact, mahadasha lengths differ in 0.9% (the variants above).
 - **Unit and property tests**: `pytest` (Hypothesis checks varga invariants).
-- **Jagannatha Hora golden set**: 27 JHora exports in `tests/golden/jhora`: 8
-  real charts (1836-1970) and 19 edge cases (Lagna, nakshatra and sign
-  boundaries, planetary wars, historical Indian time zones, high latitudes, the
-  southern hemisphere). Positions match within 2.2", Navamsa all, Ashtakavarga
-  and all pindas exactly, Vimshottari antardashas within 1 day. Shadbala against
-  JHora's breakdown (5 charts): Sthana and Naisargika exact, Dig/Kala/Drik within
-  a few virupas; Cheshta differs (see `docs/DECISIONS.md` #16). Four more
-  breakdowns wait in `tests/golden/pending/` (see `tests/golden/README.md`).
+- **Jagannatha Hora golden set**: 31 JHora exports in `tests/golden/jhora`: 8
+  real charts (1836-1970) and 23 edge cases (Lagna, nakshatra and sign
+  boundaries, planetary wars, historical Indian time zones, Abda/Masa lords,
+  solstices and equinoxes, high latitudes, the southern hemisphere). Positions
+  match within 2.2", Navamsa all, Ashtakavarga and all pindas exactly,
+  Vimshottari antardashas within 1 day. Shadbala against JHora's breakdown
+  (12 charts): Sthana, Dig, Drik and Naisargika within 0.05 virupa, and every
+  Kala part within 0.05 (`tests/golden/jhora_shadbala/kala/`) except Ayana
+  (`docs/DECISIONS.md` #13) and Yuddha (BPHS, which JHora omits); Cheshta
+  differs (#16). One more breakdown waits in `tests/golden/pending/`.
 
 ## Quick start
 
