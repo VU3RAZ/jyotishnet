@@ -11,6 +11,7 @@ import { SpecialPoints } from "@/components/SpecialPoints";
 import { JaiminiPoints } from "@/components/JaiminiPoints";
 import { PanchangaPanel } from "@/components/PanchangaPanel";
 import { LibraryPanel } from "@/components/LibraryPanel";
+import { DEFAULT_CANVAS, VargaCanvas } from "@/components/VargaCanvas";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
 import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, library, LifeEvent, SavedChart } from "@/lib/api";
 import { EventPanel } from "@/components/EventPanel";
@@ -47,6 +48,7 @@ export default function Workbench() {
   const [dashaSystem, setDashaSystem] = useState<DashaSystem>("vimshottari");
   const [events, setEvents] = useState<LifeEvent[]>([]);
   const [savedId, setSavedId] = useState<number | null>(null);
+  const [canvasVargas, setCanvasVargas] = useState<number[]>(DEFAULT_CANVAS);
 
   useEffect(() => { btr.events().then((r) => setRules(r.events)).catch(() => {}); }, []);
   // Events belong to one person: kept with the saved chart, or per chart in this
@@ -100,6 +102,9 @@ export default function Workbench() {
   const yogas = useLive(tab === "yogas" ? subjectKey : null, () => analysis.yogas(subject), 200);
   const av = useLive(tab === "ashtakavarga" ? subjectKey : null, () => analysis.ashtakavarga(subject), 200);
   const sb = useLive(tab === "shadbala" ? subjectKey : null, () => analysis.shadbala(subject), 200);
+  // The canvas follows the ribbon in rectify mode and shows the birth chart in transit mode.
+  const canvas = useLive(tab === "vargas" ? JSON.stringify([subject, canvasVargas]) : null,
+    () => api.chart(subject, canvasVargas));
   const panchanga = useLive(tab === "positions" ? subjectKey : null, () => analysis.panchanga(subject), 250);
   const transitAt: Birth = rectify ? { ...birth, local_datetime: `${eventDate}T12:00:00` } : moving;
   const gochara = useLive(tab === "transits" ? JSON.stringify([subject, transitAt]) : null,
@@ -224,7 +229,7 @@ export default function Workbench() {
       )}
 
       <AnalysisTabs tab={tab} onTab={setTab}
-        busy={yogas.loading || av.loading || sb.loading || dashas.loading || gochara.loading}>
+        busy={canvas.loading || yogas.loading || av.loading || sb.loading || dashas.loading || gochara.loading}>
         {tab === "positions" && (
           <div className="details">
             {chart && (
@@ -240,6 +245,9 @@ export default function Workbench() {
               date={mode === "rectify" ? eventDate : dashaAt.slice(0, 10)}
               onDate={mode === "rectify" ? setEventDate : undefined} />
           </div>
+        )}
+        {tab === "vargas" && (
+          <VargaCanvas chart={canvas.data ?? null} vargas={canvasVargas} onVargas={setCanvasVargas} style={style} />
         )}
         {tab === "yogas" && (yogas.data ? <YogaView yogas={yogas.data.yogas} /> : <p className="muted">Finding yogas…</p>)}
         {tab === "ashtakavarga" && (av.data && subjectChart

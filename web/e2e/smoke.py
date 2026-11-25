@@ -49,6 +49,21 @@ async def main() -> int:
         await page.select_option(".varga-pick select", "60")
         await step("slider + D60 while loading")
 
+        # Multi-varga canvas (M3.2): linked highlighting, varga sets, the slider.
+        await page.click("[role=tab]:has-text('Vargas')")
+        await page.wait_for_function("document.querySelectorAll('.canvas-grid .chart-svg').length === 10")
+        await page.click(".follow-chips button:has-text('Ju')")
+        await page.wait_for_function("document.querySelectorAll('.canvas-grid .planet.linked').length === 10")
+        await page.wait_for_selector("caption:has-text('Jupiter in each varga')")
+        await page.click(".canvas-controls button:has-text('Shodashavarga')")
+        await page.wait_for_function("document.querySelectorAll('.canvas-grid .chart-svg').length === 16")
+        await page.evaluate("""() => { const i = document.querySelector('#ribbon-input');
+            const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+            for (const v of ['-1200', '400']) { set.call(i, v); i.dispatchEvent(new Event('input', {bubbles: true})); } }""")
+        await page.wait_for_function("document.querySelectorAll('.canvas-grid .planet.linked').length === 16")
+        await page.hover(".canvas-grid .chart-card:nth-child(3) .planet >> nth=0")
+        await step("varga canvas", 1200)
+
         for tab in ["Yogas", "Ashtakavarga", "Shadbala", "Transits", "Dashas", "Positions"]:
             await page.click(f"[role=tab]:has-text('{tab}')")
             await step(f"tab {tab}", 1500)
@@ -106,12 +121,11 @@ async def main() -> int:
         await page.wait_for_selector(".note-list p:has-text('Smoke-test note')")
         await step("save chart + note")
         await page.select_option(".field.preset select", index=2)
-        await page.wait_for_timeout(600)
+        await page.wait_for_function("(s) => document.querySelector('h1').innerText.trim() !== s", arg=saved)
         await page.click(f".library-open:has-text('{saved}')")
+        await page.wait_for_function("(s) => document.querySelector('h1').innerText.trim() === s", arg=saved,
+                                     timeout=5000)
         await page.wait_for_selector(".note-list p:has-text('Smoke-test note')")
-        if (await page.inner_text("h1")).strip() != saved:
-            print("FAIL: reopening the saved chart did not restore it")
-            raise SystemExit(1)
         await step("reopen saved chart")
         await page.click(f".library-list li[aria-current=true] button:has-text('Delete')")
         await page.wait_for_selector(".library-list li[aria-current=true]", state="detached")

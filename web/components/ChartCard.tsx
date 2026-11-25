@@ -15,10 +15,13 @@ type Props = {
   onVarga?: (v: number) => void;
   note?: string;
   centre: string;
+  highlight?: string | null;
+  onHighlight?: (code: string | null, pin: boolean) => void;
 };
 
 /** A chart with its heading; flashes planets whose sign changed since the last render. */
-export function ChartCard({ title, lagnaSign, bySign, degrees, style, varga, onVarga, note, centre }: Props) {
+export function ChartCard({ title, lagnaSign, bySign, degrees, style, varga, onVarga, note, centre,
+  highlight, onHighlight }: Props) {
   const prev = useRef<{ lagna: number; signOf: Record<string, number> } | null>(null);
   const [flash, setFlash] = useState<Set<string>>(new Set());
   const [flashKey, setFlashKey] = useState(0);
@@ -57,7 +60,8 @@ export function ChartCard({ title, lagnaSign, bySign, degrees, style, varga, onV
         {note && <span className="chart-note">{note}</span>}
       </figcaption>
       <ChartFigure style={style} lagnaSign={lagnaSign} bySign={bySign} degrees={degrees}
-        flash={flash} flashKey={flashKey} title={title} centre={centre} />
+        flash={flash} flashKey={flashKey} title={title} centre={centre}
+        highlight={highlight} onHighlight={onHighlight} />
     </figure>
   );
 }

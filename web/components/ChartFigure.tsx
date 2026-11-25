@@ -14,7 +14,11 @@ type Props = {
   flashKey: number;                 // bumps to restart the flash animation
   title: string;
   centre: string;                   // short label for the South Indian centre
+  highlight?: string | null;        // planet code (or "La") lit up in every linked chart
+  onHighlight?: (code: string | null, pin: boolean) => void;
 };
+
+type Link = { highlight?: string | null; onHighlight?: (code: string | null, pin: boolean) => void };
 
 // North Indian: houses are fixed, signs rotate. Polygons in a 400 x 400 box.
 const NORTH_HOUSES: { poly: string; c: [number, number]; n: [number, number] }[] = [
@@ -37,10 +41,10 @@ const SOUTH_CELL: [number, number][] = [
   [1, 0], [2, 0], [3, 0], [3, 1], [3, 2], [3, 3], [2, 3], [1, 3], [0, 3], [0, 2], [0, 1], [0, 0],
 ];
 
-function PlanetLines({ items, x, y, compact, degrees, flash, flashKey }: {
+function PlanetLines({ items, x, y, compact, degrees, flash, flashKey, highlight, onHighlight }: {
   items: Placement[]; x: number; y: number; compact: boolean;
   degrees?: Record<string, number>; flash: Set<string>; flashKey: number;
-}) {
+} & Link) {
   const lineH = 17;
   const cols = compact && items.length > 3 ? 2 : 1;
   const rows = Math.ceil(items.length / cols);
@@ -54,12 +58,17 @@ function PlanetLines({ items, x, y, compact, degrees, flash, flashKey }: {
         const cls = ["planet",
           p.dignity === "exalted" ? "exalted" : "",
           p.dignity === "debilitated" ? "debilitated" : "",
-          flash.has(p.code) ? "flash" : ""].join(" ");
+          flash.has(p.code) ? "flash" : "",
+          highlight === p.code ? "linked" : "",
+          onHighlight ? "pickable" : ""].join(" ");
         const deg = degrees && degrees[p.code] !== undefined && cols === 1
           ? ` ${Math.floor(degrees[p.code])}°` : "";
         return (
           <text key={`${p.code}-${flash.has(p.code) ? flashKey : 0}`} x={px} y={top + row * lineH}
-            className={cls} textAnchor="middle" dominantBaseline="middle">
+            className={cls} textAnchor="middle" dominantBaseline="middle"
+            onMouseEnter={onHighlight && (() => onHighlight(p.code, false))}
+            onMouseLeave={onHighlight && (() => onHighlight(null, false))}
+            onClick={onHighlight && (() => onHighlight(p.code, true))}>
             {p.label}{deg}
             {p.retro && <tspan className="retro" dy={-5} fontSize="9">R</tspan>}
           </text>
@@ -69,7 +78,10 @@ function PlanetLines({ items, x, y, compact, degrees, flash, flashKey }: {
   );
 }
 
-export function ChartFigure({ style, lagnaSign, bySign, degrees, flash, flashKey, title, centre }: Props) {
+export function ChartFigure({ style, lagnaSign, bySign, degrees, flash, flashKey, title, centre,
+  highlight, onHighlight }: Props) {
+  const lit = (sign: number) => highlight != null &&
+    (highlight === "La" ? sign === lagnaSign : bySign[sign].some((p) => p.code === highlight));
   return (
     <svg viewBox="-2 -2 404 404" className="chart-svg" role="img"
       aria-label={`${title}, ${style === "north" ? "North" : "South"} Indian style`}>
@@ -81,11 +93,13 @@ export function ChartFigure({ style, lagnaSign, bySign, degrees, flash, flashKey
             const isTriangle = i % 3 !== 0;
             return (
               <g key={i}>
-                <polygon points={h.poly} className={i === 0 ? "house lagna-house" : "house"} />
+                <polygon points={h.poly}
+                  className={`${i === 0 ? "house lagna-house" : "house"}${lit(sign) ? " linked-house" : ""}`} />
                 <text x={h.n[0]} y={h.n[1]} className="sign-num" textAnchor="middle"
                   dominantBaseline="middle">{sign + 1}</text>
                 <PlanetLines items={bySign[sign]} x={h.c[0]} y={h.c[1]} compact={isTriangle}
-                  degrees={degrees} flash={flash} flashKey={flashKey} />
+                  degrees={degrees} flash={flash} flashKey={flashKey}
+                  highlight={highlight} onHighlight={onHighlight} />
               </g>
             );
           })}
@@ -101,14 +115,15 @@ export function ChartFigure({ style, lagnaSign, bySign, degrees, flash, flashKey
             return (
               <g key={sign}>
                 <rect x={x} y={y} width={100} height={100}
-                  className={isLagna ? "house lagna-house" : "house"} />
+                  className={`${isLagna ? "house lagna-house" : "house"}${lit(sign) ? " linked-house" : ""}`} />
                 <text x={x + 8} y={y + 14} className="sign-label">{SIGN_SHORT[sign]}</text>
                 {isLagna && <line x1={x + 74} y1={y} x2={x + 100} y2={y + 26} className="lagna-mark" />}
                 {isLagna && flash.has("La") && (
                   <rect key={`la-${flashKey}`} x={x} y={y} width={100} height={100} className="lagna-flash" />
                 )}
                 <PlanetLines items={bySign[sign]} x={x + 50} y={y + 56} compact={true}
-                  degrees={degrees} flash={flash} flashKey={flashKey} />
+                  degrees={degrees} flash={flash} flashKey={flashKey}
+                  highlight={highlight} onHighlight={onHighlight} />
               </g>
             );
           })}

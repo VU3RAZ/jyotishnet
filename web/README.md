@@ -29,6 +29,10 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   ±1 year, ±12 years) and shows today's planets in the birth houses, with the
   periods running on that date.
 - The eight Jagannatha Hora reference charts are available as presets.
+- **Vargas tab**: several divisional charts side by side (Shadvarga, Saptavarga,
+  Dashavarga, Shodashavarga or any choice). Hover a planet to light it up in every
+  chart; click it, or its chip, to keep it lit, with its sign in each varga below.
+  The charts follow the time ribbon.
 - **Saved charts and notes**: save the chart on screen, find saved charts by name,
   reopen them, keep dated notes and the life events with each one, delete them.
   They are stored by the API in a SQLite file on this computer

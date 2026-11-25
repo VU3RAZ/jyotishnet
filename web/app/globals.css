@@ -427,3 +427,26 @@ button, input, select { font: inherit; color: inherit; }
 }
 .note-form { display: grid; gap: 0.4rem; justify-items: start; }
 @media (max-width: 760px) { .library-body { grid-template-columns: 1fr; } }
+
+/* Multi-varga canvas (M3.2) ------------------------------------------------ */
+.varga-canvas { display: grid; gap: 0.9rem; }
+.canvas-controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+.varga-choose summary { cursor: pointer; color: var(--line); }
+.varga-checks { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; margin-top: 0.4rem; font-size: var(--step--1); }
+.follow-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+.follow-chips button {
+  border: 1px solid var(--rule); background: var(--surface); border-radius: 999px;
+  padding: 0.15rem 0.7rem; cursor: pointer; font-size: var(--step--1);
+}
+.follow-chips button.lit { border-color: var(--saffron); background: var(--saffron-wash); }
+.follow-chips button[aria-pressed="true"] { background: var(--saffron); border-color: var(--saffron); color: var(--ink); }
+.canvas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem 1.25rem; }
+.canvas-grid .chart-card figcaption { min-height: 0; }
+.canvas-grid .chart-card h2 { font-size: var(--step-0); }
+.planet.pickable { cursor: pointer; }
+.planet.linked { fill: #9a5f00; text-decoration: underline; }
+.house.linked-house { fill: var(--saffron-wash); }
+.follow-table caption { text-align: left; font-weight: 600; padding-bottom: 0.3rem; }
+.follow-table th, .follow-table td { text-align: center; }
+.canvas-grid .planet { font-size: 19px; }
+.canvas-grid .sign-num, .canvas-grid .sign-label { font-size: 13px; }
