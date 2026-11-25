@@ -10,8 +10,9 @@ import { GocharaView } from "@/components/GocharaView";
 import { SpecialPoints } from "@/components/SpecialPoints";
 import { JaiminiPoints } from "@/components/JaiminiPoints";
 import { PanchangaPanel } from "@/components/PanchangaPanel";
+import { LibraryPanel } from "@/components/LibraryPanel";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
-import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, LifeEvent } from "@/lib/api";
+import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, library, LifeEvent, SavedChart } from "@/lib/api";
 import { EventPanel } from "@/components/EventPanel";
 import { AnalysisTabs, TabId } from "@/components/AnalysisTabs";
 import { YogaView } from "@/components/YogaView";
@@ -45,16 +46,26 @@ export default function Workbench() {
   const [tab, setTab] = useState<TabId>("positions");
   const [dashaSystem, setDashaSystem] = useState<DashaSystem>("vimshottari");
   const [events, setEvents] = useState<LifeEvent[]>([]);
+  const [savedId, setSavedId] = useState<number | null>(null);
 
   useEffect(() => { btr.events().then((r) => setRules(r.events)).catch(() => {}); }, []);
-  // Events belong to one person: keep them per chart in this browser.
+  // Events belong to one person: kept with the saved chart, or per chart in this
+  // browser for a chart that is not saved.
   const storeKey = `jyotishnet.events.${name}.${birth.local_datetime}`;
   useEffect(() => {
+    if (savedId !== null) return;
     try { setEvents(JSON.parse(localStorage.getItem(storeKey) ?? "[]")); } catch { setEvents([]); }
-  }, [storeKey]);
+  }, [storeKey, savedId]);
+  function openSaved(c: SavedChart) {
+    setSavedId(c.id); setName(c.name); setBirth(c.birth); setEvents(c.events); setOffset(0);
+  }
   function saveEvents(next: LifeEvent[]) {
     const sorted = [...next].sort((a, b) => a.date.localeCompare(b.date));
     setEvents(sorted);
+    if (savedId !== null) {
+      library.update(savedId, { events: sorted }).catch(() => {});
+      return;
+    }
     try { localStorage.setItem(storeKey, JSON.stringify(sorted)); } catch { /* storage unavailable */ }
   }
 
@@ -148,6 +159,9 @@ export default function Workbench() {
         <BirthForm key={`${name}-${birth.local_datetime}`} name={name} birth={birth}
           onSubmit={(n, b) => { setName(n); setBirth(b); setOffset(0); }} />
       </header>
+
+      <LibraryPanel name={name} birth={birth} events={events} savedId={savedId}
+        onOpen={openSaved} onSaved={(c) => setSavedId(c.id)} onForget={() => setSavedId(null)} />
 
       <nav className="mode-bar" aria-label="What the slider moves">
         <div role="group" aria-label="Mode" className="segmented">

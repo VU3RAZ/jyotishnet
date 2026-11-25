@@ -94,6 +94,28 @@ async def main() -> int:
         await page.fill(".birth-form label:has-text('UTC offset') input", "6.5")
         await page.wait_for_selector(".form-warning", state="detached", timeout=5000)
         await step("birth form time-zone warning")
+
+        # Saved charts and notes (M3.1): save, annotate, open another, reopen, delete.
+        page.on("dialog", lambda d: asyncio.ensure_future(d.accept()))
+        await page.click("summary:has-text('Saved charts and notes')")
+        await page.click("button:has-text('Save this chart')")
+        await page.wait_for_selector(".library-list li[aria-current=true]")
+        saved = (await page.inner_text("h1")).strip()
+        await page.fill("textarea[aria-label='New note']", "Smoke-test note")
+        await page.click("button:has-text('Add note')")
+        await page.wait_for_selector(".note-list p:has-text('Smoke-test note')")
+        await step("save chart + note")
+        await page.select_option(".field.preset select", index=2)
+        await page.wait_for_timeout(600)
+        await page.click(f".library-open:has-text('{saved}')")
+        await page.wait_for_selector(".note-list p:has-text('Smoke-test note')")
+        if (await page.inner_text("h1")).strip() != saved:
+            print("FAIL: reopening the saved chart did not restore it")
+            raise SystemExit(1)
+        await step("reopen saved chart")
+        await page.click(f".library-list li[aria-current=true] button:has-text('Delete')")
+        await page.wait_for_selector(".library-list li[aria-current=true]", state="detached")
+        await step("delete saved chart")
         await browser.close()
     print("smoke test passed")
     return 0

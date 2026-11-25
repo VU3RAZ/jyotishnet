@@ -29,6 +29,11 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   ±1 year, ±12 years) and shows today's planets in the birth houses, with the
   periods running on that date.
 - The eight Jagannatha Hora reference charts are available as presets.
+- **Saved charts and notes**: save the chart on screen, find saved charts by name,
+  reopen them, keep dated notes and the life events with each one, delete them.
+  They are stored by the API in a SQLite file on this computer
+  (`JYOTISHNET_DB`, default `~/.local/share/jyotishnet/jyotishnet.db`). Life events of
+  a chart that is not saved stay in this browser, as before.
 
 ## Run it
 

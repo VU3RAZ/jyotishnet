@@ -28,7 +28,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[o for o in os.environ.get(
         "JYOTISHNET_CORS", "http://localhost:3000,http://127.0.0.1:3000").split(",") if o],
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -444,3 +444,110 @@ def btr_indicative(req: BtrRequest) -> dict:
     return {"periods": {k: [{**{x: v for x, v in r.items() if not x.endswith("_jd")},
                              "start": _iso(r["start_jd"]), "end": _iso(r["end_jd"])} for r in rows]
                         for k, rows in out.items()}}
+
+
+# ------------------------------------------------------------------ saved charts (M3.1)
+
+_store = None
+
+
+def get_store():
+    """The local chart store, opened on first use (tests replace it)."""
+    global _store
+    if _store is None:
+        from jyotishnet_api.store import Store
+        _store = Store()
+    return _store
+
+
+class SavedBirth(BaseModel):
+    local_datetime: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$")
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+    utc_offset_hours: float | None = Field(None, ge=-14, le=14)
+    tz_name: str | None = None
+    altitude_m: float | None = None
+
+
+class SavedEvent(BaseModel):
+    type: str = Field(min_length=1, max_length=40)
+    date: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
+    note: str | None = Field(None, max_length=500)
+
+
+class ChartIn(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    birth: SavedBirth
+    place: str = Field("", max_length=200)
+    events: list[SavedEvent] = Field(default_factory=list)
+
+
+class ChartPatch(BaseModel):
+    name: str | None = Field(None, min_length=1, max_length=200)
+    birth: SavedBirth | None = None
+    place: str | None = Field(None, max_length=200)
+    events: list[SavedEvent] | None = None
+
+
+class NoteIn(BaseModel):
+    text: str = Field(min_length=1, max_length=20000)
+
+
+def _dump(m: BaseModel | None):
+    return m.model_dump(exclude_none=True) if m is not None else None
+
+
+@app.get("/v1/charts")
+def list_charts(q: str = "") -> dict:
+    return {"charts": get_store().list_charts(q)}
+
+
+@app.post("/v1/charts", status_code=201)
+def create_chart(req: ChartIn) -> dict:
+    return get_store().create_chart(req.name, _dump(req.birth), req.place,
+                                    [_dump(e) for e in req.events])
+
+
+@app.get("/v1/charts/{chart_id}")
+def get_chart(chart_id: int) -> dict:
+    c = get_store().get_chart(chart_id)
+    if c is None:
+        raise HTTPException(404, "No such chart")
+    return c
+
+
+@app.put("/v1/charts/{chart_id}")
+def update_chart(chart_id: int, req: ChartPatch) -> dict:
+    c = get_store().update_chart(chart_id, name=req.name, birth=_dump(req.birth), place=req.place,
+                                 events=None if req.events is None else [_dump(e) for e in req.events])
+    if c is None:
+        raise HTTPException(404, "No such chart")
+    return c
+
+
+@app.delete("/v1/charts/{chart_id}", status_code=204)
+def delete_chart(chart_id: int) -> None:
+    if not get_store().delete_chart(chart_id):
+        raise HTTPException(404, "No such chart")
+
+
+@app.post("/v1/charts/{chart_id}/notes", status_code=201)
+def add_note(chart_id: int, req: NoteIn) -> dict:
+    n = get_store().add_note(chart_id, req.text)
+    if n is None:
+        raise HTTPException(404, "No such chart")
+    return n
+
+
+@app.put("/v1/notes/{note_id}")
+def update_note(note_id: int, req: NoteIn) -> dict:
+    n = get_store().update_note(note_id, req.text)
+    if n is None:
+        raise HTTPException(404, "No such note")
+    return n
+
+
+@app.delete("/v1/notes/{note_id}", status_code=204)
+def delete_note(note_id: int) -> None:
+    if not get_store().delete_note(note_id):
+        raise HTTPException(404, "No such note")

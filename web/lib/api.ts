@@ -42,9 +42,9 @@ export type RunningPeriod = { lord: string; name?: string | null; level: number;
 
 export type Boundary = { key: string; offset_min: number; utc: string; before: number; after: number };
 
-async function post<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
+async function post<T>(path: string, body: unknown, signal?: AbortSignal, method = "POST"): Promise<T> {
   const r = await fetch(`/api${path}`, {
-    method: "POST",
+    method,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
     signal,
@@ -180,4 +180,30 @@ export const analysis = {
   dashas: (birth: Birth, system: DashaSystem) =>
     post<{ system: string; periods: DashaPeriod[]; applicable?: boolean }>("/v1/dasha",
       { birth, system, levels: GRAHA_DASHAS.includes(system) ? 3 : 2 }),
+};
+
+// Saved charts (M3.1): kept in a SQLite file next to the API, never sent elsewhere.
+export type Note = { id: number; text: string; created: string; updated: string };
+export type SavedChart = {
+  id: number; name: string; birth: Birth; place: string; events: LifeEvent[];
+  created: string; updated: string; notes?: Note[]; note_count?: number;
+};
+
+async function call<T>(path: string, method = "GET"): Promise<T> {
+  const r = await fetch(`/api${path}`, { method });
+  if (!r.ok) throw new Error(`${path} failed (${r.status})`);
+  return (r.status === 204 ? undefined : r.json()) as Promise<T>;
+}
+
+export const library = {
+  list: (q = "") => call<{ charts: SavedChart[] }>(`/v1/charts?q=${encodeURIComponent(q)}`),
+  get: (id: number) => call<SavedChart>(`/v1/charts/${id}`),
+  create: (c: { name: string; birth: Birth; place?: string; events?: LifeEvent[] }) =>
+    post<SavedChart>("/v1/charts", c),
+  update: (id: number, c: Partial<{ name: string; birth: Birth; place: string; events: LifeEvent[] }>) =>
+    post<SavedChart>(`/v1/charts/${id}`, c, undefined, "PUT"),
+  remove: (id: number) => call<void>(`/v1/charts/${id}`, "DELETE"),
+  addNote: (id: number, text: string) => post<Note>(`/v1/charts/${id}/notes`, { text }),
+  updateNote: (noteId: number, text: string) => post<Note>(`/v1/notes/${noteId}`, { text }, undefined, "PUT"),
+  removeNote: (noteId: number) => call<void>(`/v1/notes/${noteId}`, "DELETE"),
 };
