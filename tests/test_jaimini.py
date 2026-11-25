@@ -101,5 +101,44 @@ def test_chara_karakas_seven():
     from jyotishnet_engine.jaimini import chara_karakas
     lons = {"Su": 29, "Mo": 1, "Ma": 2, "Me": 3, "Ju": 4, "Ve": 5, "Sa": 6, "Ra": 0.5}
     k = chara_karakas(lons, 7)
-    assert k["AK"] == "Su" and k["DK"] == "Mo" and "PiK" not in k
+    assert k["AK"] == "Su" and k["DK"] == "Mo" and k["PiK"] == "Me"
+    assert k["PK"] == k["MK"] == "Ju"                  # BPHS 32: MK also signifies children
     assert chara_karakas(lons)["AK"] == "Ra"           # Rahu at 0.5 counts as 29.5
+
+
+def _dm(d: int, m: float = 30) -> float:
+    return d + m / 60
+
+
+# P. V. R. Narasimha Rao, "Parasara's Teachings on Chara Karakas" (2008), examples 1, 2,
+# 3, 7, 8 and 12 with the degrees he prints (Rahu as he counts him, 30 deg minus his
+# degree; whole degrees given as mid-degree). Our own positions for examples 2, 7 and
+# 8 differ from his by 1-4' on the close calls.
+PVR_KARAKA_EXAMPLES = [
+    ({"Mo": _dm(26, 56), "Ve": _dm(26, 9), "Ma": _dm(21), "Me": _dm(16), "Ju": _dm(12, 54),
+      "Ra": _dm(12, 28), "Su": _dm(8), "Sa": _dm(4)},
+     "AK Mo AmK Ve BK Ma MK Me PK Ju GK Su DK Sa"),                       # PiK empty
+    ({"Ra": _dm(27), "Mo": _dm(22, 19), "Ma": _dm(22, 18), "Me": _dm(15), "Ju": _dm(14),
+      "Sa": _dm(13), "Ve": _dm(9), "Su": _dm(6)},
+     "AK Ra BK Mo MK Me PiK Ju PK Sa GK Ve DK Su"),                       # AmK empty
+    ({"Su": _dm(29), "Mo": _dm(17), "Sa": _dm(13), "Me": _dm(11), "Ve": _dm(7), "Ma": _dm(6),
+      "Ju": _dm(4), "Ra": _dm(13)},
+     "AK Su AmK Mo BK Sa MK Me PK Me PiK Ve GK Ma DK Ju"),                 # seven
+    ({"Mo": _dm(29), "Ve": _dm(16), "Ra": _dm(15), "Ju": _dm(14, 10), "Sa": _dm(14, 4),
+      "Me": _dm(11), "Ma": _dm(3), "Su": _dm(2)},
+     "AK Mo AmK Ve BK Ra PiK Ju PK Me GK Ma DK Su"),                       # MK empty
+    ({"Sa": _dm(23, 30), "Me": _dm(23, 27), "Ju": _dm(21), "Ra": _dm(13), "Ve": _dm(8),
+      "Mo": _dm(5, 39), "Ma": _dm(5, 25), "Su": _dm(0)},
+     "AK Sa AmK Me BK Ju MK Ra PiK Ve GK Mo DK Su"),                       # PK empty
+    ({"Ve": _dm(28), "Ju": _dm(25), "Mo": _dm(23), "Su": _dm(20), "Me": _dm(16, 43),
+      "Ma": _dm(16, 13), "Ra": _dm(3, 29), "Sa": _dm(3, 25)},
+     "AK Ve AmK Ju BK Mo MK Su PK Me DK Ra"),                              # PiK, GK empty
+]
+
+
+@pytest.mark.parametrize("degrees,want", PVR_KARAKA_EXAMPLES)
+def test_chara_karakas_parasara_pvr(degrees, want):
+    from jyotishnet_engine.jaimini import chara_karakas
+    lons = {p: (30 - d if p == "Ra" else d) for p, d in degrees.items()}
+    w = want.split()
+    assert chara_karakas(lons, "parasara") == dict(zip(w[::2], w[1::2]))

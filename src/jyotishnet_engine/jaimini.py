@@ -49,20 +49,58 @@ CO_LORD_PLANETS = ("Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke")
 
 
 KARAKAS_8 = ("AK", "AmK", "BK", "MK", "PiK", "PK", "GK", "DK")
-KARAKAS_7 = ("AK", "AmK", "BK", "MK", "PK", "GK", "DK")
+# Seven portfolios (BPHS ch. 32): no separate PK; the MK also signifies children.
+KARAKAS_7 = ("AK", "AmK", "BK", "MK", "PiK", "GK", "DK")
+SEVEN = ("Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa")
 
 
-def chara_karakas(longitudes: dict[str, float], n: int = 8) -> dict[str, str]:
-    """{karaka: graha} by degrees in the sign (Rahu backwards); n = 8 or 7."""
+def _karaka_degree(longitudes: dict[str, float], p: str) -> float:
+    d = longitudes[p] % 30.0
+    return 30.0 - d if p == "Ra" else d          # Rahu moves backwards
+
+
+def chara_karakas(longitudes: dict[str, float], n: int | str = 8) -> dict[str, str]:
+    """{karaka: graha} by degrees in the sign (Rahu counted as 30 deg minus his degree).
+
+    n = 8: Sun to Rahu (Jagannatha Hora's default). n = 7: Sun to Saturn, the MK also
+    being the PK (BPHS 32). n = "parasara": BPHS 32 as P. V. R. Narasimha Rao reads it
+    ("Parasara's Teachings on Chara Karakas", 2008, procedure steps 1-6,
+    https://www.vedicastrologer.org/articles/c_karaka.pdf): 7 karakas, or 8 with Rahu
+    when two of Sun..Saturn are in the same whole degree; the AK by full longitude, the
+    others by whole degrees; planets in the same degree compete for as many portfolios,
+    all but the lowest of which stay empty (to be judged from the fixed karaka, a
+    strength judgment not made here) and the lowest goes to the most advanced of them.
+    """
+    if n == "parasara":
+        return _parasara_karakas(longitudes)
     if n not in (7, 8):
-        raise ValueError("chara karakas: n must be 7 or 8")
-    grahas = ["Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"] + (["Ra"] if n == 8 else [])
+        raise ValueError("chara karakas: n must be 7, 8 or 'parasara'")
+    grahas = list(SEVEN) + (["Ra"] if n == 8 else [])
+    ranked = sorted(grahas, key=lambda p: _karaka_degree(longitudes, p), reverse=True)
+    k = dict(zip(KARAKAS_8 if n == 8 else KARAKAS_7, ranked))
+    if n == 7:
+        k["PK"] = k["MK"]
+    return k
 
-    def deg(p: str) -> float:
-        d = longitudes[p] % 30.0
-        return 30.0 - d if p == "Ra" else d
-    ranked = sorted(grahas, key=deg, reverse=True)
-    return dict(zip(KARAKAS_8 if n == 8 else KARAKAS_7, ranked))
+
+def _parasara_karakas(longitudes: dict[str, float]) -> dict[str, str]:
+    whole = {p: int(_karaka_degree(longitudes, p)) for p in (*SEVEN, "Ra")}
+    eight = len({whole[p] for p in SEVEN}) < 7
+    grahas = list(SEVEN) + (["Ra"] if eight else [])
+    names = KARAKAS_8 if eight else KARAKAS_7
+    ak = max(grahas, key=lambda p: _karaka_degree(longitudes, p))
+    rest = sorted((p for p in grahas if p != ak),
+                  key=lambda p: (whole[p], _karaka_degree(longitudes, p)), reverse=True)
+    k, slot, i = {"AK": ak}, 1, 0
+    while i < len(rest) and slot < len(names):
+        group = [p for p in rest[i:] if whole[p] == whole[rest[i]]]
+        slot += len(group) - 1                   # the higher portfolios stay empty
+        if slot < len(names):
+            k[names[slot]] = group[0]            # the most advanced in that degree
+        slot, i = slot + 1, i + len(group)
+    if not eight and "MK" in k:
+        k["PK"] = k["MK"]
+    return k
 
 
 def rasi_drishti(sign: int) -> set[int]:

@@ -56,7 +56,10 @@ class SchoolConfig:
     dasha_year_mode: str = "solar"
     dasha_year_days: float = 365.25
     node_special_aspects: bool = False
-    chara_karakas: int = 8
+    # Chara karakas: 8 (Sun to Rahu; JHora's default), 7 (Sun to Saturn, MK also PK)
+    # or "parasara" (7, or 8 when two planets share a degree; P. V. R. Narasimha Rao's
+    # reading of BPHS 32, see jaimini.chara_karakas).
+    chara_karakas: int | str = 8
     # K. N. Rao Chara dasha: +1 year for an exalted lord, -1 for a debilitated one.
     # JHora 8.0 does not adjust (default); K. N. Rao's books do.
     chara_exaltation_adjust: bool = False
@@ -64,6 +67,9 @@ class SchoolConfig:
     # with it, then higher degree) or "knrao" (also Jupiter/Mercury/dispositor,
     # exaltation and sign kind before the degree).
     chara_co_lord_rule: str = "jhora"
+    # Parashara's Chara dasha: +1/-1 year for an exalted/debilitated lord (JHora 8.0's
+    # default); P. V. R. Narasimha Rao's 2014 article makes no adjustment.
+    chara_parasara_exaltation_adjust: bool = True
     # Bhava arudhas (JHora defaults): Parashara's exceptions (a pada in the house or
     # its 7th moves to the 10th from there); Rahu/Ketu as lords of Aquarius/Scorpio
     # when stronger than Saturn/Mars.

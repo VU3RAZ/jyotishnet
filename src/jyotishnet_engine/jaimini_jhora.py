@@ -657,13 +657,19 @@ def _parasara_co_lord(jc: JaiminiChart, a: str, b: str) -> str:
 
 def chara_parasara_dasha(lagna: int, signs: dict[str, int], longitudes: dict[str, float],
                          birth_jd: float, cfg: SchoolConfig = DEFAULT_CONFIG,
-                         levels: int = 2, points: dict[str, float] | None = None,
-                         exaltation_adjust: bool = True) -> list[Period]:
+                         levels: int = 2, points: dict[str, float] | None = None) -> list[Period]:
     """Chara dasha of Parashara as JHora 8.0: from the Lagna, regular signs forward from
-    Ar, Le, Vi, Li, Aq, Pi and backward from the others; years the count from the sign
-    to its lord (forward from Ar, Ta, Ge, Li, Sc, Sg), 12 in the sign itself, +1 exalted
-    and -1 debilitated (JHora's "Chara dasa exaltation exception", on by default); two
-    cycles; antardashas by AD_STEPS."""
+    Ar, Le, Vi, Li, Aq, Pi and backward from the others (the 9th from the sign
+    odd-footed or not); years the count from the sign to its lord (forward from Ar, Ta,
+    Ge, Li, Sc, Sg), 12 in the sign itself, +1 exalted and -1 debilitated (JHora's
+    "Chara dasa exaltation exception", on by default; cfg.chara_parasara_exaltation_adjust);
+    two cycles; antardashas by AD_STEPS. Co-lord of Scorpio/Aquarius: both in the sign
+    12 years, one in it the other, then more grahas with it, movable over fixed over
+    dual, more years. Direction, count and co-lord rules are those of P. V. R. Narasimha
+    Rao, "Unlocking the Power of Parasara's Chara Dasa" (2014), which however starts
+    from whichever of Lagna, Moon and Sun has the strongest lord and makes no
+    exaltation adjustment (not implemented: its seed rule (f) is judged, not computed)."""
+    exaltation_adjust = cfg.chara_parasara_exaltation_adjust
     jc = JaiminiChart(signs, longitudes)
     lords = {10: _parasara_co_lord(jc, "Sa", "Ra"), 7: _parasara_co_lord(jc, "Ma", "Ke")}
     step = 1 if lagna in FORWARD else -1

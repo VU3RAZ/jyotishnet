@@ -164,3 +164,14 @@ def test_rasi_dashas_and_jaimini_points():
     c = client.post("/v1/chart", json={"birth": BIRTH}).json()
     assert set(c["karakas"]) == {"AK", "AmK", "BK", "MK", "PiK", "PK", "GK", "DK"}
     assert len(c["arudhas"]) == 12 and all(0 <= s < 12 for s in c["arudhas"])
+
+
+def test_chara_karaka_scheme_setting():
+    r = client.post("/v1/chart", json={"birth": BIRTH, "config": {"chara_karakas": "parasara"}})
+    assert r.status_code == 200
+    k = r.json()["karakas"]
+    assert "AK" in k and len(set(k) - {"PK"}) >= 6
+    assert client.post("/v1/chart", json={"birth": BIRTH, "config": {"chara_karakas": 9}}).status_code == 422
+    r = client.post("/v1/dasha", json={"birth": BIRTH, "system": "chara_parasara", "levels": 1,
+                                       "config": {"chara_parasara_exaltation_adjust": False}})
+    assert r.status_code == 200

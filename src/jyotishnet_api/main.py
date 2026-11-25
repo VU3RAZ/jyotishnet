@@ -47,10 +47,14 @@ class ConfigIn(BaseModel):
     nadiamsa_scheme: str = Field("chandra_kala", pattern="^(chandra_kala|uniform)$")
     arudha_exceptions: bool = True
     chara_exaltation_adjust: bool = False
+    chara_parasara_exaltation_adjust: bool = True
     chara_co_lord_rule: str = Field("jhora", pattern="^(jhora|knrao)$")
     arudha_node_lords: bool = True
+    chara_karakas: int | str = Field(8, description='8 (JHora), 7, or "parasara" (BPHS 32 as P. V. R. Narasimha Rao)')
 
     def to_config(self) -> SchoolConfig:
+        if self.chara_karakas not in (7, 8, "parasara"):
+            raise HTTPException(422, 'chara_karakas must be 7, 8 or "parasara"')
         return SchoolConfig(**self.model_dump())
 
 
