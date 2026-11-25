@@ -53,5 +53,10 @@ D-150 tables (`jhora_nadiamsa`): Basics tab > "Amsa rulers" sub-tab, right-click
 Yogi tables (`jhora_yogi`): Basics tab, right-click the body table, "Yogi, Sahayogi
 and Avayogi Planets", right-click again, "Copy to clipboard".
 
+Monthly panchanga (`jhora_panchanga`): Miscellany tab (572,99 on a 1280x1024
+display) > Panchanga sub-tab (801,983) > right-click the text (850,850) > "Copy
+monthly panchanga" (930,913); it covers the birth month at the birth place. Save the
+clipboard as `SRC/<chart>.txt` and run `tools/import_jhora_panchanga.py SRC`.
+
 `xdrive.py` also takes screenshots (`xdrive.py shot out.png`) for finding new
 menu positions.

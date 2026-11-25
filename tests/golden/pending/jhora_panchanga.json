@@ -1,0 +1,350 @@
+[
+ {
+  "chart": "edge_01_lagna_aries",
+  "date": "1984-03-16",
+  "field": "varjya",
+  "note": "JHora leaves out a varjya that overlaps the day (nakshatra starting shortly before next sunrise); rule not found"
+ },
+ {
+  "chart": "edge_07_war_time_1943",
+  "date": "1943-06-29",
+  "field": "yoga",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_07_war_time_1943",
+  "date": "1943-06-30",
+  "field": "yoga",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_10_calcutta_time_1946",
+  "date": "1946-05-25",
+  "field": "nakshatra",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-01",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-02",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-03",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-04",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-05",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-06",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-07",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-07",
+  "field": "moonrise",
+  "note": "64 N: JHora's moon event differs by 10-40 min; not investigated"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-08",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-08",
+  "field": "moonrise",
+  "note": "64 N: JHora's moon event differs by 10-40 min; not investigated"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-09",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-10",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-11",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-12",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-12",
+  "field": "moonset",
+  "note": "64 N: JHora's moon event differs by 10-40 min; not investigated"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-13",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-13",
+  "field": "moonset",
+  "note": "64 N: JHora's moon event differs by 10-40 min; not investigated"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-14",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-15",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-16",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-17",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-18",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-19",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-20",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-21",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-22",
+  "field": "sunrise",
+  "note": "JHora prints the next day's sunrise (its kalas use the right one)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-28",
+  "field": "sunset",
+  "note": "JHora prints a sunset a day late (Reykjavik, sunset near midnight)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-29",
+  "field": "sunset",
+  "note": "JHora prints a sunset a day late (Reykjavik, sunset near midnight)"
+ },
+ {
+  "chart": "edge_13_reykjavik_short_night",
+  "date": "1975-06-30",
+  "field": "sunset",
+  "note": "JHora prints a sunset a day late (Reykjavik, sunset near midnight)"
+ },
+ {
+  "chart": "edge_17_masa_1984_01_07",
+  "date": "1984-01-10",
+  "field": "sunset",
+  "note": "3.3-3.6 s past the rounding margin"
+ },
+ {
+  "chart": "edge_17_masa_1984_01_07",
+  "date": "1984-01-30",
+  "field": "nakshatra",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_19_masa_1984_03_10",
+  "date": "1984-03-16",
+  "field": "varjya",
+  "note": "JHora leaves out a varjya that overlaps the day (nakshatra starting shortly before next sunrise); rule not found"
+ },
+ {
+  "chart": "edge_26_los_angeles",
+  "date": "1985-11-07",
+  "field": "varjya",
+  "note": "JHora leaves out a varjya that overlaps the day (nakshatra starting shortly before next sunrise); rule not found"
+ },
+ {
+  "chart": "edge_26_los_angeles",
+  "date": "1985-11-12",
+  "field": "moonrise",
+  "note": "moon event seconds after sunrise: JHora takes the next one"
+ },
+ {
+  "chart": "edge_31_moscow",
+  "date": "1961-04-28",
+  "field": "sunset",
+  "note": "3.3-3.6 s past the rounding margin"
+ },
+ {
+  "chart": "edge_34_tokyo",
+  "date": "1989-01-22",
+  "field": "moonset",
+  "note": "moon event seconds after sunrise: JHora takes the next one"
+ },
+ {
+  "chart": "edge_35_perth",
+  "date": "2010-02-24",
+  "field": "karana",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-08",
+  "field": "yoga",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-13",
+  "field": "karana",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-18",
+  "field": "karana",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-21",
+  "field": "nakshatra",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-21",
+  "field": "moon_sign",
+  "note": "Moon sign ends 5 s before JHora's minute; this 1800 chart is about 5 s off JHora throughout (see pending/jhora_rasi_dashas/edge_38)"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-24",
+  "field": "tithi",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-24",
+  "field": "karana",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-24",
+  "field": "karana",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_38_varanasi_1800_lmt",
+  "date": "1800-01-25",
+  "field": "varjya",
+  "note": "JHora leaves out a varjya that overlaps the day (nakshatra starting shortly before next sunrise); rule not found"
+ },
+ {
+  "chart": "edge_42_just_after_sunset",
+  "date": "1998-11-03",
+  "field": "varjya",
+  "note": "JHora leaves out a varjya that overlaps the day (nakshatra starting shortly before next sunrise); rule not found"
+ },
+ {
+  "chart": "edge_42_just_after_sunset",
+  "date": "1998-11-08",
+  "field": "tithi",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_42_just_after_sunset",
+  "date": "1998-11-08",
+  "field": "karana",
+  "note": "element ends within seconds of sunrise; JHora and we put it on different days"
+ },
+ {
+  "chart": "edge_47_quito_equator",
+  "date": "1979-09-06",
+  "field": "moonset",
+  "note": "moon event seconds after sunrise: JHora takes the next one"
+ },
+ {
+  "chart": "pandit_suryanarayan_rao",
+  "date": "1856-02-13",
+  "field": "varjya",
+  "note": "JHora leaves out a varjya that overlaps the day (nakshatra starting shortly before next sunrise); rule not found"
+ },
+ {
+  "chart": "ramakrishna_paramhansa",
+  "date": "1836-02-10",
+  "field": "tithi",
+  "note": "ends 4 s before JHora's minute; this 1836 chart is about 5 s off JHora on other dates too (see pending/jhora_rasi_dashas/ramakrishna_paramhansa.json)"
+ },
+ {
+  "chart": "ramakrishna_paramhansa",
+  "date": "1836-02-10",
+  "field": "karana",
+  "note": "ends 4 s before JHora's minute; this 1836 chart is about 5 s off JHora on other dates too (see pending/jhora_rasi_dashas/ramakrishna_paramhansa.json)"
+ },
+ {
+  "chart": "ramakrishna_paramhansa",
+  "date": "1836-02-17",
+  "field": "nakshatra",
+  "note": "ends 4 s before JHora's minute; this 1836 chart is about 5 s off JHora on other dates too (see pending/jhora_rasi_dashas/ramakrishna_paramhansa.json)"
+ }
+]

@@ -79,8 +79,24 @@ for a visual check (`tests/test_jhora_rasi_dashas.py`). `jhora_arudhas.json` hol
 sign of each arudha label (AL, A2..A11, UL) read from those drawings for all 55 charts;
 null where the label is hidden under other text (29 of 660; `tests/test_jhora_arudhas.py`).
 
+`jhora_panchanga/` holds JHora's monthly panchanga of each chart's birth month at the
+birth place (Miscellany tab > Panchanga sub-tab > right-click > "Copy monthly
+panchanga"; recipe in `tools/jhora/README.md`), converted by
+`tools/import_jhora_panchanga.py` to one entry per day with times in minutes from the
+local midnight (`tests/test_jhora_panchanga.py`). JHora's print quirks, handled by the
+importer: the last day or two of an export can come out with every time marked "*"
+(next day) though they belong to that date, and are dropped; some days print "Moonset"
+twice instead of the Moon's sign (`moon_sign` null, 17 days); at Reykjavik in June
+the printed sunrise is the next day's (the kalas use the right one).
+`pending/jhora_panchanga.json` lists single day fields the test skips, with a note
+each: elements ending within seconds of sunrise (JHora and we put them on different
+days), the same for a moonrise or moonset seconds after sunrise, the Reykjavik sunrise
+print, high-latitude moon events, a few ends about 5 s early on the 1800 and 1836
+charts (the 19th-century offset noted below), and three varjyas that JHora leaves out though they
+overlap the day.
+
 Files in `pending/` wait for the engine or a decision; the tests do not read
-them:
+them (except `pending/jhora_panchanga.json`, the skip list above):
 
 - `pending/jhora/edge_39_*`, `edge_40_*` (2050, 2100): JHora's Delta T for
   future dates is larger than Swiss Ephemeris's current model (about 48 s in
