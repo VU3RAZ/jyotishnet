@@ -14,6 +14,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from jyotishnet_engine.jaimini_jhora import RASI_DASHAS, rasi_dasha
 from jyotishnet_engine import (
     Ayanamsa, BirthData, HouseSystem, NodeType, SchoolConfig, SunriseMode,
     boundary_map, build_chart, running, vimshottari, yogini,
@@ -44,6 +45,10 @@ class ConfigIn(BaseModel):
     rudramsa_scheme: str = Field("rath", pattern="^(rath|raman)$")
     d108_scheme: str = Field("navamsa", pattern="^(navamsa|rasi)$")
     nadiamsa_scheme: str = Field("chandra_kala", pattern="^(chandra_kala|uniform)$")
+    arudha_exceptions: bool = True
+    chara_exaltation_adjust: bool = False
+    chara_co_lord_rule: str = Field("jhora", pattern="^(jhora|knrao)$")
+    arudha_node_lords: bool = True
 
     def to_config(self) -> SchoolConfig:
         return SchoolConfig(**self.model_dump())
@@ -76,7 +81,7 @@ class ChartRequest(BaseModel):
 class DashaRequest(BaseModel):
     birth: BirthIn
     config: ConfigIn = ConfigIn()
-    system: str = Field("vimshottari", pattern="^(vimshottari|ashtottari|yogini|chara)$")
+    system: str = Field("vimshottari", pattern="^(vimshottari|ashtottari|yogini|chara|" + "|".join(RASI_DASHAS) + ")$")
     levels: int = Field(3, ge=1, le=3)
     at: datetime | None = Field(None, description="UTC moment for the running-period lookup")
 
@@ -151,6 +156,8 @@ def dasha(req: DashaRequest) -> dict:
         periods = chara_dasha(c.lagna.sign, {k: p.sign for k, p in c.grahas.items()},
                               {k: p.longitude for k, p in c.grahas.items()}, c.jd_ut, cfg,
                               levels=min(req.levels, 2))
+    elif req.system in RASI_DASHAS:
+        periods = rasi_dasha(req.system, c, cfg, levels=min(req.levels, 2))
     elif req.system == "ashtottari":
         periods = ashtottari(moon, c.jd_ut, cfg, levels=req.levels)
     else:
@@ -322,6 +329,14 @@ def _events(req: BtrRequest) -> list[tuple[str, date_type]]:
     if bad:
         raise HTTPException(422, f"Unknown event type(s): {', '.join(bad)}. Known: {', '.join(rules)}")
     return [(e.type, e.date) for e in req.events]
+
+
+@app.get("/v1/dasha/systems")
+def dasha_systems() -> dict:
+    """Dasha systems of /v1/dasha; the Jaimini rasi dashas follow JHora 8.0's defaults."""
+    return {"graha": ["vimshottari", "ashtottari", "yogini"],
+            "rasi": [{"id": "chara", "label": "Chara (K. N. Rao)"}]
+            + [{"id": k, "label": v[1]} for k, v in RASI_DASHAS.items()]}
 
 
 @app.get("/v1/btr/events")

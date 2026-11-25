@@ -352,6 +352,11 @@ button, input, select { font: inherit; color: inherit; }
 
 .dasha-toolbar { display: grid; gap: 0.5rem; }
 .dasha-toolbar p { margin: 0; }
+.rasi-pick { color: var(--muted); font-size: var(--step--1); }
+.rasi-pick select {
+  font: inherit; color: var(--ink, inherit); border: 0; border-bottom: 1px solid var(--line);
+  background: transparent; padding: 0.15rem 1.25rem 0.15rem 0; cursor: pointer;
+}
 .timeline { position: relative; height: 44px; background: var(--surface); border: 1px solid var(--rule); }
 .tl-seg {
   position: absolute; top: 0; bottom: 0; border: 0; border-right: 1px solid var(--paper);

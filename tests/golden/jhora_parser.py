@@ -48,6 +48,8 @@ class JHoraChart:
     vimshopaka: dict[str, dict[str, float]] = field(default_factory=dict)
     # {n: {body: sign 0..11}} from the North Indian chart drawings (La, Su..Ke)
     vargas: dict[int, dict[str, int]] = field(default_factory=dict)
+    # {karaka: graha} from the body table ("Sun - AK"), eight-karaka scheme
+    karakas: dict[str, str] = field(default_factory=dict)
 
 
 def _dms(d: str, m: str, s: str) -> float:
@@ -86,13 +88,15 @@ def parse(path: str | Path) -> JHoraChart:
 
     body_re = re.compile(
         r"^(" + "|".join(sorted(BODY_CODES, key=len, reverse=True)) + r")"
-        r"""(\s+\(R\))?(?:\s+-\s+\w+)?\s+(\d+)\s+(\w\w)\s+(\d+)'\s+([\d.]+)"\s+\S+\s+\d\s+\w\w\s+(\w\w)""", re.M)
+        r"""(\s+\(R\))?(?:\s+-\s+(\w+))?\s+(\d+)\s+(\w\w)\s+(\d+)'\s+([\d.]+)"\s+\S+\s+\d\s+\w\w\s+(\w\w)""", re.M)
     for m in body_re.finditer(text):
         code = BODY_CODES[m.group(1)]
         if code in chart.longitudes:
             continue
-        chart.longitudes[code] = SIGNS.index(m.group(4)) * 30 + _dms(m.group(3), m.group(5), m.group(6))
-        chart.navamsa[code] = SIGNS.index(m.group(7))
+        chart.longitudes[code] = SIGNS.index(m.group(5)) * 30 + _dms(m.group(4), m.group(6), m.group(7))
+        chart.navamsa[code] = SIGNS.index(m.group(8))
+        if m.group(3):
+            chart.karakas[m.group(3)] = code
         chart.retrograde[code] = bool(m.group(2))
 
     chart.vargas = parse_varga_charts(text)

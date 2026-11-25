@@ -80,3 +80,26 @@ def test_chara_dasha_structure():
     ps = chara_dasha(3, signs, degs, 2451545.0, FIXED, cycles=1)
     assert [int(p.lord) for p in ps[:3]] == [3, 2, 1]
     assert ps[0].start_jd == pytest.approx(2451545.0)
+
+
+def test_chara_karakas_match_jhora():
+    """Eight chara karakas against the labels in JHora's body table (55 golden charts)."""
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent / "golden"))
+    from jhora_parser import load_all
+
+    from jyotishnet_engine.jaimini import chara_karakas
+    charts = load_all()
+    assert len(charts) == 55
+    for c in charts:
+        lons = {p: c.longitudes[p] for p in ("Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra")}
+        assert chara_karakas(lons) == c.karakas, c.name
+
+
+def test_chara_karakas_seven():
+    from jyotishnet_engine.jaimini import chara_karakas
+    lons = {"Su": 29, "Mo": 1, "Ma": 2, "Me": 3, "Ju": 4, "Ve": 5, "Sa": 6, "Ra": 0.5}
+    k = chara_karakas(lons, 7)
+    assert k["AK"] == "Su" and k["DK"] == "Mo" and "PiK" not in k
+    assert chara_karakas(lons)["AK"] == "Ra"           # Rahu at 0.5 counts as 29.5

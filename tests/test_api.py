@@ -151,3 +151,16 @@ def test_transits():
     assert body["planets"]["Mo"]["murthi"] is None and body["planets"]["Ra"]["av_score"] is None
     phases = [s["phase"] for s in body["saturn_spells"]]
     assert {"rising", "peak", "setting"} <= set(phases)
+
+
+def test_rasi_dashas_and_jaimini_points():
+    systems = client.get("/v1/dasha/systems").json()["rasi"]
+    assert len(systems) == 19
+    for s in systems:
+        r = client.post("/v1/dasha", json={"birth": BIRTH, "system": s["id"], "levels": 2})
+        assert r.status_code == 200, s
+        periods = r.json()["periods"]
+        assert len(periods) in (12, 24) and all(len(p["children"]) == 12 for p in periods)
+    c = client.post("/v1/chart", json={"birth": BIRTH}).json()
+    assert set(c["karakas"]) == {"AK", "AmK", "BK", "MK", "PiK", "PK", "GK", "DK"}
+    assert len(c["arudhas"]) == 12 and all(0 <= s < 12 for s in c["arudhas"])

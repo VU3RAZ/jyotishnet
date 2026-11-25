@@ -57,6 +57,18 @@ class SchoolConfig:
     dasha_year_days: float = 365.25
     node_special_aspects: bool = False
     chara_karakas: int = 8
+    # K. N. Rao Chara dasha: +1 year for an exalted lord, -1 for a debilitated one.
+    # JHora 8.0 does not adjust (default); K. N. Rao's books do.
+    chara_exaltation_adjust: bool = False
+    # Its co-lord of Scorpio/Aquarius: "jhora" (JHora 8.0: occupation, then more grahas
+    # with it, then higher degree) or "knrao" (also Jupiter/Mercury/dispositor,
+    # exaltation and sign kind before the degree).
+    chara_co_lord_rule: str = "jhora"
+    # Bhava arudhas (JHora defaults): Parashara's exceptions (a pada in the house or
+    # its 7th moves to the 10th from there); Rahu/Ketu as lords of Aquarius/Scorpio
+    # when stronger than Saturn/Mars.
+    arudha_exceptions: bool = True
+    arudha_node_lords: bool = True
     # D2 scheme: "uma_shambhu" (Jagannatha Hora's default) or "parashara" (Leo/Cancer).
     hora_scheme: str = "uma_shambhu"
     # D11: "rath" (zodiacal, JHora's default) or "raman" (anti-zodiacal).

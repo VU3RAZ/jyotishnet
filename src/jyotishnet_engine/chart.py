@@ -14,6 +14,8 @@ from .dignity import dignity
 from .ephemeris import ascendant, ayanamsa, house_cusps, planets
 from .nakshatra import nakshatra_of
 from .special_lagnas import special_lagnas
+from .jaimini import chara_karakas
+from .jaimini_jhora import JaiminiChart
 from .upagrahas import (bhrigu_bindu, indu_lagna, sree_lagna, sun_upagrahas, time_upagrahas,
                         varnada_lagna, yogi)
 from .timeutil import BirthData
@@ -52,6 +54,9 @@ class Chart:
     house_cusps: list[float]
     sunrise_jd: float
     yogi: dict = field(default_factory=dict)
+    # Jaimini: chara karakas {karaka: graha} and bhava arudhas A1 (AL) .. A12 (UL) as signs
+    karakas: dict = field(default_factory=dict)
+    arudhas: list = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -121,11 +126,14 @@ def build_chart(birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
     special.update({k: _point(k, v, lagna_sign, vargas, cfg) for k, v in points.items()})
 
     house_lords = {h: SIGN_LORD[(lagna_sign + h - 1) % 12] for h in range(1, 13)}
+    jc = JaiminiChart({k: g.sign for k, g in grahas.items()}, lons)
     return Chart(
         jd_ut=jd, ayanamsa=ayanamsa(jd, cfg), config_key=cfg.key(), lagna=lagna,
         grahas=grahas, special=special, house_lords=house_lords,
         house_cusps=house_cusps(jd, birth.latitude, birth.longitude, cfg),
         sunrise_jd=sl.sunrise_jd, yogi=asdict(yogi(lons["Su"], lons["Mo"])),
+        karakas=chara_karakas(lons, cfg.chara_karakas),
+        arudhas=jc.bhava_arudhas(lagna_sign, cfg.arudha_exceptions, cfg.arudha_node_lords),
     )
 
 

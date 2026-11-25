@@ -25,6 +25,10 @@
 
 The antardasha direction table and the second-cycle rule differ between
 authors; see docs/DECISIONS.md #3.
+
+Chara karakas: the grahas ranked by degrees within their sign, highest first, Rahu
+counted backwards (30 - degrees). Eight karakas (Sun to Saturn and Rahu; AK, AmK,
+BK, MK, PiK, PK, GK, DK; JHora's default) or seven (Sun to Saturn; no PiK).
 """
 
 from __future__ import annotations
@@ -42,6 +46,23 @@ NODE_DEBILITATED = {"Ra": {7, 8}, "Ke": {1, 2}}
 # (K. N. Rao, as implemented in PyJHora).
 KNRAO_AD_FORWARD = frozenset({0, 4, 5, 6, 10, 11})
 CO_LORD_PLANETS = ("Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke")
+
+
+KARAKAS_8 = ("AK", "AmK", "BK", "MK", "PiK", "PK", "GK", "DK")
+KARAKAS_7 = ("AK", "AmK", "BK", "MK", "PK", "GK", "DK")
+
+
+def chara_karakas(longitudes: dict[str, float], n: int = 8) -> dict[str, str]:
+    """{karaka: graha} by degrees in the sign (Rahu backwards); n = 8 or 7."""
+    if n not in (7, 8):
+        raise ValueError("chara karakas: n must be 7 or 8")
+    grahas = ["Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"] + (["Ra"] if n == 8 else [])
+
+    def deg(p: str) -> float:
+        d = longitudes[p] % 30.0
+        return 30.0 - d if p == "Ra" else d
+    ranked = sorted(grahas, key=deg, reverse=True)
+    return dict(zip(KARAKAS_8 if n == 8 else KARAKAS_7, ranked))
 
 
 def rasi_drishti(sign: int) -> set[int]:
@@ -99,20 +120,45 @@ def stronger_co_lord(sign: int, signs: dict[str, int], degrees: dict[str, float]
     return (a if advance(a) > advance(b) else b), "more advanced in its sign"
 
 
-def sign_lord(sign: int, signs: dict[str, int], degrees: dict[str, float], lagna: int) -> str:
+def jhora_co_lord(sign: int, signs: dict[str, int], degrees: dict[str, float]) -> str:
+    """JHora 8.0's co-lord for K. N. Rao's Chara dasha: if one co-lord occupies the
+    sign, the other; else the one with more grahas (Sun to Ketu) in its sign; else the
+    higher degree in its sign (nodes not reversed); else the first (Saturn, Mars)."""
+    a, b = CO_LORDS[sign]
+    sa, sb = signs[a], signs[b]
+    if sa == sign and sb != sign:
+        return b
+    if sb == sign and sa != sign:
+        return a
+    count = lambda s: sum(1 for q in CO_LORD_PLANETS if signs[q] == s)
+    ca, cb = count(sa), count(sb)
+    if ca != cb:
+        return a if ca > cb else b
+    return b if degrees[a] % 30.0 < degrees[b] % 30.0 else a
+
+
+def sign_lord(sign: int, signs: dict[str, int], degrees: dict[str, float], lagna: int,
+              rule: str = "knrao") -> str:
     if sign in CO_LORDS:
+        if rule == "jhora":
+            return jhora_co_lord(sign, signs, degrees)
         return stronger_co_lord(sign, signs, degrees, lagna)[0]
     return SIGN_LORD[sign]
 
 
-def chara_years(sign: int, signs: dict[str, int], degrees: dict[str, float], lagna: int) -> int:
-    """First-cycle Chara dasha years of `sign` (K. N. Rao)."""
-    lord = sign_lord(sign, signs, degrees, lagna)
+def chara_years(sign: int, signs: dict[str, int], degrees: dict[str, float], lagna: int,
+                exaltation_adjust: bool = True, co_lord_rule: str = "knrao") -> int:
+    """First-cycle Chara dasha years of `sign` (K. N. Rao). With exaltation_adjust
+    an exalted lord adds a year and a debilitated one takes one away (K. N. Rao's
+    text); JHora 8.0 uses the plain count (SchoolConfig.chara_exaltation_adjust)."""
+    lord = sign_lord(sign, signs, degrees, lagna, co_lord_rule)
     at = signs[lord]
     count = ((at - sign) % 12 if sign in SAVYA else (sign - at) % 12) + 1
     years = count - 1
     if years <= 0:
         return 12                     # lord in the sign itself: 12 years, no adjustment
+    if not exaltation_adjust:
+        return years
     if _exalted(lord, at):
         years += 1
     elif _debilitated(lord, at):
@@ -128,7 +174,8 @@ def chara_dasha(lagna: int, signs: dict[str, int], degrees: dict[str, float], bi
     from .constants import SIGNS
     step = 1 if (lagna + 8) % 12 in SAVYA else -1
     order = [(lagna + step * i) % 12 for i in range(12)]
-    first = {s: chara_years(s, signs, degrees, lagna) for s in order}
+    first = {s: chara_years(s, signs, degrees, lagna, cfg.chara_exaltation_adjust,
+                            cfg.chara_co_lord_rule) for s in order}
     out: list[Period] = []
     t = 0.0
     for c in range(cycles):

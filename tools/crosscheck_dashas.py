@@ -80,7 +80,10 @@ def main() -> int:
           f"sequence mismatches {seq_bad}, worst start difference {worst:.3f} days")
     ok = seq_bad == 0 and worst <= args.tol_days
 
-    # Chara dasha (K. N. Rao), first cycle.
+    # Chara dasha (K. N. Rao), first cycle, with K. N. Rao's book rules as PyJHora
+    # (our default follows JHora 8.0 instead; see DECISIONS #3).
+    from dataclasses import replace
+    knrao_cfg = replace(cfg, chara_exaltation_adjust=True, chara_co_lord_rule="knrao")
     rng = random.Random(args.seed + 1)
     md_bad, ad_bad, colord_charts, n_md = 0, 0, 0, 0
     worst = 0.0
@@ -90,7 +93,7 @@ def main() -> int:
         c = build_chart(s.birth(), cfg, [1])
         signs = {k: p.sign for k, p in c.grahas.items()}
         degs = {k: p.longitude for k, p in c.grahas.items()}
-        ours = chara_dasha(c.lagna.sign, signs, degs, c.jd_ut, cfg, cycles=1)
+        ours = chara_dasha(c.lagna.sign, signs, degs, c.jd_ut, knrao_cfg, cycles=1)
         with contextlib.redirect_stdout(io.StringIO()):
             rows = j_chara.get_dhasa_antardhasa((dt.year, dt.month, dt.day), (dt.hour, dt.minute, dt.second),
                                                 drik.Place("x", lat, lon, tz),

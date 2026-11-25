@@ -32,6 +32,8 @@ export type Chart = {
   grahas: Record<string, Point>;
   special?: Record<string, Point>;
   yogi?: { point: number; yogi: string; sahayogi: string; avayogi_point: number; avayogi: string };
+  karakas?: Record<string, string>;   // AK, AmK, ... -> graha
+  arudhas?: number[];                 // signs of A1 (AL) .. A12 (UL)
   sunrise_utc: string;
   warnings?: string[];
 };
@@ -127,7 +129,11 @@ export type Shadbala = {
   }[];
   avasthas: Record<string, { baladi: string; jagradadi: string; moods: string[] }>;
 };
-export type DashaSystem = "vimshottari" | "ashtottari" | "yogini" | "chara";
+export type DashaSystem = "vimshottari" | "ashtottari" | "yogini" | "chara" | "narayana"
+  | "lagnamsaka" | "padanaathamsa" | "sudasa" | "drig" | "lagna_kendradi" | "ak_kendradi"
+  | "trikona" | "chara_parasara" | "chara_rangacharya" | "yogardha" | "shoola" | "niryana_shoola"
+  | "brahma" | "sthira" | "mandooka_knrao" | "navamsa" | "varnada";
+const GRAHA_DASHAS: DashaSystem[] = ["vimshottari", "ashtottari", "yogini"];
 export type DashaPeriod = {
   lord: string; name?: string | null; start: string; end: string; level: number;
   children?: DashaPeriod[];
@@ -152,5 +158,5 @@ export const analysis = {
   transits: (birth: Birth, transit: Birth) => post<Transits>("/v1/transits", { birth, transit }),
   dashas: (birth: Birth, system: DashaSystem) =>
     post<{ system: string; periods: DashaPeriod[]; applicable?: boolean }>("/v1/dasha",
-      { birth, system, levels: system === "chara" ? 2 : 3 }),
+      { birth, system, levels: GRAHA_DASHAS.includes(system) ? 3 : 2 }),
 };

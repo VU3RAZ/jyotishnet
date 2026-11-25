@@ -8,7 +8,20 @@ import { prettyDate } from "@/lib/time";
 
 const SYSTEMS: { id: DashaSystem; label: string }[] = [
   { id: "vimshottari", label: "Vimshottari" }, { id: "ashtottari", label: "Ashtottari" },
-  { id: "yogini", label: "Yogini" }, { id: "chara", label: "Chara (K. N. Rao)" },
+  { id: "yogini", label: "Yogini" },
+];
+// Jaimini rasi dashas, as Jagannatha Hora 8.0 computes them with its default settings.
+const RASI: { id: DashaSystem; label: string }[] = [
+  { id: "chara", label: "Chara (K. N. Rao)" }, { id: "narayana", label: "Narayana" },
+  { id: "lagnamsaka", label: "Lagnamsaka (from D-9)" }, { id: "padanaathamsa", label: "Padanaathamsa (D-9)" },
+  { id: "sudasa", label: "Sudasa" }, { id: "drig", label: "Drig" },
+  { id: "lagna_kendradi", label: "Lagna Kendradi" }, { id: "ak_kendradi", label: "Atma Karaka Kendradi" },
+  { id: "trikona", label: "Trikona" }, { id: "chara_parasara", label: "Chara (Parashara)" },
+  { id: "chara_rangacharya", label: "Chara (Iranganti Rangacharya)" }, { id: "yogardha", label: "Yogardha" },
+  { id: "shoola", label: "Shoola" }, { id: "niryana_shoola", label: "Niryana Shoola" },
+  { id: "brahma", label: "Brahma" }, { id: "sthira", label: "Sthira" },
+  { id: "mandooka_knrao", label: "Mandooka (K. N. Rao)" }, { id: "navamsa", label: "Navamsa" },
+  { id: "varnada", label: "Varnada" },
 ];
 const LEVEL = ["Mahadasha", "Antardasha", "Pratyantar"];
 
@@ -57,6 +70,14 @@ export function DashaTimeline({ system, onSystem, periods, applicable, birthIso,
             </button>
           ))}
         </div>
+        <label className="rasi-pick">
+          Rasi dasha{" "}
+          <select value={RASI.some((r) => r.id === system) ? system : ""}
+            onChange={(e) => e.target.value && onSystem(e.target.value as DashaSystem)}>
+            <option value="">choose…</option>
+            {RASI.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+          </select>
+        </label>
         {system === "ashtottari" && applicable !== undefined && (
           <p className="muted">{applicable
             ? "Ashtottari applies: Rahu is in a kendra or trikona from the Lagna lord."

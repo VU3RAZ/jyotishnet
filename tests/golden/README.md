@@ -71,6 +71,12 @@ year spread over 1990-2034 at 12:00, typed as 5:30 from GMT; JHora applies the
 direction already in the chart's zone box, so charts at or west of GMT carry
 -05:30 in the file header (`tests/test_jhora_transits.py`).
 
+`jhora_rasi_dashas/` holds JHora's 19 rasi dashas per chart (Dasas tab > Rasi dasas;
+right-click > dasha > Copy, then the antardashas of the first two mahadashas), made
+from the raw exports by `tools/import_jhora_rasi_dashas.py`; JHora's chart view was
+set to hide Mandi and the special lagnas so that its drawings show the arudha labels
+for a visual check (`tests/test_jhora_rasi_dashas.py`).
+
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:
 

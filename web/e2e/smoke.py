@@ -60,10 +60,16 @@ async def main() -> int:
             if tab == "Positions":
                 await page.click("summary:has-text('Special lagnas')")
                 await page.wait_for_selector("th:has-text('Yama Ghantaka')")
-        for system in ["Ashtottari", "Yogini", "Chara (K. N. Rao)", "Vimshottari"]:
+                await page.click("summary:has-text('Chara karakas and arudhas')")
+                await page.wait_for_selector("th:has-text('Of house')")
+        for system in ["Ashtottari", "Yogini", "Vimshottari"]:
             await page.click(f"[role=tab]:has-text('Dashas')")
             await page.click(f"text={system}")
             await step(f"dasha {system}", 1200)
+        for rasi in ["chara", "narayana", "sudasa", "drig", "shoola", "brahma", "padanaathamsa", "varnada"]:
+            await page.select_option(".rasi-pick select", rasi)
+            await page.wait_for_selector(".tl-seg")
+            await step(f"rasi dasha {rasi}", 1200)
 
         await page.click("text=Transits")
         await step("transit mode", 1500)
