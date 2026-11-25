@@ -175,3 +175,17 @@ def test_chara_karaka_scheme_setting():
     r = client.post("/v1/dasha", json={"birth": BIRTH, "system": "chara_parasara", "levels": 1,
                                        "config": {"chara_parasara_exaltation_adjust": False}})
     assert r.status_code == 200
+
+
+def test_panchanga():
+    r = client.post("/v1/panchanga", json={"birth": BIRTH})
+    assert r.status_code == 200
+    p = r.json()
+    b, d = p["birth"], p["day"]
+    assert b["tithi"]["lord"] and b["karana"]["lord"] and b["masa"] and b["samvatsara"]
+    assert 0 <= b["janma_ghatis"] < 61
+    assert d["sunrise_utc"] < d["sunset_utc"] < d["next_sunrise_utc"]
+    assert d["tithis"] and d["nakshatras"] and d["yogas"] and d["karanas"]
+    assert len(d["durmuhurta"]) in (1, 2)
+    r2 = client.post("/v1/panchanga", json={"birth": BIRTH, "date": "2000-01-01"}).json()
+    assert r2["day"]["sunrise_utc"].startswith("2000-01-01")

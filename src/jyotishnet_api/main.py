@@ -229,6 +229,66 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
     return {"planets": out, "wars": wars, "houses": houses, "avasthas": states}
 
 
+class PanchangaRequest(BaseModel):
+    birth: BirthIn
+    config: ConfigIn = ConfigIn()
+    date: date_type | None = Field(None, description="Local date of the day panchanga "
+                                   "(default: the panchanga day of the birth)")
+
+
+def _element(e) -> dict:
+    return {"kind": e.kind, "index": e.index, "name": e.name, "lord": e.lord,
+            "end_utc": _iso(e.end_jd), "fraction_left": e.fraction_left}
+
+
+@app.post("/v1/panchanga")
+def panchanga_endpoint(req: PanchangaRequest) -> dict:
+    """Birth panchanga (JHora's Key info) and the day panchanga, sunrise to sunrise."""
+    from datetime import timedelta, timezone
+    from jyotishnet_engine.panchanga import WEEKDAYS, birth_panchanga, day_panchanga
+    from jyotishnet_engine.timeutil import datetime_to_jd
+    birth, cfg = req.birth.to_birth(), req.config.to_config()
+    try:
+        c = build_chart(birth, cfg, [1])
+        b = birth_panchanga(c.jd_ut, birth.latitude, birth.longitude, birth.altitude_m, cfg,
+                            c.lagna.sign)
+        offset = (birth.local_datetime - birth.utc().replace(tzinfo=None)).total_seconds() / 3600
+        if req.date is None:
+            jd = c.jd_ut
+        else:       # local noon of that date, at the birth place's offset
+            noon = datetime(req.date.year, req.date.month, req.date.day, 12) - timedelta(hours=offset)
+            jd = datetime_to_jd(noon.replace(tzinfo=timezone.utc))
+        d = day_panchanga(jd, birth.latitude, birth.longitude, birth.altitude_m, cfg)
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from e
+    span = lambda ab: [_iso(ab[0]), _iso(ab[1])]  # noqa: E731
+    return {
+        "utc_offset_hours": offset,
+        "birth": {
+            "samvatsara": b.samvatsara, "masa": b.masa, "weekday": WEEKDAYS[b.weekday],
+            "tithi": _element(b.tithi), "nakshatra": _element(b.nakshatra),
+            "yoga": _element(b.yoga), "karana": _element(b.karana), "hora_lord": b.hora_lord,
+            "sunrise_utc": _iso(b.sunrise), "sunset_utc": _iso(b.sunset),
+            "janma_ghatis": b.janma_ghatis,
+        },
+        "day": {
+            "sunrise_utc": _iso(d.sunrise), "sunset_utc": _iso(d.sunset),
+            "next_sunrise_utc": _iso(d.next_sunrise), "weekday": WEEKDAYS[d.weekday],
+            "tithis": [_element(e) for e in d.tithis],
+            "nakshatras": [_element(e) for e in d.nakshatras],
+            "yogas": [_element(e) for e in d.yogas],
+            "karanas": [_element(e) for e in d.karanas],
+            "rahu_kala": span(d.rahu_kala), "gulika_kala": span(d.gulika_kala),
+            "yamaganda": span(d.yamaganda),
+            "durmuhurta": [span(x) for x in d.durmuhurta], "varjya": [span(x) for x in d.varjya],
+            "moonrise_utc": _iso(d.moonrise) if d.moonrise else None,
+            "moonset_utc": _iso(d.moonset) if d.moonset else None,
+            "moon_sign": d.moon_sign,
+            "moon_sign_end_utc": _iso(d.moon_sign_end) if d.moon_sign_end else None,
+        },
+    }
+
+
 class TransitRequest(BaseModel):
     birth: BirthIn
     transit: BirthIn = Field(description="The transit moment (usually at the birth place)")
