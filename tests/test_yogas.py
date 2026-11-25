@@ -214,3 +214,56 @@ def test_every_rule_fires_on_some_chart():
     rare = {"gola", "yuga", "nala", "musala", "rajju", "gada", "shakata_akriti", "vihaga",
             "shringataka", "hala", "kamala", "vapi", "mala", "sarpa", "shoola"}
     assert IDS - seen <= rare
+
+
+# --- M2.9: strength conditions (Aries lagna: Lagna lord Mars, 9th lord Jupiter in Sg,
+# 4th lord Moon in Ge, 7th from Jupiter)
+
+def test_lakshmi_and_kahala_need_a_strong_lagna_lord():
+    assert {"lakshmi", "kahala"} <= present()                       # Mars in Leo, 5th: trikona
+    assert {"lakshmi", "kahala"} <= present(Ma=7)                   # own sign (8th house)
+    assert {"lakshmi", "kahala"} <= present(Ma=9)                   # exalted
+    assert not {"lakshmi", "kahala"} & present(Ma=2)                # 3rd, Mercury's sign
+    assert not {"lakshmi", "kahala"} & present(Ma=3)                # 4th but debilitated
+    y = yogas()["lakshmi"]
+    assert any("1st lord (Ma) strong: in the 5th house" in e for e in y.evidence)
+
+
+def _with(options, **moves):
+    from jyotishnet_engine.yogas import YogaOptions
+    ctx = Context.from_signs(0, {**BASE, **moves}, options=YogaOptions(**options))
+    return {y.id for y in find_yogas(ctx, RULES) if not y.cancelled}
+
+
+def test_gajakesari_phaladeepika_conditions():
+    pd = {"gajakesari": "phaladeepika"}
+    assert "gajakesari" in present()                                 # BPHS: Ju 7th from Mo
+    assert "gajakesari" not in _with(pd)                             # no benefic on Jupiter
+    assert "gajakesari" in _with(pd, Ve=2)                           # Venus in Ge aspects Sg
+    assert "gajakesari" in _with(pd, Me=8)                           # Mercury with Jupiter
+    assert "gajakesari" not in _with(pd, Ve=2, Su=8)                 # combust (same degree)
+    # Jupiter in Ta (Venus's sign, an enemy), Moon in Le (Ta is the 10th), Mercury with it
+    assert "gajakesari" in _with({}, Ju=1, Mo=4)
+    assert "gajakesari" not in _with(pd, Ju=1, Mo=4, Me=1)
+    assert "gajakesari" not in _with(pd, Ju=9, Mo=0, Ve=9)           # debilitated in Cp
+
+
+def test_yoga_options_validated():
+    from jyotishnet_engine.yogas import YogaOptions
+    with pytest.raises(ValueError):
+        YogaOptions(strong_lord="vague")
+    with pytest.raises(ValueError):
+        YogaOptions(gajakesari="x")
+
+
+def test_strong_lord_by_shadbala():
+    from datetime import datetime
+    from jyotishnet_engine import BirthData, DEFAULT_CONFIG, build_chart
+    from jyotishnet_engine.yogas import YogaOptions
+    birth = BirthData(datetime(1990, 1, 15, 6, 30), 28.61, 77.21, "Asia/Kolkata")
+    c = build_chart(birth, DEFAULT_CONFIG, [1])
+    opts = YogaOptions(strong_lord="shadbala")
+    with pytest.raises(ValueError):
+        find_yogas(c, options=opts)
+    ys = {y.id: y for y in find_yogas(c, include_absent=True, options=opts, birth=birth)}
+    assert any("Shadbala" in e and "required rupas" in e for e in ys["lakshmi"].evidence)

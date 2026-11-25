@@ -35,11 +35,13 @@
 - id: kahala
   name: Kahala
   group: Shubha
-  summary: The 4th and 9th lords in kendras from each other.
+  summary: The 4th and 9th lords in kendras from each other, and the Lagna lord strong.
   source: {text: Brihat Parashara Hora Shastra, section: Kahala Yoga}
-  notes: BPHS also requires a strong Lagna lord (not yet checked). Phaladeepika and B. V. Raman use the 4th lord and Jupiter instead of the 9th lord.
+  notes: BPHS requires a strong Lagna lord; what counts as strong is the setting strong_lord (default by dignity and placement, or by Shadbala). Phaladeepika and B. V. Raman use the 4th lord and Jupiter instead of the 9th lord.
   when:
-    in_house: {planet: "lord:4", houses: [1, 4, 7, 10], from: "lord:9"}
+    all:
+      - in_house: {planet: "lord:4", houses: [1, 4, 7, 10], from: "lord:9"}
+      - strong: {planet: "lord:1"}
 - id: shubha_kartari_lagna
   name: Shubha Kartari (Lagna)
   group: Kartari

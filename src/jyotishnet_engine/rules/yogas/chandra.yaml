@@ -45,9 +45,16 @@
   group: Chandra
   summary: Jupiter in a kendra from the Moon.
   source: {text: Brihat Parashara Hora Shastra, section: Chandra Yogas}
-  notes: Phaladeepika and B. V. Raman add a benefic conjoining or aspecting Jupiter, and Jupiter not debilitated, combust or in an enemy's sign.
+  notes: Jagannatha Hora 8.0 lists it as BPHS does. With the setting gajakesari = phaladeepika (Phaladeepika ch. 6; B. V. Raman, Three Hundred Important Combinations, no. 1) a benefic other than the Moon must also conjoin or aspect Jupiter, and Jupiter must not be debilitated, combust (within 11 deg of the Sun) or in a natural enemy's sign. PyJHora's version of these conditions counts Jupiter itself as the benefic conjoining Jupiter, so it finds the yoga more often.
   when:
-    in_house: {planet: Ju, houses: [1, 4, 7, 10], from: Mo}
+    all:
+      - in_house: {planet: Ju, houses: [1, 4, 7, 10], from: Mo}
+      - any:
+          - option: {gajakesari: bphs}
+          - all:
+              - joined_or_aspected: {planet: Ju, by: benefics_no_moon}
+              - not: {dignity: {planet: Ju, in: [debilitated, enemy]}}
+              - not: {combust: {planet: Ju}}
 - id: adhi
   name: Adhi
   group: Chandra

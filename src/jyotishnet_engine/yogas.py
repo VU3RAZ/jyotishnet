@@ -26,7 +26,8 @@ import yaml
 
 from .chart import Chart
 from .constants import (
-    EXALTATION, GRAHA_DRISHTI, MOOLATRIKONA, NATURAL_FRIENDS, OWN_SIGNS, SIGN_LORD, SIGNS, modality,
+    EXALTATION, GRAHA_DRISHTI, MOOLATRIKONA, NATURAL_ENEMIES, NATURAL_FRIENDS, OWN_SIGNS,
+    SIGN_LORD, SIGNS, modality,
 )
 
 RULES_DIR = Path(__file__).parent / "rules" / "yogas"
@@ -42,6 +43,35 @@ def ordinal(n: int) -> str:
     return ORD.get(n, f"{n}th")
 
 
+# Combustion orbs (degrees from the Sun; Surya Siddhanta as given in BPHS commentaries);
+# Mercury and Venus have smaller orbs when retrograde.
+COMBUST_ORB = {"Mo": 12.0, "Ma": 17.0, "Me": 14.0, "Ju": 11.0, "Ve": 10.0, "Sa": 15.0}
+COMBUST_ORB_RETRO = {"Me": 12.0, "Ve": 8.0}
+
+
+@dataclass(frozen=True)
+class YogaOptions:
+    """School choices inside yoga rules (docs/DECISIONS.md, Yoga strength conditions).
+
+    strong_lord: when a rule asks for a strong planet (BPHS's "balavan" Lagna lord in
+        Lakshmi and Kahala yogas): "dignity" = exalted, moolatrikona or own sign, or in a
+        kendra or trikona from the Lagna, and not debilitated; "shadbala" = Shadbala at
+        least the planet's required rupas (BPHS ch. 27).
+    gajakesari: "bphs" = Jupiter in a kendra from the Moon (BPHS; also Jagannatha Hora
+        8.0's yoga list); "phaladeepika" = also a benefic other than the Moon conjoining
+        or aspecting Jupiter, and Jupiter not debilitated, combust or in an enemy's sign
+        (Phaladeepika ch. 6; B. V. Raman, Three Hundred Important Combinations, no. 1).
+    """
+    strong_lord: str = "dignity"
+    gajakesari: str = "bphs"
+
+    def __post_init__(self) -> None:
+        if self.strong_lord not in ("dignity", "shadbala"):
+            raise ValueError('strong_lord must be "dignity" or "shadbala"')
+        if self.gajakesari not in ("bphs", "phaladeepika"):
+            raise ValueError('gajakesari must be "bphs" or "phaladeepika"')
+
+
 # --------------------------------------------------------------------- context
 
 @dataclass
@@ -51,9 +81,15 @@ class Context:
     degrees: dict[str, float]          # graha -> longitude
     moon_benefic: bool = True
     mercury_benefic: bool = True
+    options: YogaOptions = field(default_factory=YogaOptions)
+    retrograde: dict[str, bool] = field(default_factory=dict)
+    shadbala_ratio: dict[str, float] | None = None    # rupas / required, for strong_lord="shadbala"
 
     @classmethod
-    def from_chart(cls, chart: Chart) -> "Context":
+    def from_chart(cls, chart: Chart, options: YogaOptions | None = None, birth=None,
+                   cfg=None) -> "Context":
+        """`birth` (and `cfg`) are needed only for options.strong_lord == "shadbala"."""
+        options = options or YogaOptions()
         signs = {k: p.sign for k, p in chart.grahas.items()}
         degs = {k: p.longitude for k, p in chart.grahas.items()}
         arc = abs((degs["Mo"] - degs["Su"] + 180) % 360 - 180)
@@ -61,8 +97,20 @@ class Context:
         # Mercury is malefic in a sign with Mars, Saturn, Rahu, Ketu or a malefic Moon.
         # (Shadbala follows JHora's own convention instead; see ShadbalaOptions.)
         from .shadbala import ShadbalaOptions, mercury_is_malefic
+        ratio = None
+        if options.strong_lord == "shadbala":
+            if birth is None:
+                raise ValueError('strong_lord="shadbala" needs the birth data')
+            from .chart import build_chart
+            from .config import DEFAULT_CONFIG
+            from .shadbala import REQUIRED_RUPAS, shadbala
+            cfg = cfg or DEFAULT_CONFIG
+            full = build_chart(birth, cfg, [1, 2, 3, 7, 9, 12, 30])
+            ratio = {p: s.rupas / REQUIRED_RUPAS[p] for p, s in shadbala(full, birth, cfg).items()}
+        retro = {k: bool(p.retrograde) for k, p in chart.grahas.items()}
         return cls(chart.lagna.sign, signs, degs, moon_benefic,
-                   not mercury_is_malefic(signs, moon_benefic, ShadbalaOptions(mercury_rule="any")))
+                   not mercury_is_malefic(signs, moon_benefic, ShadbalaOptions(mercury_rule="any")),
+                   options, retro, ratio)
 
     @classmethod
     def from_signs(cls, lagna: int, signs: dict[str, int], **kw) -> "Context":
@@ -166,11 +214,14 @@ def predicate(fn: Callable[[Context, dict], Result]) -> Callable[[Context, dict]
 
 @predicate
 def dignity(ctx: Context, a: dict) -> Result:
-    """Dignity in: exalted, moolatrikona, own, debilitated, or "friend" (sign of a natural friend)."""
+    """Dignity in: exalted, moolatrikona, own, debilitated, or "friend" / "enemy" (sign of
+    a natural friend / enemy)."""
     p = _resolve(ctx, a["planet"])
     d = ctx.dignity(p)
     if d == "other" and p in NATURAL_FRIENDS and SIGN_LORD[ctx.signs[p]] in NATURAL_FRIENDS[p]:
         d = "friend"
+    elif d == "other" and p in NATURAL_ENEMIES and SIGN_LORD[ctx.signs[p]] in NATURAL_ENEMIES[p]:
+        d = "enemy"
     return d in a["in"], [f"{ctx.name(a['planet'])} {d} in {SIGNS[ctx.signs[p]]}"]
 
 
@@ -377,6 +428,53 @@ def kartari(ctx: Context, a: dict) -> Result:
                             f"in the 12th: {', '.join(h12) or 'none'}"]
 
 
+@predicate
+def strong(ctx: Context, a: dict) -> Result:
+    """The planet is strong, by YogaOptions.strong_lord."""
+    p = _resolve(ctx, a["planet"])
+    who = ctx.name(a["planet"])
+    if ctx.options.strong_lord == "shadbala":
+        if ctx.shadbala_ratio is None:
+            raise ValueError('strong_lord="shadbala" needs a context built with the birth data')
+        r = ctx.shadbala_ratio[p]
+        return r >= 1.0, [f"{who} Shadbala {r:.2f} of its required rupas"]
+    d = ctx.dignity(p)
+    h = ctx.house(p)
+    if d == "debilitated":
+        return False, [f"{who} debilitated in {SIGNS[ctx.signs[p]]}"]
+    if d in ("exalted", "moolatrikona", "own"):
+        return True, [f"{who} strong: {d} in {SIGNS[ctx.signs[p]]}"]
+    if h in KENDRAS or h in TRIKONAS:
+        return True, [f"{who} strong: in the {ordinal(h)} house"]
+    return False, [f"{who} not strong: {d} sign, {ordinal(h)} house"]
+
+
+@predicate
+def combust(ctx: Context, a: dict) -> Result:
+    """The planet within its combustion orb of the Sun."""
+    p = _resolve(ctx, a["planet"])
+    orb = (COMBUST_ORB_RETRO if ctx.retrograde.get(p) else COMBUST_ORB).get(p, COMBUST_ORB[p])
+    sep = abs((ctx.degrees[p] - ctx.degrees["Su"] + 180.0) % 360.0 - 180.0)
+    return sep < orb, [f"{ctx.name(a['planet'])} {sep:.1f} deg from the Sun (combust within {orb:g})"]
+
+
+@predicate
+def joined_or_aspected(ctx: Context, a: dict) -> Result:
+    """A planet of the group (other than the planet itself) in its sign or aspecting it."""
+    p = _resolve(ctx, a["planet"])
+    grp = [q for q in ctx.group(a["by"]) if q != p]
+    hits = [q for q in grp if ctx.signs[q] == ctx.signs[p] or ctx.aspects(q, p)]
+    return bool(hits), [f"{ctx.label(a['by'])} with or aspecting {ctx.name(a['planet'])}: "
+                        f"{', '.join(hits) or 'none'}"]
+
+
+@predicate
+def option(ctx: Context, a: dict) -> Result:
+    """A YogaOptions setting has the given value (for school variants inside a rule)."""
+    (name, value), = a.items()
+    return getattr(ctx.options, name) == value, []
+
+
 # ------------------------------------------------------------------- evaluator
 
 def evaluate(cond, ctx: Context) -> Result:
@@ -391,12 +489,15 @@ def evaluate(cond, ctx: Context) -> Result:
             ev += e
         return ok, ev
     if key == "any":
-        hits = []
+        hits, misses, ok = [], [], False
         for c in val:
             r, e = evaluate(c, ctx)
             if r:
+                ok = True
                 hits += e
-        return bool(hits), hits
+            else:
+                misses += e
+        return ok, hits if ok else misses        # when nothing holds, say why
     if key == "not":
         r, e = evaluate(val, ctx)
         return not r, [f"not: {x}" for x in e]
@@ -457,8 +558,10 @@ def _load(folder: Path) -> list[Rule]:
 
 
 def find_yogas(chart_or_ctx: Chart | Context, rules: list[Rule] | None = None,
-               include_absent: bool = False) -> list[YogaResult]:
-    ctx = chart_or_ctx if isinstance(chart_or_ctx, Context) else Context.from_chart(chart_or_ctx)
+               include_absent: bool = False, options: YogaOptions | None = None,
+               birth=None, cfg=None) -> list[YogaResult]:
+    ctx = (chart_or_ctx if isinstance(chart_or_ctx, Context)
+           else Context.from_chart(chart_or_ctx, options, birth, cfg))
     out = []
     for r in rules or load_rules():
         present, ev = evaluate(r.when, ctx)

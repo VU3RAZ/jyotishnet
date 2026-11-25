@@ -15,10 +15,11 @@
 - id: lakshmi
   name: Lakshmi
   group: Dhana
-  summary: The 9th lord in own sign or exaltation, placed in a kendra or trikona.
   source: {text: Brihat Parashara Hora Shastra, section: Lakshmi Yoga}
-  notes: BPHS also requires a strong Lagna lord (not yet checked). PVR Narasimha Rao requires a kendra only; B. V. Raman accepts a kendra or trikona (used here).
+  summary: The 9th lord in own sign or exaltation, placed in a kendra or trikona, and the Lagna lord strong.
+  notes: BPHS requires a strong ("balavan") Lagna lord; what counts as strong is the setting strong_lord (default by dignity and placement, or by Shadbala). PVR Narasimha Rao requires a kendra only; B. V. Raman accepts a kendra or trikona (used here; PyJHora's method 2). PyJHora also counts a debilitated Lagna lord in a kendra or trikona as strong, and takes Ketu or Rahu as the lord of Scorpio or Aquarius when stronger.
   when:
     all:
+      - strong: {planet: "lord:1"}
       - dignity: {planet: "lord:9", in: [own, moolatrikona, exalted]}
       - lord_in_house: {house: 9, houses: [1, 4, 5, 7, 9, 10]}
