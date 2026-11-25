@@ -354,14 +354,19 @@ def vimshopaka_endpoint(req: VimshopakaRequest) -> dict:
 
 class YogaRequest(ChartRequest):
     include_absent: bool = False
+    strong_lord: str = Field("dignity", pattern="^(dignity|shadbala)$",
+                             description="What makes a planet strong (Lakshmi, Kahala)")
+    gajakesari: str = Field("bphs", pattern="^(bphs|phaladeepika)$")
 
 
 @app.post("/v1/yogas")
 def yogas_endpoint(req: YogaRequest) -> dict:
     from dataclasses import asdict
-    from jyotishnet_engine.yogas import find_yogas
-    c = build_chart(req.birth.to_birth(), req.config.to_config(), [1])
-    ys = find_yogas(c, include_absent=req.include_absent)
+    from jyotishnet_engine.yogas import YogaOptions, find_yogas
+    birth, cfg = req.birth.to_birth(), req.config.to_config()
+    c = build_chart(birth, cfg, [1])
+    ys = find_yogas(c, include_absent=req.include_absent,
+                    options=YogaOptions(req.strong_lord, req.gajakesari), birth=birth, cfg=cfg)
     return {
         "yogas": [asdict(y) for y in ys],
         "note": "Rules are drafts pending expert review; see each rule's source and status.",

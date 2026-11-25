@@ -189,3 +189,12 @@ def test_panchanga():
     assert len(d["durmuhurta"]) in (1, 2)
     r2 = client.post("/v1/panchanga", json={"birth": BIRTH, "date": "2000-01-01"}).json()
     assert r2["day"]["sunrise_utc"].startswith("2000-01-01")
+
+
+def test_yoga_strength_options():
+    for opts in ({}, {"strong_lord": "shadbala"}, {"gajakesari": "phaladeepika"}):
+        r = client.post("/v1/yogas", json={"birth": BIRTH, "include_absent": True, **opts})
+        assert r.status_code == 200, opts
+        ids = {y["id"] for y in r.json()["yogas"]}
+        assert {"lakshmi", "kahala", "gajakesari"} <= ids
+    assert client.post("/v1/yogas", json={"birth": BIRTH, "strong_lord": "x"}).status_code == 422
