@@ -85,6 +85,11 @@ them:
   2050, 125 s in 2100), so the Moon differs by 27" and 75" and Vimshottari dates
   by about 2 days. Decided (#22): we keep Swiss Ephemeris's model; these stay
   here as a record of the difference.
+- `pending/jhora_rasi_dashas/edge_38_*` (1800, local mean time): every sign and
+  antardasha order matches, but ten of the 19 dashas have start dates 5.1-5.6 s
+  from JHora's (1875-1936; limit 5 s). The difference wanders between 0 and 5.6 s
+  from one solar return to the next rather than growing, which points at JHora's
+  Delta T for the 19th century differing from Swiss Ephemeris's; not investigated.
 
 Chart 12 (Tromso, polar night) was dropped: polar births are out of scope
 (`docs/DECISIONS.md`). JHora gave no usable reference for it either: it printed

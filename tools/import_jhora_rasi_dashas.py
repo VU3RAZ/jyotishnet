@@ -47,8 +47,12 @@ def main() -> None:
     src = Path(sys.argv[1])
     dst = Path(sys.argv[2] if len(sys.argv) > 2 else "tests/golden/jhora_rasi_dashas")
     dst.mkdir(parents=True, exist_ok=True)
+    pending = Path(__file__).parent.parent / "tests/golden/pending" / dst.name
     n = 0
     for d in sorted(p for p in src.iterdir() if (p / "done").exists()):
+        if (pending / f"{d.name}.json").exists():
+            print(f"{d.name}: in tests/golden/pending, skipped")
+            continue
         out = {f.stem: convert(f) for f in sorted(d.glob("*.txt"))}
         body = ",\n".join(f"{json.dumps(k)}: {json.dumps(v, separators=(',', ':'))}"
                           for k, v in out.items())

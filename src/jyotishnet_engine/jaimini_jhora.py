@@ -212,7 +212,21 @@ class JaiminiChart:
         and the 7th, those in odd signs in the 7th..12th houses from it (else from the
         weaker one; else those in odd signs from the stronger, then from the weaker;
         else all three), the strongest; Saturn, Rahu and Ketu give way to Mars,
-        Mercury and Jupiter (JHora)."""
+        Mercury and Jupiter (JHora).
+
+        JHora quirk (FUN_004ad580, which also finds the Maheshwara): it first takes the
+        8th from the Atma Karaka's sign (the 6th if Rahu or Ketu is in the AK's sign or
+        that 8th); when that sign's lord is in the sign itself, the routine stores that
+        lord as Brahma and returns before the rules above (and before the substitution).
+        """
+        from .jaimini import chara_karakas
+        ak_sign = self.signs[chara_karakas({p: self.lon[p] for p in GRAHAS9[:8]})["AK"]]
+        m = (ak_sign + 7) % 12
+        if {self.signs["Ra"], self.signs["Ke"]} & {ak_sign, m}:
+            m = (ak_sign + 5) % 12
+        m_lord = self.arudha_lords.get(m, LORD[m])
+        if self.signs[m_lord] == m:
+            return m_lord
         strong = self.stronger(lagna, (lagna + 6) % 12)
         weak = (lagna + 6) % 12 if strong == lagna else lagna
         lords = lambda base: [self.arudha_lords.get((base + k) % 12, LORD[(base + k) % 12])
