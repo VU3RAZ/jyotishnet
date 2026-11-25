@@ -13,7 +13,9 @@ import { PanchangaPanel } from "@/components/PanchangaPanel";
 import { LibraryPanel } from "@/components/LibraryPanel";
 import { DEFAULT_CANVAS, VargaCanvas } from "@/components/VargaCanvas";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
-import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, library, LifeEvent, SavedChart } from "@/lib/api";
+import { analysis, api, Birth, btr, Chart, DashaSystem, DEFAULT_YOGA_OPTIONS, EventRule, library, LifeEvent,
+  SavedChart, YogaOptions } from "@/lib/api";
+import { VimshopakaView } from "@/components/VimshopakaView";
 import { EventPanel } from "@/components/EventPanel";
 import { AnalysisTabs, TabId } from "@/components/AnalysisTabs";
 import { YogaView } from "@/components/YogaView";
@@ -49,6 +51,8 @@ export default function Workbench() {
   const [events, setEvents] = useState<LifeEvent[]>([]);
   const [savedId, setSavedId] = useState<number | null>(null);
   const [canvasVargas, setCanvasVargas] = useState<number[]>(DEFAULT_CANVAS);
+  const [yogaOptions, setYogaOptions] = useState<YogaOptions>(DEFAULT_YOGA_OPTIONS);
+  const [vimWeights, setVimWeights] = useState<"bphs" | "jhora">("bphs");
 
   useEffect(() => { btr.events().then((r) => setRules(r.events)).catch(() => {}); }, []);
   // Events belong to one person: kept with the saved chart, or per chart in this
@@ -99,9 +103,12 @@ export default function Workbench() {
   // Analysis views follow the chart on the ribbon in rectify mode, the birth chart in transit mode.
   const subject = rectify ? moving : birth;
   const subjectKey = JSON.stringify(subject);
-  const yogas = useLive(tab === "yogas" ? subjectKey : null, () => analysis.yogas(subject), 200);
+  const yogas = useLive(tab === "yogas" ? JSON.stringify([subject, yogaOptions]) : null,
+    () => analysis.yogas(subject, yogaOptions), 200);
   const av = useLive(tab === "ashtakavarga" ? subjectKey : null, () => analysis.ashtakavarga(subject), 200);
   const sb = useLive(tab === "shadbala" ? subjectKey : null, () => analysis.shadbala(subject), 200);
+  const vim = useLive(tab === "shadbala" ? JSON.stringify([subject, vimWeights]) : null,
+    () => analysis.vimshopaka(subject, vimWeights), 200);
   // The canvas follows the ribbon in rectify mode and shows the birth chart in transit mode.
   const canvas = useLive(tab === "vargas" ? JSON.stringify([subject, canvasVargas]) : null,
     () => api.chart(subject, canvasVargas));
@@ -229,7 +236,7 @@ export default function Workbench() {
       )}
 
       <AnalysisTabs tab={tab} onTab={setTab}
-        busy={canvas.loading || yogas.loading || av.loading || sb.loading || dashas.loading || gochara.loading}>
+        busy={canvas.loading || yogas.loading || av.loading || sb.loading || vim.loading || dashas.loading || gochara.loading}>
         {tab === "positions" && (
           <div className="details">
             {chart && (
@@ -249,11 +256,18 @@ export default function Workbench() {
         {tab === "vargas" && (
           <VargaCanvas chart={canvas.data ?? null} vargas={canvasVargas} onVargas={setCanvasVargas} style={style} />
         )}
-        {tab === "yogas" && (yogas.data ? <YogaView yogas={yogas.data.yogas} /> : <p className="muted">Finding yogas…</p>)}
+        {tab === "yogas" && (yogas.data
+          ? <YogaView yogas={yogas.data.yogas} options={yogaOptions} onOptions={setYogaOptions} />
+          : <p className="muted">Finding yogas…</p>)}
         {tab === "ashtakavarga" && (av.data && subjectChart
           ? <AshtakavargaView av={av.data} lagnaSign={subjectChart.lagna.sign} />
           : <p className="muted">Counting bindus…</p>)}
-        {tab === "shadbala" && (sb.data ? <ShadbalaView sb={sb.data} /> : <p className="muted">Working out strengths…</p>)}
+        {tab === "shadbala" && (sb.data ? (
+          <>
+            <ShadbalaView sb={sb.data} />
+            {vim.data && <VimshopakaView v={vim.data} weights={vimWeights} onWeights={setVimWeights} />}
+          </>
+        ) : <p className="muted">Working out strengths…</p>)}
         {tab === "transits" && (gochara.data
           ? <GocharaView tr={gochara.data} when={rectify ? `the event date (${eventDate})` : transitAt.local_datetime.replace("T", " ")} />
           : <p className="muted">Working out transits…</p>)}

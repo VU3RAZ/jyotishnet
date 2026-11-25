@@ -171,9 +171,19 @@ export type Panchanga = {
   };
 };
 
+export type Vimshopaka = {
+  planets: Record<string, Record<string, number>>;     // graha -> scheme -> points of 20
+  weights: Record<string, Record<string, number>>;     // scheme -> "D9" -> weight
+};
+export type YogaOptions = { strong_lord: "dignity" | "shadbala"; gajakesari: "bphs" | "phaladeepika" };
+export const DEFAULT_YOGA_OPTIONS: YogaOptions = { strong_lord: "dignity", gajakesari: "bphs" };
+
 export const analysis = {
   panchanga: (birth: Birth) => post<Panchanga>("/v1/panchanga", { birth }),
-  yogas: (birth: Birth) => post<{ yogas: Yoga[] }>("/v1/yogas", { birth, include_absent: true }),
+  yogas: (birth: Birth, options: YogaOptions = DEFAULT_YOGA_OPTIONS) =>
+    post<{ yogas: Yoga[] }>("/v1/yogas", { birth, include_absent: true, ...options }),
+  vimshopaka: (birth: Birth, saptavarga_weights: "bphs" | "jhora") =>
+    post<Vimshopaka>("/v1/vimshopaka", { birth, saptavarga_weights }),
   ashtakavarga: (birth: Birth) => post<Ashtakavarga>("/v1/ashtakavarga", { birth }),
   shadbala: (birth: Birth) => post<Shadbala>("/v1/shadbala", { birth }),
   transits: (birth: Birth, transit: Birth) => post<Transits>("/v1/transits", { birth, transit }),

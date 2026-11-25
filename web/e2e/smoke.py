@@ -64,11 +64,18 @@ async def main() -> int:
         await page.hover(".canvas-grid .chart-card:nth-child(3) .planet >> nth=0")
         await step("varga canvas", 1200)
 
-        for tab in ["Yogas", "Ashtakavarga", "Shadbala", "Transits", "Dashas", "Positions"]:
+        for tab in ["Yogas", "Ashtakavarga", "Strengths", "Transits", "Dashas", "Positions"]:
             await page.click(f"[role=tab]:has-text('{tab}')")
             await step(f"tab {tab}", 1500)
-            if tab == "Shadbala":
+            if tab == "Yogas":
+                await page.select_option(".yoga-options label:has-text('Gajakesari') select", "phaladeepika")
+                await page.select_option(".yoga-options label:has-text('Strong Lagna') select", "shadbala")
+                await page.wait_for_selector(".yoga-group")
+            if tab == "Strengths":
                 await page.wait_for_selector("caption:has-text('Bhava bala')", state="attached")
+                await page.wait_for_selector("caption:has-text('Vimshopaka')", state="attached")
+                await page.select_option(".vimshopaka select", "jhora")
+                await step("vimshopaka JHora weights", 900)
                 await page.wait_for_selector("caption:has-text('Avasthas')", state="attached")
             if tab == "Transits":
                 await page.wait_for_selector("caption:has-text('Gochara')", state="attached")

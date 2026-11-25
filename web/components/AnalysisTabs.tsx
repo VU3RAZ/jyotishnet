@@ -7,7 +7,7 @@ export type TabId = "positions" | "vargas" | "yogas" | "ashtakavarga" | "shadbal
 const TABS: { id: TabId; label: string }[] = [
   { id: "positions", label: "Positions" }, { id: "vargas", label: "Vargas" },
   { id: "yogas", label: "Yogas" },
-  { id: "ashtakavarga", label: "Ashtakavarga" }, { id: "shadbala", label: "Shadbala" },
+  { id: "ashtakavarga", label: "Ashtakavarga" }, { id: "shadbala", label: "Strengths" },
   { id: "dashas", label: "Dashas" }, { id: "transits", label: "Transits" },
 ];
 

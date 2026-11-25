@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 "use client";
 
-import { Yoga } from "@/lib/api";
+import { Yoga, YogaOptions } from "@/lib/api";
 
-export function YogaView({ yogas }: { yogas: Yoga[] }) {
+export function YogaView({ yogas, options, onOptions }: {
+  yogas: Yoga[]; options: YogaOptions; onOptions: (o: YogaOptions) => void;
+}) {
   const active = yogas.filter((y) => y.present && !y.cancelled);
   const cancelled = yogas.filter((y) => y.present && y.cancelled);
   const groups = Array.from(new Set(active.map((y) => y.group)));
@@ -14,6 +16,24 @@ export function YogaView({ yogas }: { yogas: Yoga[] }) {
         {cancelled.length === 1 ? "; 1 more forms but is cancelled" : cancelled.length ? `; ${cancelled.length} more form but are cancelled` : ""}.
         Each shows why it fired and where the rule comes from. All rules are drafts awaiting expert review.
       </p>
+      <div className="yoga-options">
+        <label className="field inline">
+          <span>Strong Lagna lord (Lakshmi, Kahala)</span>
+          <select value={options.strong_lord}
+            onChange={(e) => onOptions({ ...options, strong_lord: e.target.value as YogaOptions["strong_lord"] })}>
+            <option value="dignity">By dignity and placement</option>
+            <option value="shadbala">By Shadbala (meets required rupas)</option>
+          </select>
+        </label>
+        <label className="field inline">
+          <span>Gajakesari</span>
+          <select value={options.gajakesari}
+            onChange={(e) => onOptions({ ...options, gajakesari: e.target.value as YogaOptions["gajakesari"] })}>
+            <option value="bphs">BPHS (Jupiter in a kendra from the Moon)</option>
+            <option value="phaladeepika">Phaladeepika (also benefic aspect; not debilitated, combust or in an enemy sign)</option>
+          </select>
+        </label>
+      </div>
       {groups.map((g) => (
         <section key={g} className="yoga-group">
           <h3>{g}</h3>

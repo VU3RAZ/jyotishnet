@@ -19,9 +19,11 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   marriage, children, career and relocation. Events are kept per chart in
   this browser only.
 - **Analysis tabs**: Positions, Yogas (grouped, with the evidence for each and
-  its source text; cancelled ones listed apart), Ashtakavarga (bindus in house
-  order, by reduction stage, with pindas), Shadbala (components in rupas and
-  each planet's ratio to the required strength), and Dashas (a lifetime
+  its source text; cancelled ones listed apart; settings for the strong Lagna lord
+  and Gajakesari's conditions), Ashtakavarga (bindus in house
+  order, by reduction stage, with pindas), Strengths (Shadbala components in rupas and
+  each planet's ratio to the required strength, Bhava bala, avasthas, and Vimshopaka
+  bala in four schemes with BPHS or JHora Saptavarga weights), and Dashas (a lifetime
   timeline for Vimshottari, Ashtottari, Yogini or Chara, opening on the event
   or transit date, with antardashas and pratyantars). In rectify mode they
   follow the birth time on the ribbon.
