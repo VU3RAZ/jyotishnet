@@ -1,0 +1,29 @@
+Transit: 2025-11-24 12:00:00 +05:30
+
+Planet     Tara                       Murthi          House      Under vedha from Causing vedha to
+
+Sun        Parama Mitra (Good friend) Taamra - copper 5th        -                -
+Moon       Vipat (Danger)             -               6th (Good) -                -
+Mars       Janma (Birth)              Swarna - golden 5th        -                -
+Mercury    Mitra (Friend)             Swarna - golden 4th (Good) -                -
+Jupiter    Mitra (Friend)             Rajata - silver 1st        -                -
+Venus      Mitra (Friend)             Rajata - silver 4th (Good) -                -
+Saturn     Mitra (Friend)             Rajata - silver 9th        -                -
+Rahu       Naidhana (Death)           Taamra - copper 8th        -                -
+Ketu       Vipat (Danger)             Taamra - copper 2nd        -                -
+                                                                                  
+Reference: Moon of natal D-1                                                      
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          4        27        Venus   1     Me, Ju, Ve, Sa
+Sun            2        24        Mars    1     Ma, Sa
+Moon           5        28        Mercury 1     As, Mo, Ma, Me, Ve
+Mars           3        24        Mercury 0     Su, Ma, Sa
+Mercury        5        22        Lagna   1     As, Mo, Ma, Me, Ve
+Jupiter        6        35        Saturn  0     As, Su, Ma, Me, Ju, Ve
+Venus          3        22        Lagna   1     As, Mo, Ve
+Saturn         7        33        Saturn  1     As, Su, Ma, Me, Ju, Ve, Sa
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

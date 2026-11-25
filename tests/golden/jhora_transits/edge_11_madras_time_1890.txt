@@ -1,0 +1,29 @@
+Transit: 2029-11-24 12:00:00 +05:30
+
+Planet     Tara                       Murthi          House      Under vedha from Causing vedha to
+
+Sun        Vipat (Danger)             Swarna - golden 2nd        -                -
+Moon       Janma (Birth)              -               9th        -                -
+Mars       Saadhana (Achievement)     Rajata - silver 3rd (Good) -                -
+Mercury    Kshema (Well-being)        Taamra - copper 2nd (Good) -                -
+Jupiter    Janma (Birth)              Rajata - silver 1st        -                Venus
+Venus      Saadhana (Achievement)     Taamra - copper 3rd (Good) Jupiter          -
+Saturn     Saadhana (Achievement)     Swarna - golden 7th        -                -
+Rahu       Pratyak (Obstacles)        Rajata - silver 3rd (Good) -                -
+Ketu       Parama Mitra (Good friend) Rajata - silver 9th        -                -
+                                                                                  
+Reference: Moon of natal D-1                                                      
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          3        22        Saturn  0     As, Me, Ve
+Sun            5        34        Mars    1     Su, Ma, Me, Ve, Sa
+Moon           6        30        Sun     1     As, Su, Mo, Ju, Ve, Sa
+Mars           1        23        Mercury 0     Mo
+Mercury        7        34        Mercury 1     As, Su, Mo, Ma, Me, Ju, Sa
+Jupiter        7        34        Mercury 1     As, Su, Ma, Me, Ju, Ve, Sa
+Venus          6        23        Mercury 0     As, Su, Mo, Ma, Ve, Sa
+Saturn         3        27        Lagna   1     As, Su, Ju
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

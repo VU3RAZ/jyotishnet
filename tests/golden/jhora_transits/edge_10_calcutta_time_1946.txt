@@ -1,0 +1,29 @@
+Transit: 2022-11-24 12:00:00 +05:30
+
+Planet     Tara                Murthi          House      Under vedha from Causing vedha to
+
+Sun        Naidhana (Death)    Swarna - golden 4th        -                -
+Moon       Naidhana (Death)    -               4th        -                -
+Mars       Kshema (Well-being) Swarna - golden 10th       -                Venus
+Mercury    Naidhana (Death)    Swarna - golden 4th (Good) Ketu             -
+Jupiter    Naidhana (Death)    Swarna - golden 8th        -                -
+Venus      Naidhana (Death)    Swarna - golden 4th (Good) Mars             -
+Saturn     Kshema (Well-being) Rajata - silver 6th (Good) Rahu             -
+Rahu       Janma (Birth)       Swarna - golden 9th        -                Saturn
+Ketu       Pratyak (Obstacles) Swarna - golden 3rd (Good) -                Mercury
+                                                                           
+Reference: Moon of natal D-1                                               
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          3        33        Mars    0     Su, Me, Ju
+Sun            2        19        Mars    0     Su, Ve
+Moon           5        19        Sun     1     Su, Ma, Me, Ve, Sa
+Mars           2        26        Lagna   1     As, Ma
+Mercury        1        19        Venus   0     Mo
+Jupiter        3        24        Jupiter 1     As, Ju, Ve
+Venus          3        19        Venus   0     As, Su, Mo
+Saturn         4        31        Moon    1     Su, Mo, Me, Ju
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

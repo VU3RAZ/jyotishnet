@@ -1,0 +1,29 @@
+Transit: 1994-11-24 12:00:00 +05:30
+
+Planet     Tara                   Murthi          House       Under vedha from Causing vedha to
+
+Sun        Vipat (Danger)         Swarna - golden 6th (Good)  -                -
+Moon       Vipat (Danger)         -               2nd         -                -
+Mars       Pratyak (Obstacles)    Swarna - golden 3rd (Good)  -                -
+Mercury    Sampat (Wealth)        Swarna - golden 5th         -                -
+Jupiter    Sampat (Wealth)        Rajata - silver 6th         -                -
+Venus      Janma (Birth)          Swarna - golden 5th (Good)  Saturn           -
+Saturn     Janma (Birth)          Taamra - copper 9th         -                Venus
+Rahu       Janma (Birth)          Taamra - copper 5th         -                -
+Ketu       Saadhana (Achievement) Taamra - copper 11th (Good) -                -
+                                                                               
+Reference: Moon of natal D-1                                                   
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          4        24        Mercury 1     As, Ma, Me, Ve
+Sun            4        27        Mars    1     Mo, Ma, Me, Ju
+Moon           4        23        Sun     1     Su, Me, Ju, Ve
+Mars           5        33        Saturn  1     As, Mo, Ma, Ve, Sa
+Mercury        4        32        Lagna   1     As, Su, Me, Sa
+Jupiter        4        27        Saturn  1     As, Ma, Ve, Sa
+Venus          8        32        Mars    1     As, Su, Mo, Ma, Me, Ju, Ve, Sa
+Saturn         1        26        Sun     0     Sa
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

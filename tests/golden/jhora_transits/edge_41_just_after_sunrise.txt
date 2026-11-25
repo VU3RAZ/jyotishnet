@@ -1,0 +1,29 @@
+Transit: 1993-11-24 12:00:00 +05:30
+
+Planet     Tara                       Murthi          House      Under vedha from Causing vedha to
+
+Sun        Pratyak (Obstacles)        Loha - iron     3rd (Good) Ketu             -
+Moon       Pratyak (Obstacles)        -               7th (Good) Jupiter, Venus   Venus
+Mars       Saadhana (Achievement)     Loha - iron     3rd (Good) -                -
+Mercury    Vipat (Danger)             Rajata - silver 2nd (Good) -                -
+Jupiter    Vipat (Danger)             Loha - iron     2nd (Good) -                Moon
+Venus      Kshema (Well-being)        Taamra - copper 2nd (Good) Moon             Moon
+Saturn     Sampat (Wealth)            Loha - iron     6th (Good) Ketu             -
+Rahu       Pratyak (Obstacles)        Loha - iron     3rd (Good) -                -
+Ketu       Parama Mitra (Good friend) Loha - iron     9th        -                Sun, Saturn
+                                                                                  
+Reference: Moon of natal D-1                                                      
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          5        36        Moon    0     As, Su, Ma, Ju, Sa
+Sun            5        30        Mars    1     Su, Mo, Ma, Me, Sa
+Moon           1        20        Sun     0     Mo
+Mars           3        30        Venus   0     Mo, Ma, Sa
+Mercury        6        28        Venus   1     As, Mo, Ma, Me, Ve, Sa
+Jupiter        6        28        Mars    1     Su, Mo, Ma, Me, Ju, Ve
+Venus          5        28        Moon    1     As, Su, Mo, Me, Ve
+Saturn         4        33        Saturn  1     Mo, Ma, Ju, Sa
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

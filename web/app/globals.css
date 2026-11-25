@@ -382,3 +382,5 @@ button, input, select { font: inherit; color: inherit; }
 .special-points { margin-top: 1rem; }
 .special-points summary { cursor: pointer; font-weight: 600; }
 .special-points p { margin: 0.5rem 0; }
+
+.spell-list { columns: 2; margin: 0.5rem 0 1rem; padding-left: 1.2rem; }

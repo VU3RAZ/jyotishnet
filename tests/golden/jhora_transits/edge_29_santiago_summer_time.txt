@@ -1,0 +1,29 @@
+Transit: 2013-11-24 12:00:00 -05:30
+
+Planet     Tara                       Murthi          House      Under vedha from Causing vedha to
+
+Sun        Naidhana (Death)           Swarna - golden 8th        -                -
+Moon       Mitra (Friend)             -               4th        -                -
+Mars       Sampat (Wealth)            Swarna - golden 5th        -                -
+Mercury    Saadhana (Achievement)     Rajata - silver 7th        -                -
+Jupiter    Saadhana (Achievement)     Swarna - golden 3rd        -                -
+Venus      Janma (Birth)              Rajata - silver 9th (Good) -                -
+Saturn     Saadhana (Achievement)     Swarna - golden 7th        -                -
+Rahu       Pratyak (Obstacles)        Swarna - golden 7th        -                -
+Ketu       Parama Mitra (Good friend) Swarna - golden 1st        -                -
+                                                                                  
+Reference: Moon of natal D-1                                                      
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          6        29        Moon    1     Su, Mo, Ma, Ju, Ve, Sa
+Sun            6        28        Mars    1     As, Ma, Me, Ju, Ve, Sa
+Moon           5        22        Lagna   0     Su, Ma, Me, Ju, Sa
+Mars           3        28        Lagna   1     As, Ma, Sa
+Mercury        4        36        Mercury 1     Su, Ma, Me, Ve
+Jupiter        3        25        Moon    0     As, Su, Ju
+Venus          5        26        Moon    1     As, Mo, Ma, Ve, Sa
+Saturn         6        36        Mercury 1     As, Su, Me, Ju, Ve, Sa
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

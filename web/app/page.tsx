@@ -6,6 +6,7 @@ import { BirthForm } from "@/components/BirthForm";
 import { ChartCard } from "@/components/ChartCard";
 import { DashaPanel } from "@/components/DashaPanel";
 import { PlanetTable } from "@/components/PlanetTable";
+import { GocharaView } from "@/components/GocharaView";
 import { SpecialPoints } from "@/components/SpecialPoints";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
 import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, LifeEvent } from "@/lib/api";
@@ -86,6 +87,9 @@ export default function Workbench() {
   const yogas = useLive(tab === "yogas" ? subjectKey : null, () => analysis.yogas(subject), 200);
   const av = useLive(tab === "ashtakavarga" ? subjectKey : null, () => analysis.ashtakavarga(subject), 200);
   const sb = useLive(tab === "shadbala" ? subjectKey : null, () => analysis.shadbala(subject), 200);
+  const transitAt: Birth = rectify ? { ...birth, local_datetime: `${eventDate}T12:00:00` } : moving;
+  const gochara = useLive(tab === "transits" ? JSON.stringify([subject, transitAt]) : null,
+    () => analysis.transits(subject, transitAt), 250);
   const dashas = useLive(tab === "dashas" ? JSON.stringify([subject, dashaSystem]) : null,
     () => analysis.dashas(subject, dashaSystem), 250);
   const subjectChart = rectify ? chart_ : natal.data;
@@ -203,7 +207,7 @@ export default function Workbench() {
       )}
 
       <AnalysisTabs tab={tab} onTab={setTab}
-        busy={yogas.loading || av.loading || sb.loading || dashas.loading}>
+        busy={yogas.loading || av.loading || sb.loading || dashas.loading || gochara.loading}>
         {tab === "positions" && (
           <div className="details">
             {chart && (
@@ -223,6 +227,9 @@ export default function Workbench() {
           ? <AshtakavargaView av={av.data} lagnaSign={subjectChart.lagna.sign} />
           : <p className="muted">Counting bindus…</p>)}
         {tab === "shadbala" && (sb.data ? <ShadbalaView sb={sb.data} /> : <p className="muted">Working out strengths…</p>)}
+        {tab === "transits" && (gochara.data
+          ? <GocharaView tr={gochara.data} when={rectify ? `the event date (${eventDate})` : transitAt.local_datetime.replace("T", " ")} />
+          : <p className="muted">Working out transits…</p>)}
         {tab === "dashas" && (dashas.data
           ? <DashaTimeline system={dashaSystem} onSystem={setDashaSystem} periods={dashas.data.periods}
               applicable={dashas.data.applicable} birthIso={birthUtc} refIso={refUtc}

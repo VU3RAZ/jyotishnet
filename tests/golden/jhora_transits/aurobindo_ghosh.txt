@@ -1,0 +1,29 @@
+Transit: 1997-11-24 12:00:00 +05:30
+
+Planet     Tara                       Murthi          House       Under vedha from Causing vedha to
+
+Sun        Mitra (Friend)             Swarna - golden 12th        -                Jupiter
+Moon       Vipat (Danger)             -               10th (Good) Saturn           -
+Mars       Sampat (Wealth)            Swarna - golden 1st         -                -
+Mercury    Parama Mitra (Good friend) Loha - iron     12th        -                Jupiter
+Jupiter    Kshema (Well-being)        Taamra - copper 2nd (Good)  Sun, Mercury     -
+Venus      Sampat (Wealth)            Swarna - golden 1st (Good)  -                -
+Saturn     Parama Mitra (Good friend) Swarna - golden 4th         -                Moon
+Rahu       Sampat (Wealth)            Rajata - silver 9th         -                -
+Ketu       Naidhana (Death)           Rajata - silver 3rd (Good)  -                -
+                                                                                   
+Reference: Moon of natal D-1                                                       
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          2        26        Mars    0     Mo, Sa
+Sun            2        17        Mars    0     Su, Ju
+Moon           3        23        Saturn  0     As, Mo, Ma
+Mars           5        30        Venus   0     As, Su, Me, Ju, Sa
+Mercury        1        17        Lagna   0     Ve
+Jupiter        6        25        Mercury 1     As, Mo, Ma, Me, Ju, Ve
+Venus          4        30        Moon    1     Mo, Ma, Me, Ve
+Saturn         2        23        Mercury 1     Su, Me
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

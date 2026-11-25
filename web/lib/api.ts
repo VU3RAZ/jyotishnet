@@ -133,10 +133,23 @@ export type DashaPeriod = {
   children?: DashaPeriod[];
 };
 
+export type TransitPlanet = {
+  code: string; longitude: number; sign: number; house_from_moon: number; good: boolean;
+  vedha_from: string[]; vedha_to: string[]; tara: string; tara_number: number; murthi: string | null;
+  av_score: number | null; sav_score: number | null; kakshya: string | null; kakshya_good: boolean | null;
+  bindu_from: string[];
+};
+export type Transits = {
+  planets: Record<string, TransitPlanet>;
+  saturn_phase: string | null;
+  saturn_spells: { phase: string; start: string; end: string }[];
+};
+
 export const analysis = {
   yogas: (birth: Birth) => post<{ yogas: Yoga[] }>("/v1/yogas", { birth, include_absent: true }),
   ashtakavarga: (birth: Birth) => post<Ashtakavarga>("/v1/ashtakavarga", { birth }),
   shadbala: (birth: Birth) => post<Shadbala>("/v1/shadbala", { birth }),
+  transits: (birth: Birth, transit: Birth) => post<Transits>("/v1/transits", { birth, transit }),
   dashas: (birth: Birth, system: DashaSystem) =>
     post<{ system: string; periods: DashaPeriod[]; applicable?: boolean }>("/v1/dasha",
       { birth, system, levels: system === "chara" ? 2 : 3 }),

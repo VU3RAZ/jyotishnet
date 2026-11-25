@@ -3,11 +3,11 @@
 
 import { KeyboardEvent, ReactNode, useRef } from "react";
 
-export type TabId = "positions" | "yogas" | "ashtakavarga" | "shadbala" | "dashas";
+export type TabId = "positions" | "yogas" | "ashtakavarga" | "shadbala" | "dashas" | "transits";
 const TABS: { id: TabId; label: string }[] = [
   { id: "positions", label: "Positions" }, { id: "yogas", label: "Yogas" },
   { id: "ashtakavarga", label: "Ashtakavarga" }, { id: "shadbala", label: "Shadbala" },
-  { id: "dashas", label: "Dashas" },
+  { id: "dashas", label: "Dashas" }, { id: "transits", label: "Transits" },
 ];
 
 export function AnalysisTabs({ tab, onTab, children, busy }: {

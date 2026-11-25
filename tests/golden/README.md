@@ -64,7 +64,12 @@ rulers table (division, index, name; `tests/test_jhora_nadiamsa.py`).
 The body table's special lagnas, upagrahas and Bhrigu Bindu are checked by
 `tests/test_jhora_upagrahas.py` (tolerances from the position and sunrise
 differences, explained there); `jhora_yogi/` holds JHora's Yogi, Sahayogi and
-Avayogi table (`tests/test_jhora_yogi.py`).
+Avayogi table (`tests/test_jhora_yogi.py`). `jhora_transits/` holds JHora's Basic
+Transit Results (Transits tab; right-click the table > Standard, then Ashtakavarga
+related, Copy to clipboard each) for one transit date per chart, 24 November of a
+year spread over 1990-2034 at 12:00, typed as 5:30 from GMT; JHora applies the
+direction already in the chart's zone box, so charts at or west of GMT carry
+-05:30 in the file header (`tests/test_jhora_transits.py`).
 
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:

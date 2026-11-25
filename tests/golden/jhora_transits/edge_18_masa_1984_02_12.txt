@@ -1,0 +1,29 @@
+Transit: 2026-11-24 12:00:00 +05:30
+
+Planet     Tara                   Murthi          House       Under vedha from Causing vedha to
+
+Sun        Kshema (Well-being)    Rajata - silver 7th         -                -
+Moon       Mitra (Friend)         -               1st (Good)  -                -
+Mars       Saadhana (Achievement) Loha - iron     4th         -                -
+Mercury    Sampat (Wealth)        Swarna - golden 6th (Good)  -                -
+Jupiter    Saadhana (Achievement) Rajata - silver 4th         -                -
+Venus      Janma (Birth)          Loha - iron     6th         -                -
+Saturn     Kshema (Well-being)    Swarna - golden 11th (Good) -                -
+Rahu       Janma (Birth)          Rajata - silver 10th        -                -
+Ketu       Saadhana (Achievement) Rajata - silver 4th         -                -
+                                                                               
+Reference: Moon of natal D-1                                                   
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          4        25        Mercury 1     Me, Ju, Ve, Sa
+Sun            5        30        Mars    1     Su, Ma, Me, Ve, Sa
+Moon           2        31        Saturn  0     Mo, Me
+Mars           2        33        Jupiter 0     Ma, Sa
+Mercury        7        41        Venus   1     As, Mo, Ma, Me, Ju, Ve, Sa
+Jupiter        4        33        Saturn  0     As, Su, Ma, Ve
+Venus          2        41        Saturn  0     Ju, Ve
+Saturn         4        33        Sun     0     As, Mo, Ma, Sa
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

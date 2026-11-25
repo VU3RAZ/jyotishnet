@@ -1,0 +1,29 @@
+Transit: 2025-11-24 12:00:00 +05:30
+
+Planet     Tara                       Murthi          House       Under vedha from Causing vedha to
+
+Sun        Saadhana (Achievement)     Swarna - golden 8th         -                -
+Moon       Parama Mitra (Good friend) -               9th         -                -
+Mars       Naidhana (Death)           Rajata - silver 8th         -                -
+Mercury    Pratyak (Obstacles)        Rajata - silver 7th         -                -
+Jupiter    Pratyak (Obstacles)        Rajata - silver 4th         -                -
+Venus      Pratyak (Obstacles)        Loha - iron     7th         -                -
+Saturn     Pratyak (Obstacles)        Loha - iron     12th        -                -
+Rahu       Kshema (Well-being)        Taamra - copper 11th (Good) -                -
+Ketu       Parama Mitra (Good friend) Taamra - copper 5th         -                -
+                                                                                   
+Reference: Moon of natal D-1                                                       
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          6        38        Mercury 1     As, Su, Mo, Me, Ju, Ve
+Sun            5        27        Mars    1     Su, Ma, Me, Ju, Ve
+Moon           4        30        Mercury 1     Mo, Ma, Me, Ju
+Mars           1        27        Mercury 0     Ma
+Mercury        2        24        Lagna   0     Ma, Ju
+Jupiter        3        27        Saturn  0     As, Su, Me
+Venus          3        24        Lagna   0     Ma, Ju, Sa
+Saturn         1        24        Saturn  0     Ve
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

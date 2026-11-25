@@ -218,6 +218,37 @@ def shadbala_endpoint(req: ChartRequest) -> dict:
     return {"planets": out, "wars": wars, "houses": houses, "avasthas": states}
 
 
+class TransitRequest(BaseModel):
+    birth: BirthIn
+    transit: BirthIn = Field(description="The transit moment (usually at the birth place)")
+    config: ConfigIn = ConfigIn()
+    years: float = Field(100.0, ge=1, le=150, description="Saturn spells from birth for this long")
+
+
+@app.post("/v1/transits")
+def transits_endpoint(req: TransitRequest) -> dict:
+    """Gochara of the nine grahas against the natal chart (houses from the natal Moon,
+    vedha, tara, murthi, Ashtakavarga and kakshya), Saturn's phase (Sade Sati,
+    Kantaka, Ashtama) and its spells over the given years from birth."""
+    from dataclasses import asdict as _asdict
+
+    from jyotishnet_engine.transits import gochara, sade_sati_phase, saturn_spells
+    cfg = req.config.to_config()
+    try:
+        natal = build_chart(req.birth.to_birth(), cfg, [1])
+        tr = build_chart(req.transit.to_birth(), cfg, [1])
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from e
+    moon_sign = natal.grahas["Mo"].sign
+    spells = saturn_spells(moon_sign, natal.jd_ut, natal.jd_ut + req.years * 365.25, cfg)
+    return {
+        "planets": {p: _asdict(t) for p, t in gochara(natal, tr, cfg).items()},
+        "saturn_phase": sade_sati_phase(tr.grahas["Sa"].sign, moon_sign),
+        "saturn_spells": [{"phase": s.phase, "start": _iso(s.start_jd), "end": _iso(s.end_jd)}
+                          for s in spells],
+    }
+
+
 class AvasthaRequest(ChartRequest):
     compound: bool = Field(False, description="Jagradadi by compound (natural + temporal) "
                                               "relationship instead of natural (JHora's default)")

@@ -1,0 +1,29 @@
+Transit: 2003-11-24 12:00:00 +05:30
+
+Planet     Tara                       Murthi          House       Under vedha from   Causing vedha to
+
+Sun        Naidhana (Death)           Loha - iron     12th        -                  Mars
+Moon       Naidhana (Death)           -               12th        -                  Mars
+Mars       Saadhana (Achievement)     Loha - iron     3rd (Good)  Sun, Moon, Mercury -
+Mercury    Mitra (Friend)             Rajata - silver 12th        -                  Mars
+Jupiter    Janma (Birth)              Loha - iron     9th (Good)  -                  -
+Venus      Parama Mitra (Good friend) Swarna - golden 1st (Good)  -                  -
+Saturn     Pratyak (Obstacles)        Swarna - golden 7th         -                  -
+Rahu       Janma (Birth)              Swarna - golden 5th         -                  -
+Ketu       Saadhana (Achievement)     Swarna - golden 11th (Good) -                  -
+                                                                                     
+Reference: Moon of natal D-1                                                         
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          4        27        Mercury 1     As, Ma, Me, Ve
+Sun            3        25        Mars    1     Ma, Me, Ve
+Moon           2        25        Sun     0     Me, Ju
+Mars           4        32        Moon    1     Su, Mo, Ma, Ju
+Mercury        4        25        Moon    0     As, Su, Ma, Me
+Jupiter        5        26        Mercury 0     As, Su, Mo, Ju, Ve
+Venus          5        23        Saturn  0     As, Mo, Ma, Ju, Ve
+Saturn         3        24        Venus   0     Su, Ma, Me
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

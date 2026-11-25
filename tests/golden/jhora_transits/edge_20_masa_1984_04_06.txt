@@ -1,0 +1,29 @@
+Transit: 1995-11-24 12:00:00 +05:30
+
+Planet     Tara                   Murthi          House      Under vedha from Causing vedha to
+
+Sun        Pratyak (Obstacles)    Loha - iron     7th        -                -
+Moon       Naidhana (Death)       -               8th        -                -
+Mars       Naidhana (Death)       Taamra - copper 8th        -                -
+Mercury    Pratyak (Obstacles)    Rajata - silver 7th        -                -
+Jupiter    Saadhana (Achievement) Taamra - copper 7th (Good) -                -
+Venus      Naidhana (Death)       Taamra - copper 8th (Good) -                -
+Saturn     Kshema (Well-being)    Rajata - silver 10th       -                -
+Rahu       Sampat (Wealth)        Loha - iron     6th (Good) -                -
+Ketu       Naidhana (Death)       Loha - iron     12th       -                -
+                                                                              
+Reference: Moon of natal D-1                                                  
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          5        32        Mercury 1     Su, Ma, Me, Ju, Sa
+Sun            4        26        Mars    1     As, Su, Ma, Sa
+Moon           5        27        Saturn  1     Su, Ma, Ju, Ve, Sa
+Mars           2        27        Saturn  0     Su, Ma
+Mercury        6        26        Mars    1     As, Su, Ma, Ju, Ve, Sa
+Jupiter        5        26        Lagna   1     As, Su, Mo, Ma, Ve
+Venus          4        27        Saturn  1     Mo, Me, Ve, Sa
+Saturn         3        27        Moon    0     Me, Ve, Sa
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              

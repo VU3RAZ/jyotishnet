@@ -49,12 +49,14 @@ async def main() -> int:
         await page.select_option(".varga-pick select", "60")
         await step("slider + D60 while loading")
 
-        for tab in ["Yogas", "Ashtakavarga", "Shadbala", "Dashas", "Positions"]:
+        for tab in ["Yogas", "Ashtakavarga", "Shadbala", "Transits", "Dashas", "Positions"]:
             await page.click(f"[role=tab]:has-text('{tab}')")
             await step(f"tab {tab}", 1500)
             if tab == "Shadbala":
                 await page.wait_for_selector("caption:has-text('Bhava bala')", state="attached")
                 await page.wait_for_selector("caption:has-text('Avasthas')", state="attached")
+            if tab == "Transits":
+                await page.wait_for_selector("caption:has-text('Gochara')", state="attached")
             if tab == "Positions":
                 await page.click("summary:has-text('Special lagnas')")
                 await page.wait_for_selector("th:has-text('Yama Ghantaka')")

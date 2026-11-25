@@ -140,3 +140,14 @@ def test_chart_new_vargas_and_nadiamsa():
     assert 1 <= la["nadiamsa"]["index"] <= 150 and la["nadiamsa"]["name"]
     r = client.post("/v1/chart", json={"birth": BIRTH, "vargas": [150]})
     assert r.status_code == 422
+
+
+def test_transits():
+    tr = dict(BIRTH, local_datetime="2026-11-24T12:00:00")
+    r = client.post("/v1/transits", json={"birth": BIRTH, "transit": tr, "years": 60})
+    assert r.status_code == 200
+    body = r.json()
+    assert set(body["planets"]) == {"Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke"}
+    assert body["planets"]["Mo"]["murthi"] is None and body["planets"]["Ra"]["av_score"] is None
+    phases = [s["phase"] for s in body["saturn_spells"]]
+    assert {"rising", "peak", "setting"} <= set(phases)

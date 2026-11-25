@@ -1,0 +1,29 @@
+Transit: 2021-11-24 12:00:00 +05:30
+
+Planet     Tara                Murthi          House       Under vedha from   Causing vedha to
+
+Sun        Mitra (Friend)      Loha - iron     8th         -                  Jupiter
+Moon       Naidhana (Death)    -               4th         -                  -
+Mars       Naidhana (Death)    Swarna - golden 7th         -                  -
+Mercury    Mitra (Friend)      Rajata - silver 8th (Good)  -                  Jupiter
+Jupiter    Pratyak (Obstacles) Rajata - silver 11th (Good) Sun, Mercury, Ketu Venus
+Venus      Sampat (Wealth)     Rajata - silver 9th (Good)  Jupiter            -
+Saturn     Kshema (Well-being) Taamra - copper 10th        -                  -
+Rahu       Vipat (Danger)      Loha - iron     2nd         -                  -
+Ketu       Mitra (Friend)      Loha - iron     8th         -                  Jupiter
+                                                                              
+Reference: Moon of natal D-1                                                  
+
+Planet         AV Score SAV Score Kakshya Good? Good house from references
+
+Lagna          5        42        Lagna   0     Su, Mo, Ma, Me, Ju
+Sun            5        26        Mars    1     As, Su, Ma, Me, Ju
+Moon           4        28        Saturn  1     Ma, Me, Ve, Sa
+Mars           3        28        Moon    0     As, Ma, Ve
+Mercury        4        26        Jupiter 0     Mo, Ma, Me, Ve
+Jupiter        3        33        Saturn  1     Su, Mo, Sa
+Venus          5        33        Mercury 0     As, Mo, Ju, Ve, Sa
+Saturn         6        42        Sun     1     Su, Ma, Me, Ju, Ve, Sa
+                                                
+Natal varga:   D-1                              
+Transit varga: D-1                              
