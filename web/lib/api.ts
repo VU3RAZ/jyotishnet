@@ -151,7 +151,28 @@ export type Transits = {
   saturn_spells: { phase: string; start: string; end: string }[];
 };
 
+export type PanchangaElement = {
+  kind: string; index: number; name: string; lord: string | null; end_utc: string; fraction_left: number;
+};
+export type Span = [string, string];
+export type Panchanga = {
+  utc_offset_hours: number;
+  birth: {
+    samvatsara: string; masa: string; weekday: string; tithi: PanchangaElement;
+    nakshatra: PanchangaElement; yoga: PanchangaElement; karana: PanchangaElement;
+    hora_lord: string; sunrise_utc: string; sunset_utc: string; janma_ghatis: number;
+  };
+  day: {
+    sunrise_utc: string; sunset_utc: string; next_sunrise_utc: string; weekday: string;
+    tithis: PanchangaElement[]; nakshatras: PanchangaElement[]; yogas: PanchangaElement[];
+    karanas: PanchangaElement[]; rahu_kala: Span; gulika_kala: Span; yamaganda: Span;
+    durmuhurta: Span[]; varjya: Span[]; moonrise_utc: string | null; moonset_utc: string | null;
+    moon_sign: number; moon_sign_end_utc: string | null;
+  };
+};
+
 export const analysis = {
+  panchanga: (birth: Birth) => post<Panchanga>("/v1/panchanga", { birth }),
   yogas: (birth: Birth) => post<{ yogas: Yoga[] }>("/v1/yogas", { birth, include_absent: true }),
   ashtakavarga: (birth: Birth) => post<Ashtakavarga>("/v1/ashtakavarga", { birth }),
   shadbala: (birth: Birth) => post<Shadbala>("/v1/shadbala", { birth }),

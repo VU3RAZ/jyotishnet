@@ -62,6 +62,9 @@ async def main() -> int:
                 await page.wait_for_selector("th:has-text('Yama Ghantaka')")
                 await page.click("summary:has-text('Chara karakas and arudhas')")
                 await page.wait_for_selector("th:has-text('Of house')")
+                await page.click("summary:has-text('Panchanga')")
+                await page.wait_for_selector("th:has-text('Rahu kala')")
+                await page.wait_for_selector("th:has-text('Janma ghatis')")
         for system in ["Ashtottari", "Yogini", "Vimshottari"]:
             await page.click(f"[role=tab]:has-text('Dashas')")
             await page.click(f"text={system}")

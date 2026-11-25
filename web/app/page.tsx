@@ -9,6 +9,7 @@ import { PlanetTable } from "@/components/PlanetTable";
 import { GocharaView } from "@/components/GocharaView";
 import { SpecialPoints } from "@/components/SpecialPoints";
 import { JaiminiPoints } from "@/components/JaiminiPoints";
+import { PanchangaPanel } from "@/components/PanchangaPanel";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
 import { analysis, api, Birth, btr, Chart, DashaSystem, EventRule, LifeEvent } from "@/lib/api";
 import { EventPanel } from "@/components/EventPanel";
@@ -88,6 +89,7 @@ export default function Workbench() {
   const yogas = useLive(tab === "yogas" ? subjectKey : null, () => analysis.yogas(subject), 200);
   const av = useLive(tab === "ashtakavarga" ? subjectKey : null, () => analysis.ashtakavarga(subject), 200);
   const sb = useLive(tab === "shadbala" ? subjectKey : null, () => analysis.shadbala(subject), 200);
+  const panchanga = useLive(tab === "positions" ? subjectKey : null, () => analysis.panchanga(subject), 250);
   const transitAt: Birth = rectify ? { ...birth, local_datetime: `${eventDate}T12:00:00` } : moving;
   const gochara = useLive(tab === "transits" ? JSON.stringify([subject, transitAt]) : null,
     () => analysis.transits(subject, transitAt), 250);
@@ -217,6 +219,7 @@ export default function Workbench() {
                 <PlanetTable chart={chart} varga={varga} />
                 <SpecialPoints chart={chart} />
                 <JaiminiPoints chart={chart} />
+                {panchanga.data && <PanchangaPanel p={panchanga.data} />}
               </div>
             )}
             <DashaPanel running={dasha.data?.running ?? null} loading={dasha.loading}
