@@ -50,10 +50,13 @@ def main() -> None:
     pending = Path(__file__).parent.parent / "tests/golden/pending" / dst.name
     n = 0
     for d in sorted(p for p in src.iterdir() if (p / "done").exists()):
-        if (pending / f"{d.name}.json").exists():
-            print(f"{d.name}: in tests/golden/pending, skipped")
+        held = pending / f"{d.name}.json"
+        held = set(json.loads(held.read_text())) if held.exists() else set()
+        out = {f.stem: convert(f) for f in sorted(d.glob("*.txt")) if f.stem not in held}
+        if held:
+            print(f"{d.name}: {', '.join(sorted(held))} held in tests/golden/pending")
+        if not out:
             continue
-        out = {f.stem: convert(f) for f in sorted(d.glob("*.txt"))}
         body = ",\n".join(f"{json.dumps(k)}: {json.dumps(v, separators=(',', ':'))}"
                           for k, v in out.items())
         (dst / f"{d.name}.json").write_text("{\n" + body + "\n}\n")

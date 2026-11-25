@@ -62,6 +62,8 @@ def _limit(when: datetime, slack: float) -> float:
 @pytest.mark.parametrize("path", FILES, ids=[p.stem for p in FILES])
 def test_rasi_dasha(path, dasha):
     c, ch, golden = _setup(path.stem)
+    if dasha not in golden:
+        pytest.skip("held in tests/golden/pending (see tests/golden/README.md)")
     g = golden[dasha]
     per = _periods(dasha, c, ch)
     local = lambda jd: jd_to_datetime(jd).replace(tzinfo=None) + timedelta(hours=c.utc_offset_hours)

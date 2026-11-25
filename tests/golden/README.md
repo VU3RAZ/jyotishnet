@@ -75,7 +75,9 @@ direction already in the chart's zone box, so charts at or west of GMT carry
 right-click > dasha > Copy, then the antardashas of the first two mahadashas), made
 from the raw exports by `tools/import_jhora_rasi_dashas.py`; JHora's chart view was
 set to hide Mandi and the special lagnas so that its drawings show the arudha labels
-for a visual check (`tests/test_jhora_rasi_dashas.py`).
+for a visual check (`tests/test_jhora_rasi_dashas.py`). `jhora_arudhas.json` holds the
+sign of each arudha label (AL, A2..A11, UL) read from those drawings for all 55 charts;
+null where the label is hidden under other text (29 of 660; `tests/test_jhora_arudhas.py`).
 
 Files in `pending/` wait for the engine or a decision; the tests do not read
 them:
@@ -85,11 +87,17 @@ them:
   2050, 125 s in 2100), so the Moon differs by 27" and 75" and Vimshottari dates
   by about 2 days. Decided (#22): we keep Swiss Ephemeris's model; these stay
   here as a record of the difference.
-- `pending/jhora_rasi_dashas/edge_38_*` (1800, local mean time): every sign and
-  antardasha order matches, but ten of the 19 dashas have start dates 5.1-5.6 s
+- `pending/jhora_rasi_dashas/edge_38_*` (1800, local mean time; the other nine
+  dashas are tested): every sign and antardasha order matches, but ten of the 19 dashas have start dates 5.1-5.6 s
   from JHora's (1875-1936; limit 5 s). The difference wanders between 0 and 5.6 s
   from one solar return to the next rather than growing, which points at JHora's
   Delta T for the 19th century differing from Swiss Ephemeris's; not investigated.
+- `pending/jhora_rasi_dashas/pandit_suryanarayan_rao.json` (Yogardha) and
+  `ramakrishna_paramhansa.json` (Chara of Rangacharya, Padanaathamsa): signs and
+  orders match; one start date each is 5.03-5.06 s from JHora's (1938, 1945).
+  Over all charts the date differences before 2016 average 0.00 s (sd 1.34 s,
+  948 dates) but each chart has its own offset of up to about 2.6 s; it does not
+  follow the natal Sun's difference from JHora. Cause not found yet.
 
 Chart 12 (Tromso, polar night) was dropped: polar births are out of scope
 (`docs/DECISIONS.md`). JHora gave no usable reference for it either: it printed
