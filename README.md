@@ -157,7 +157,8 @@ service's users.
 
 Notes:
 
-- **Swiss Ephemeris** (via `pyswisseph`) is used under its AGPL licence option,
+- **Swiss Ephemeris** (via `pyswisseph`, and compiled to WebAssembly from the same
+  sources for the browser engine, `web/public/engine/swe.wasm`) is used under its AGPL licence option,
   which requires the whole project to be AGPL-compatible. A closed-source edition
   would need the Swiss Ephemeris Professional Licence from Astrodienst.
 - **PyJHora** (AGPL-3.0) is used only as an external test oracle in a separate

@@ -7,9 +7,8 @@ Next.js + React + TypeScript front end for the JyotishNet API.
 - North and South Indian charts (SVG) for the Rasi and any divisional chart.
 - **Rectify birth time**: a time ribbon moves the birth time within ±30 minutes by default (±20 minutes
   or ±2 hours on request).
-  Charts, positions and dashas recompute as you drag (about 3 ms per API call),
-  and marks on the ribbon show where the Lagna and the chosen varga's Lagna
-  change sign (from `/v1/boundaries`). Planets or Lagnas that change sign
+  Charts, positions and dashas recompute as you drag, and marks on the ribbon
+  show where the Lagna and the chosen varga's Lagna change sign. Planets or Lagnas that change sign
   flash briefly. The dasha panel shows the Vimshottari periods running on an
   event date you enter.
 - **Life events** (rectify mode): enter dated events; each is scored for the
@@ -62,14 +61,22 @@ npm ci
 npm run dev        # http://localhost:3000
 ```
 
+**Browser engine.** The slider's calculations (charts with all vargas, special
+lagnas, upagrahas and Jaimini points; the running Vimshottari periods; the ribbon's
+boundary marks) run in the browser: Swiss Ephemeris compiled to WebAssembly
+(`public/engine/swe.wasm`, built by `tools/build_swe_wasm.sh` from the same C sources
+the API uses) with a TypeScript port of the chart code (`lib/engine/`) in a Web Worker.
+A chart takes about 0.5 ms, so the slider updates every frame and works with the API
+stopped. The header says "computed in this browser"; if the worker cannot start, the
+app falls back to the API. `e2e/engine_parity.py` checks the results equal the API's
+(about 700 charts, every field), and `e2e/offline.py` drives the slider with no API.
+Everything else (yogas, strengths, readings, saved charts...) still comes from the API.
+
 The app calls `/api/*`, which Next forwards to `JYOTISHNET_API_URL`
 (default `http://127.0.0.1:8000`). For a separate deployment, the API also
 accepts browser calls from the origins in `JYOTISHNET_CORS`.
 
 ## Next steps
 
-1. Analysis canvas: several vargas side by side with linked highlighting.
-2. Swiss Ephemeris compiled to WebAssembly in a Web Worker for offline,
-   sub-millisecond scrubbing.
-3. Client management and notes.
-4. A TypeScript client generated from the API's OpenAPI spec.
+1. Design pass over the analysis tabs (M3.6).
+2. A TypeScript client generated from the API's OpenAPI spec.

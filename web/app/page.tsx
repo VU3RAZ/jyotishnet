@@ -182,6 +182,14 @@ export default function Workbench() {
             {" "}{Math.abs(birth.longitude).toFixed(2)}° {birth.longitude >= 0 ? "E" : "W"}
             {(mode === "rectify" ? chart : natal.data) &&
               <>, ayanamsa {(mode === "rectify" ? chart : natal.data)!.ayanamsa.toFixed(4)}° (Lahiri)</>}
+            {chart?.source && (
+              <span className="engine-note" data-engine={chart.source}
+                title={chart.source === "browser"
+                  ? "Swiss Ephemeris running in this browser (WebAssembly); same results as the API"
+                  : "The browser engine could not start; charts come from the API"}>
+                {" "}· {chart.source === "browser" ? "computed in this browser" : "computed by the API"}
+              </span>
+            )}
           </p>
         </div>
         <BirthForm key={`${name}-${birth.local_datetime}`} name={name} birth={birth}

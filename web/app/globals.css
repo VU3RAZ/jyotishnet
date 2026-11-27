@@ -495,3 +495,6 @@ button, input, select { font: inherit; color: inherit; }
 .reading-facts code { color: var(--muted); font-size: 0.8em; margin-left: 0.3rem; }
 .reading-dropped { font-size: var(--step--1); color: var(--muted); }
 .small { font-size: var(--step--1); }
+
+/* Browser engine (M3.5) */
+.engine-note { color: var(--muted); font-size: var(--step--1); white-space: nowrap; }

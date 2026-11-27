@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // Typed client for the JyotishNet API (proxied at /api).
 
+import { engineCall, engineOk } from "./engine/client";
+
 export type Birth = {
   local_datetime: string; // "YYYY-MM-DDTHH:MM:SS", local clock time
   latitude: number;
@@ -36,6 +38,7 @@ export type Chart = {
   arudhas?: number[];                 // signs of A1 (AL) .. A12 (UL)
   sunrise_utc: string;
   warnings?: string[];
+  source?: "browser" | "api";         // which engine computed it (M3.5)
 };
 
 export type RunningPeriod = { lord: string; name?: string | null; level: number; start: string; end: string };
@@ -56,18 +59,31 @@ async function post<T>(path: string, body: unknown, signal?: AbortSignal, method
   return r.json() as Promise<T>;
 }
 
+/** Browser engine first (M3.5: same results, no network), the API if it cannot run. */
+async function local<T>(req: Parameters<typeof engineCall>[0], remote: () => Promise<T>): Promise<T & { source: Source }> {
+  if (engineOk()) {
+    try {
+      return { ...(await engineCall<T>(req)), source: "browser" };
+    } catch (e) {
+      if (engineOk()) throw e;          // a real error from the engine (e.g. polar latitude)
+    }
+  }
+  return { ...(await remote()), source: "api" };
+}
+export type Source = "browser" | "api";
+
 export const api = {
   chart: (birth: Birth, vargas: number[], signal?: AbortSignal) =>
-    post<Chart>("/v1/chart", { birth, vargas }, signal),
+    local({ op: "chart", birth, vargas }, () => post<Chart>("/v1/chart", { birth, vargas }, signal)),
   runningDasha: (birth: Birth, atUtc: string, signal?: AbortSignal) =>
-    post<{ running: RunningPeriod[] }>("/v1/dasha",
-      { birth, system: "vimshottari", levels: 3, at: atUtc }, signal),
+    local({ op: "running", birth, atUtc }, () => post<{ running: RunningPeriod[] }>("/v1/dasha",
+      { birth, system: "vimshottari", levels: 3, at: atUtc }, signal)),
   /** Time-zone warnings for a birth record (India before 1956); never changes a chart. */
   birthWarnings: (birth: Birth, signal?: AbortSignal) =>
     post<{ warnings: string[] }>("/v1/birth/warnings", { birth }, signal),
   boundaries: (birth: Birth, windowMin: number, vargas: number[], signal?: AbortSignal) =>
-    post<{ changes: Boundary[] }>("/v1/boundaries",
-      { birth, window_min: windowMin, step_s: 10, vargas }, signal),
+    local({ op: "boundaries", birth, windowMin, vargas }, () => post<{ changes: Boundary[] }>("/v1/boundaries",
+      { birth, window_min: windowMin, step_s: 10, vargas }, signal)),
 };
 
 // --- Rectification helpers ---------------------------------------------------

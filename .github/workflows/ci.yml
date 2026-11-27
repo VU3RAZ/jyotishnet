@@ -31,24 +31,41 @@ jobs:
       - run: npm ci
       - run: npx next build
       - run: npx tsc --noEmit
-      # Browser smoke test (M1.4): API + built app, Chromium via Playwright.
-      # Fails on any page error or console error.
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -e .. playwright && python -m playwright install --with-deps chromium
-      - name: Start API and web app
+      # Browser engine (M3.5): equal to the Python engine, field by field.
+      - run: python e2e/engine_parity.py
+      # The slider with the API stopped: only the web app runs here.
+      - name: Start the web app alone
+        run: |
+          nohup npx next start -H 127.0.0.1 -p 3000 > ../web.log 2>&1 &
+          for _ in $(seq 1 60); do curl -fs http://127.0.0.1:3000 >/dev/null && exit 0; sleep 1; done
+          echo "web app did not start"; cat ../web.log; exit 1
+      - run: python e2e/offline.py http://127.0.0.1:3000
+      # Browser smoke test (M1.4): API + built app, Chromium via Playwright.
+      # Fails on any page error or console error.
+      - name: Start the API
         run: |
           nohup uvicorn jyotishnet_api.main:app --host 127.0.0.1 --port 8000 > ../api.log 2>&1 &
-          nohup npx next start -H 127.0.0.1 -p 3000 > ../web.log 2>&1 &
-          for _ in $(seq 1 60); do
-            curl -fs http://127.0.0.1:8000/health >/dev/null && curl -fs http://127.0.0.1:3000 >/dev/null && exit 0
-            sleep 1
-          done
-          echo "servers did not start"; cat ../api.log ../web.log; exit 1
+          for _ in $(seq 1 60); do curl -fs http://127.0.0.1:8000/health >/dev/null && exit 0; sleep 1; done
+          echo "API did not start"; cat ../api.log; exit 1
       - run: python e2e/smoke.py http://127.0.0.1:3000
       - if: failure()
         run: tail -n 100 ../api.log ../web.log
+
+  wasm:
+    # web/public/engine/swe.wasm must be what tools/build_swe_wasm.sh builds from the
+    # pinned sources (pyswisseph 2.10.3.2) and compiler (zig 0.13.0).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: tools/build_swe_wasm.sh /tmp/swe.wasm
+      - run: cmp /tmp/swe.wasm web/public/engine/swe.wasm
 
   crosscheck:
     # Compares every Shodashavarga placement with PyJHora (test oracle only, AGPL).
