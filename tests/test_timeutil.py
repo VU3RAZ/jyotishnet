@@ -110,3 +110,18 @@ def test_before_ist():
     assert "local mean time (UTC+5:08:50" in w[0]
     assert zone_warnings(datetime(1890, 5, 1, 10), *DELHI, 77.21 / 15) == []
     assert zone_warnings(datetime(1890, 5, 1, 10), *DELHI, 5 + 21 / 60 + 10 / 3600) == []
+
+
+def test_naive_datetime_is_utc_whatever_the_server_zone(monkeypatch):
+    # /v1/dasha's `at` arrives naive and means UTC; on a server in IST it was read as IST.
+    import time
+    from datetime import datetime, timezone
+    from jyotishnet_engine.timeutil import datetime_to_jd
+    monkeypatch.setenv("TZ", "Asia/Kolkata")
+    time.tzset()
+    try:
+        naive = datetime(2026, 11, 27, 12)
+        assert datetime_to_jd(naive) == datetime_to_jd(naive.replace(tzinfo=timezone.utc)) == 2461372.0
+    finally:
+        monkeypatch.undo()
+        time.tzset()

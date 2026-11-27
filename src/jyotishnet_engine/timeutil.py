@@ -47,6 +47,9 @@ class BirthData:
 
 
 def datetime_to_jd(dt_utc: datetime) -> float:
+    """Julian day (UT). A naive datetime is taken as UTC (not the server's local zone)."""
+    if dt_utc.tzinfo is None:
+        dt_utc = dt_utc.replace(tzinfo=timezone.utc)
     dt_utc = dt_utc.astimezone(timezone.utc)
     hour = dt_utc.hour + dt_utc.minute / 60 + (dt_utc.second + dt_utc.microsecond / 1e6) / 3600
     return swe.julday(dt_utc.year, dt_utc.month, dt_utc.day, hour, swe.GREG_CAL)
