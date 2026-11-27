@@ -138,6 +138,32 @@ A lord is linked when, in D1 or the event's varga, it lords or occupies one of t
 - The total moves in steps of 0.5, so the top is often a plateau several minutes wide. The button jumps to one point on it, the one nearest the recorded time; the curve on the ribbon shows how wide the plateau is, and that width is the real uncertainty.
 - The event rules are drafts (#20).
 
+### Is the best fit real? (added after 1.0.0)
+
+A best fit is always found somewhere, even for made-up dates. So the ribbon also says whether the events point to a birth time at all, in one line under the "Jump to best fit" button.
+
+**How it is checked.** The tool keeps the same chart and the same event types and gives the events 200 sets of random dates. Each date is drawn from the years the real events span, widened by five years each side and never before birth. For each set it finds the best total anywhere in the window, just as for the real events, and counts how many sets do at least as well as the real ones. That count, as a fraction, is the p-value: (1 + count) / 201. The random dates are seeded from the birth and the events, so the same input always gives the same answer.
+
+**What the line says.**
+
+| Line on the ribbon | p-value | Button | Meaning |
+| --- | --- | --- | --- |
+| Life-event fit unlikely by chance | 0.05 or less | Solid | The real events fit this chart much better than random dates do; the peak is worth taking seriously. |
+| Weak life-event fit | above 0.05, up to 0.2 | Dashed | Some support, but random dates often come close. |
+| No signal in the life events | above 0.2 | Dashed | Random dates fit about as well; the best fit says nothing about the birth time. |
+
+An example: "random dates fit as well in 163 of 200 tries (p = 0.816)" means 163 of the 200 invented sets of dates scored as high as the real events, so the peak is what these rules give for almost any dates.
+
+**When it says no signal:** add more events with exact dates (two or three rarely beat chance), prefer events dated to the day or month, and if it still says no signal, rely on the boundary marks and your own judgment rather than the curve.
+
+**How well the check works.**
+
+- On random event dates (150 charts) it flagged 3.3% at p 0.05 or less, about the 5% expected by chance.
+- On events planted in periods the rules favour (60 charts) it flagged 98%.
+- It says whether the events carry a signal under the current rules. It does not show that the rules are right; that needs charts with known birth times and dated events.
+
+The curve and 200 random sets take under a second at ±30 min.
+
 ## Rule-based readings
 
 For 18 life topics, R1 lists the factors the classical rules weigh and ranks them. It then drafts a short text in which every sentence cites the engine facts it rests on. There is no neural network: the text comes from rules, so each claim can be traced.
