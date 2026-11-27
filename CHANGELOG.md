@@ -9,6 +9,18 @@
   the birth time. On random event dates the test flags 3.3% of charts at p ≤ 0.05;
   on events planted where the rules expect them, 98%. See "Rectification fit
   significance" in `docs/DECISIONS.md`.
+- **Rectification: classical rules.** A new rule set, now the default, built from
+  Brihat Parashara Hora Shastra and Phaladeepika with every condition citing its
+  verse. A period gives an event when its lord meets the cited conditions, for
+  example Phaladeepika 10.13 for marriage and 12.25 for children. Each antardasha
+  is also judged good, mixed or bad by its lord's place and dignity (BPHS ch. 52-60,
+  Phaladeepika 20.14 and 20.29), and Jupiter's transit counts where a text gives
+  one. The R1 rules stay available as "modern"; research found they are not stated
+  in BPHS (`docs/research/BPHS-dasha-events.md`). The Life events panel has a
+  switch between the two, and the event table shows the period's quality with
+  its reasons.
+- Indicative periods now say how much of adult life such periods cover, and that
+  one match is weak evidence.
 - The fit curve is computed about twice as fast (each candidate time's chart is
   built once and reused).
 

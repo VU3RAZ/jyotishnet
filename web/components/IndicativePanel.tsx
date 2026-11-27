@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 "use client";
 
-import { IndicativePeriod } from "@/lib/api";
+import { IndicativePeriod, RuleSet } from "@/lib/api";
 import { GRAHA_NAME } from "@/lib/jyotish";
 
 const LABEL: Record<string, string> = {
@@ -10,14 +10,18 @@ const LABEL: Record<string, string> = {
 
 function year(iso: string) { return iso.slice(0, 4); }
 
-export function IndicativePanel({ periods, loading }: {
-  periods: Record<string, IndicativePeriod[]> | null; loading: boolean;
+export function IndicativePanel({ periods, loading, ruleSet }: {
+  periods: Record<string, IndicativePeriod[]> | null; loading: boolean; ruleSet: RuleSet;
 }) {
   return (
     <section className="indicative" aria-busy={loading}>
       <h2>Indicative periods at this time</h2>
-      <p className="muted">Antardashas whose two lords both link to the matter. Compare them with
-        the person&apos;s life: periods that fit known events support this birth time.</p>
+      <p className="muted">
+        {ruleSet === "classical"
+          ? "Antardashas whose lord gives the matter by the cited rules and is well placed and dignified, with nothing against it. "
+          : "Antardashas whose two lords both link to the matter (modern rules). "}
+        Such periods cover roughly a tenth to a fifth of adult life, so one match with a known event
+        is weak evidence; several together, or the life-event fit above, say more.</p>
       {periods && (
         <div className="indicative-grid">
           {Object.entries(LABEL).map(([key, label]) => (

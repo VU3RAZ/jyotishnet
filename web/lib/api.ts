@@ -88,15 +88,24 @@ export const api = {
 
 // --- Rectification helpers ---------------------------------------------------
 
+export type RuleSet = "classical" | "modern";
+export type ClassicalRule = {
+  id: string; polarity: "good" | "adverse";
+  significators: { kind: string; houses?: number[]; graha?: string; cite: string }[];
+  transit: { kind: string; cite: string } | null; notes: string;
+};
 export type EventRule = {
   id: string; name: string; d1_houses: number[]; varga: number; varga_houses: number[];
-  karaka: string; check_only: boolean; indicative: boolean;
+  karaka: string; check_only: boolean; indicative: boolean; classical: ClassicalRule;
 };
 export type LifeEvent = { type: string; date: string };
 export type EventCheck = {
   event: string; name: string; date: string; mahadasha: string | null; antardasha: string | null;
   maha_links: string[]; antar_links: string[]; double_transit_houses: number[];
   score: number; verdict: "strong" | "partial" | "weak"; check_only: boolean;
+  rule_set: RuleSet; max_score: number;
+  /** Classical rules only: the antardasha's quality and the cited reasons. */
+  quality: "good" | "mixed" | "bad" | null; quality_reasons: string[]; transit: string[];
 };
 export type FitCurve = {
   points: { offset_s: number; score: number }[];
@@ -112,17 +121,17 @@ export type FitCurve = {
 };
 export type IndicativePeriod = {
   mahadasha: string; antardasha: string; start: string; end: string;
-  maha_links: string[]; antar_links: string[];
+  maha_links: string[]; antar_links: string[]; quality_reasons?: string[];
 };
 
 export const btr = {
   events: () => fetch("/api/v1/btr/events").then((r) => r.json() as Promise<{ events: EventRule[] }>),
-  check: (birth: Birth, events: LifeEvent[]) =>
-    post<{ checks: EventCheck[] }>("/v1/btr/check", { birth, events }),
-  curve: (birth: Birth, events: LifeEvent[], windowMin: number, stepS: number) =>
-    post<FitCurve>("/v1/btr/curve", { birth, events, window_min: windowMin, step_s: stepS }),
-  indicative: (birth: Birth) =>
-    post<{ periods: Record<string, IndicativePeriod[]> }>("/v1/btr/indicative", { birth }),
+  check: (birth: Birth, events: LifeEvent[], ruleSet: RuleSet) =>
+    post<{ checks: EventCheck[] }>("/v1/btr/check", { birth, events, rule_set: ruleSet }),
+  curve: (birth: Birth, events: LifeEvent[], windowMin: number, stepS: number, ruleSet: RuleSet) =>
+    post<FitCurve>("/v1/btr/curve", { birth, events, window_min: windowMin, step_s: stepS, rule_set: ruleSet }),
+  indicative: (birth: Birth, ruleSet: RuleSet) =>
+    post<{ periods: Record<string, IndicativePeriod[]> }>("/v1/btr/indicative", { birth, rule_set: ruleSet }),
 };
 
 // --- Analysis views -------------------------------------------------------------

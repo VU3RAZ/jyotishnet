@@ -10,8 +10,8 @@ import pytest
 from jyotishnet_engine import BirthData, build_chart
 from jyotishnet_engine.timeutil import jd_to_datetime
 from jyotishnet_engine.btr import (
-    check_events, double_transit, event_rules, fit_curve, indicative_periods, links,
-    required_vargas, verdict)
+    RULE_SETS, antardasha_quality, check_events, classical_rules, double_transit, event_rules,
+    fit_curve, indicative_periods, links, required_vargas, significator_reasons, verdict)
 
 GANDHI = BirthData(datetime(1869, 10, 2, 7, 20), 21.6167, 69.8167, utc_offset_hours=4.654444)
 EVENTS = [("marriage", date(1883, 5, 15)), ("child", date(1888, 8, 23)),
@@ -55,24 +55,70 @@ def test_double_transit():
     assert double_transit(_Fake, marriage, {"Ju": 0, "Sa": 0}) == [7]    # both aspect by 7th
 
 
-def test_check_events_scores_are_consistent():
-    for c in check_events(GANDHI, EVENTS):
+def test_check_events_scores_are_consistent_modern():
+    for c in check_events(GANDHI, EVENTS, rule_set="modern"):
         expected = (1 if c.antar_links else 0) + (0.5 if c.maha_links else 0) \
             + (0.5 if c.double_transit_houses else 0)
         assert c.score == expected and c.verdict == verdict(expected)
-        assert c.mahadasha and c.antardasha
+        assert c.mahadasha and c.antardasha and c.rule_set == "modern" and c.quality is None
     assert [c.check_only for c in check_events(GANDHI, EVENTS)] == [False, False, False, True]
 
 
-def test_fit_curve():
-    f = fit_curve(GANDHI, EVENTS[:2], window_min=5, step_s=60)
+def test_classical_rules_cite_every_condition():
+    cr = classical_rules()
+    assert set(cr) == set(event_rules())
+    for r in cr.values():
+        assert r.status == "draft" and r.polarity in ("good", "adverse")
+        assert all(c.get("cite") for c in r.significators)
+        assert not r.transit or r.transit.get("cite")
+        if not r.significators:
+            assert r.notes                       # says why there is no classical rule
+    # Death and illness are scored on the period's quality only, never by a timing rule.
+    for k in ("father_death", "mother_death", "illness"):
+        assert cr[k].polarity == "adverse" and not cr[k].significators and not cr[k].transit
+
+
+def test_significators_gandhi():
+    # Libra Lagna: 7th Aries (Mars), 5th Aquarius (Saturn), 1st Libra (Venus).
+    c = build_chart(GANDHI, vargas=required_vargas())
+    cr = classical_rules()
+    assert any("lords house 7" in r for r in significator_reasons(c, cr["marriage"], "Ma"))
+    assert any(r.startswith("is Venus") for r in significator_reasons(c, cr["marriage"], "Ve"))
+    child = {g for g in ("Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke")
+             if significator_reasons(c, cr["child"], g)}
+    assert {"Ve", "Sa", "Ma", "Ju"} <= child     # lords of 1, 5, 7 and Jupiter (PD 12.25)
+
+
+def test_antardasha_quality_is_good_bad_or_mixed():
+    c = build_chart(GANDHI, vargas=required_vargas())
+    for m in ("Su", "Ve", "Sa"):
+        for a in ("Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke"):
+            q, good, bad = antardasha_quality(c, m, a)
+            assert q == ("good" if good and not bad else "bad" if bad and not good else "mixed")
+            assert all("(" in r for r in good + bad)          # every reason cites its verse
+
+
+def test_check_events_scores_are_consistent_classical():
+    for c in check_events(GANDHI, EVENTS):
+        rule = classical_rules()[c.event]
+        want, other = ("good", "bad") if rule.polarity == "good" else ("bad", "good")
+        q = 0.5 if c.quality == want else 0.0 if c.quality == other else 0.25
+        expected = (1 if c.antar_links else 0) + (0.5 if c.maha_links else 0) + q + (0.5 if c.transit else 0)
+        assert c.rule_set == "classical" and c.score == expected
+        assert c.max_score == rule.max_score and c.verdict == verdict(expected, c.max_score)
+
+
+@pytest.mark.parametrize("rule_set", RULE_SETS)
+def test_fit_curve(rule_set):
+    f = fit_curve(GANDHI, EVENTS[:2], window_min=5, step_s=60, rule_set=rule_set)
     assert [p["offset_s"] for p in f["points"]] == list(range(-300, 301, 60))
     assert f["best"]["score"] == max(p["score"] for p in f["points"])
-    assert len(f["helps_decide"]) == 2 and f["max_score"] == 4.0
+    assert len(f["helps_decide"]) == 2
+    assert f["max_score"] == (4.0 if rule_set == "modern" else 2.5 + 2.5)
     # Every candidate scores exactly as check_events does at that shifted time.
     for p in f["points"]:
         shifted = GANDHI.shifted(minutes=p["offset_s"] / 60)
-        assert p["score"] == sum(c.score for c in check_events(shifted, EVENTS[:2]))
+        assert p["score"] == sum(c.score for c in check_events(shifted, EVENTS[:2], rule_set=rule_set))
 
 
 def test_significance_is_reproducible_and_bounded():
@@ -125,8 +171,15 @@ def test_random_events_are_rarely_significant():
 
 
 def test_indicative_never_death_or_illness():
-    ip = indicative_periods(GANDHI)
+    ip = indicative_periods(GANDHI, rule_set="modern")
     assert set(ip) == {"marriage", "child", "career", "relocation"}
     for rows in ip.values():
         for r in rows:
             assert r["maha_links"] and r["antar_links"] and r["start_jd"] < r["end_jd"]
+    c = build_chart(GANDHI, vargas=required_vargas())
+    ip = indicative_periods(GANDHI)
+    assert set(ip) == {"marriage", "child", "career", "relocation"}
+    for rows in ip.values():
+        for r in rows:
+            assert r["antar_links"] and r["quality_reasons"]
+            assert antardasha_quality(c, r["mahadasha"], r["antardasha"])[0] == "good"

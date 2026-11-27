@@ -13,7 +13,7 @@ import { PanchangaPanel } from "@/components/PanchangaPanel";
 import { LibraryPanel } from "@/components/LibraryPanel";
 import { DEFAULT_CANVAS, VargaCanvas } from "@/components/VargaCanvas";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
-import { analysis, api, Birth, btr, Chart, DashaSystem, DEFAULT_YOGA_OPTIONS, EventRule, library, LifeEvent, readings, ReadingTopic,
+import { analysis, api, Birth, btr, Chart, DashaSystem, DEFAULT_YOGA_OPTIONS, EventRule, library, LifeEvent, RuleSet, readings, ReadingTopic,
   SavedChart, YogaOptions } from "@/lib/api";
 import { VimshopakaView } from "@/components/VimshopakaView";
 import { EventPanel } from "@/components/EventPanel";
@@ -50,6 +50,7 @@ export default function Workbench() {
   const [tab, setTab] = useState<TabId>("positions");
   const [dashaSystem, setDashaSystem] = useState<DashaSystem>("vimshottari");
   const [events, setEvents] = useState<LifeEvent[]>([]);
+  const [ruleSet, setRuleSet] = useState<RuleSet>("classical");
   const [savedId, setSavedId] = useState<number | null>(null);
   const [canvasVargas, setCanvasVargas] = useState<number[]>(DEFAULT_CANVAS);
   const [yogaOptions, setYogaOptions] = useState<YogaOptions>(DEFAULT_YOGA_OPTIONS);
@@ -99,12 +100,13 @@ export default function Workbench() {
 
   const rectify = mode === "rectify";
   const evKey = JSON.stringify(events);
-  const checks = useLive(rectify && events.length ? JSON.stringify([moving, evKey]) : null,
-    () => btr.check(moving, events), 120);
+  const checks = useLive(rectify && events.length ? JSON.stringify([moving, evKey, ruleSet]) : null,
+    () => btr.check(moving, events, ruleSet), 120);
   const windowMin = Math.min(range.seconds / 60, 120);
-  const curve = useLive(rectify && events.length ? JSON.stringify([birth, evKey, windowMin]) : null,
-    () => btr.curve(birth, events, windowMin, windowMin <= 30 ? 30 : 60), 300);
-  const indicative = useLive(rectify ? JSON.stringify(moving) : null, () => btr.indicative(moving), 250);
+  const curve = useLive(rectify && events.length ? JSON.stringify([birth, evKey, windowMin, ruleSet]) : null,
+    () => btr.curve(birth, events, windowMin, windowMin <= 30 ? 30 : 60, ruleSet), 300);
+  const indicative = useLive(rectify ? JSON.stringify([moving, ruleSet]) : null,
+    () => btr.indicative(moving, ruleSet), 250);
 
   // Analysis views follow the chart on the ribbon in rectify mode, the birth chart in transit mode.
   const subject = rectify ? moving : birth;
@@ -253,6 +255,7 @@ export default function Workbench() {
 
       {rectify && (
         <EventPanel rules={rules} events={events} loading={checks.loading || curve.loading}
+          ruleSet={ruleSet} onRuleSet={setRuleSet}
           checks={events.length ? checks.data?.checks ?? null : null}
           helps={events.length ? curve.data?.helps_decide ?? null : null}
           onAdd={(e) => saveEvents([...events, e])}
@@ -309,7 +312,8 @@ export default function Workbench() {
               refLabel={rectify ? `the event date (${prettyDate(refUtc)})` : `the transit date (${prettyDate(refUtc)})`} />
           : <p className="muted">Laying out the periods…</p>)}
       </AnalysisTabs>
-      {rectify && <IndicativePanel periods={indicative.data?.periods ?? null} loading={indicative.loading} />}
+      {rectify && <IndicativePanel periods={indicative.data?.periods ?? null} loading={indicative.loading}
+        ruleSet={ruleSet} />}
     </main>
   );
 }

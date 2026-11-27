@@ -1,0 +1,97 @@
+# Classical rectification rules: which dasha lords give an event, how good the
+# antardasha is, and a transit where the texts give one. Every condition cites
+# the verse it comes from (see docs/research/BPHS-dasha-events.md for sources and
+# caveats). Verse numbers follow the online texts read on 27 Nov 2026:
+#   BPHS  = Brihat Parashara Hora Shastra, enjoylearningsanskrit.com numbering
+#   PD    = Phaladeepika, V. Subrahmanya Sastri's translation (1950), wisdomlib
+# All rules are drafts until the Jyotish reviewer signs them off.
+#
+# significators: a dasha lord gives the event if any condition holds (D1, whole
+#   sign houses from the Lagna):
+#     lord        - it lords one of `houses`
+#     occupies    - it is in one of `houses`
+#     aspects     - it aspects one of `houses` by graha drishti
+#     joined_lord - it is in the same sign as the lord of one of `houses`
+#     graha       - it is `graha`
+# polarity: good events expect a good antardasha, adverse (check-only) events a
+#   bad one. Antardasha quality conditions are fixed in btr.py and cited there.
+# transit (optional): Jupiter's sign on the event date, as the text gives it.
+- id: marriage
+  polarity: good
+  significators:
+    - {kind: lord, houses: [7], cite: "PD 10.13; PD 20.8"}
+    - {kind: occupies, houses: [7], cite: "PD 10.13"}
+    - {kind: aspects, houses: [7], cite: "PD 10.13"}
+    - {kind: graha, graha: Ve, cite: "PD 19.26"}
+  transit: {kind: jupiter_trine_lord_sign_or_navamsa, house: 7, cite: "PD 10.14"}
+  notes: >-
+    BPHS 48.5 gives the 7th lord's own dasha as distress to the spouse (maraka); PD 10.13
+    and 20.8 give it marriage. PD 10.14 applies the Jupiter transit within the dasha of the
+    stronger of Venus, the Moon and the lords of the 7th lord's sign and navamsa; only the
+    transit part is used here.
+  status: draft
+- id: child
+  polarity: good
+  significators:
+    - {kind: lord, houses: [1, 5, 7], cite: "PD 12.25; BPHS 48.4 (5th lord); PD 20.6 (5th lord)"}
+    - {kind: occupies, houses: [5], cite: "PD 12.25"}
+    - {kind: aspects, houses: [5], cite: "PD 12.25"}
+    - {kind: graha, graha: Ju, cite: "PD 12.25"}
+    - {kind: joined_lord, houses: [5], cite: "BPHS 47.9"}
+  transit: {kind: jupiter_from_moon, houses: [5, 11], cite: "PD 26.19-20"}
+  status: draft
+- id: career
+  polarity: good
+  significators:
+    - {kind: lord, houses: [10], cite: "BPHS 48.6; PD 20.11"}
+    - {kind: joined_lord, houses: [9, 10], cite: "BPHS 48.9-11; BPHS 52.34"}
+  status: draft
+- id: relocation
+  polarity: good
+  significators:
+    - {kind: lord, houses: [4], cite: "BPHS 48.3; PD 20.5"}
+    - {kind: joined_lord, houses: [4], cite: "BPHS 47.10 (lord of conveyances); BPHS 54.17"}
+  status: draft
+- id: finance
+  polarity: good
+  significators:
+    - {kind: lord, houses: [9], cite: "BPHS 48.6"}
+    - {kind: joined_lord, houses: [2], cite: "BPHS 47.10 (lord of wealth)"}
+  notes: BPHS 48.7 gives the 11th lord's dasha as hindrance to gains, so the 11th is not used.
+  status: draft
+- id: sibling
+  polarity: good
+  significators: []
+  notes: No timing rule for siblings found in BPHS ch. 47-48, 52-60 or PD ch. 10, 12, 19-21; scored on antardasha quality only.
+  status: draft
+- id: vehicle
+  polarity: good
+  significators:
+    - {kind: lord, houses: [4], cite: "BPHS 48.3; PD 20.5"}
+    - {kind: joined_lord, houses: [4], cite: "BPHS 47.10 (lord of conveyances)"}
+  status: draft
+- id: spiritual
+  polarity: good
+  significators: []
+  notes: No timing rule found in the chapters read; scored on antardasha quality only.
+  status: draft
+- id: education
+  polarity: good
+  significators:
+    - {kind: lord, houses: [5], cite: "BPHS 48.4 (acquisition of knowledge)"}
+  status: draft
+- id: father_death
+  polarity: adverse
+  significators: []
+  notes: Check-only. Scored on antardasha quality only; no rule for the timing of a death is used.
+  status: draft
+- id: mother_death
+  polarity: adverse
+  significators: []
+  notes: Check-only. Scored on antardasha quality only; no rule for the timing of a death is used.
+  status: draft
+- id: illness
+  polarity: adverse
+  significators: []
+  notes: Check-only. Scored on antardasha quality only.
+  status: draft

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 from datetime import date as date_type, datetime
+from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -385,6 +386,8 @@ class BtrRequest(BaseModel):
     birth: BirthIn
     config: ConfigIn = ConfigIn()
     events: list[EventIn] = Field(default_factory=list, max_length=20)
+    rule_set: Literal["classical", "modern"] = Field(
+        "classical", description="classical: cited BPHS and Phaladeepika rules; modern: the R1 linking rules")
 
 
 class BtrCurveRequest(BtrRequest):
@@ -414,8 +417,9 @@ def dasha_systems() -> dict:
 def btr_event_types() -> dict:
     """Event types the rectification helpers understand."""
     from dataclasses import asdict
-    from jyotishnet_engine.btr import event_rules
-    return {"events": [asdict(r) for r in event_rules().values()]}
+    from jyotishnet_engine.btr import classical_rules, event_rules
+    cr = classical_rules()
+    return {"events": [{**asdict(r), "classical": asdict(cr[r.id])} for r in event_rules().values()]}
 
 
 @app.post("/v1/btr/check")
@@ -424,7 +428,7 @@ def btr_check(req: BtrRequest) -> dict:
     from dataclasses import asdict
     from jyotishnet_engine.btr import check_events
     return {"checks": [asdict(c) for c in check_events(req.birth.to_birth(), _events(req),
-                                                       req.config.to_config())]}
+                                                       req.config.to_config(), rule_set=req.rule_set)]}
 
 
 @app.post("/v1/btr/curve")
@@ -432,17 +436,18 @@ def btr_curve(req: BtrCurveRequest) -> dict:
     """Total event score for candidate birth times around the recorded one."""
     from jyotishnet_engine.btr import fit_curve
     if not req.events:
-        return {"points": [], "best": None, "helps_decide": [], "max_score": 0, "significance": None}
+        return {"rule_set": req.rule_set, "points": [], "best": None, "helps_decide": [], "max_score": 0,
+                "significance": None}
     return fit_curve(req.birth.to_birth(), _events(req), req.window_min, req.step_s,
-                     req.config.to_config(), req.shuffles)
+                     req.config.to_config(), req.shuffles, req.rule_set)
 
 
 @app.post("/v1/btr/indicative")
 def btr_indicative(req: BtrRequest) -> dict:
-    """Antardashas whose lords both link to marriage, children, career or relocation.
-    Death and illness are never offered as indicative periods."""
+    """Antardashas that point to marriage, children, career or relocation (see
+    btr.indicative_periods for each rule set). Death and illness are never offered."""
     from jyotishnet_engine.btr import indicative_periods
-    out = indicative_periods(req.birth.to_birth(), req.config.to_config())
+    out = indicative_periods(req.birth.to_birth(), req.config.to_config(), rule_set=req.rule_set)
     return {"periods": {k: [{**{x: v for x, v in r.items() if not x.endswith("_jd")},
                              "start": _iso(r["start_jd"]), "end": _iso(r["end_jd"])} for r in rows]
                         for k, rows in out.items()}}

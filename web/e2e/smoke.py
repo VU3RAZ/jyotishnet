@@ -140,6 +140,14 @@ async def main() -> int:
         if "random dates fit as well in" not in sig:
             print(f"FAIL: unexpected significance line {sig!r}")
             raise SystemExit(1)
+        await page.wait_for_selector(".event-table .tag.quality-good, .event-table .tag.quality-mixed, .event-table .tag.quality-bad")
+        await page.click("[aria-label='Rectification rules'] button:has-text('Modern')")
+        await page.wait_for_selector(".event-table th:has-text('Jupiter and Saturn')")
+        await page.wait_for_selector(".indicative p:has-text('modern rules')")
+        await page.click("[aria-label='Rectification rules'] button:has-text('Classical')")
+        await page.wait_for_selector(".event-table th:has-text('Period and transit')")
+        await page.wait_for_selector(".fit-significance", timeout=15000)
+        sig = await page.inner_text(".fit-significance")
         if "No signal" in sig and await page.locator(".fit-curve .best.doubtful").count() != 1:
             print("FAIL: the best-fit line should be marked doubtful when there is no signal")
             raise SystemExit(1)

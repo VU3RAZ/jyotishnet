@@ -12,8 +12,11 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   flash briefly. The dasha panel shows the Vimshottari periods running on an
   event date you enter.
 - **Life events** (rectify mode): enter dated events; each is scored for the
-  birth time on the ribbon (dasha lords, links, double transit, verdict, and
-  whether it helps decide). The ribbon draws the total fit across the window
+  birth time on the ribbon under a switchable rule set: classical (default; the
+  dasha lords that give the event by verses of BPHS and Phaladeepika, the
+  antardasha's quality with its reasons, Jupiter's transit) or modern (the R1
+  links and double transit). Each row shows the verdict and whether the event
+  helps decide. The ribbon draws the total fit across the window
   with a "Jump to best fit" button and a line saying how often random event dates
   fit as well (when often, the events carry no signal for the birth time, and the
   best-fit line and button turn dashed), and a panel lists indicative periods for
