@@ -108,8 +108,35 @@ R1 shows what changes as the birth time moves, and scores dated life events agai
   - how each lord links to the event: by lordship, occupancy or karaka, in D1 and in the event's varga;
   - the Jupiter-Saturn double transit;
   - a score and a verdict, and whether the event helps decide between times.
-- **Fit curve:** the total fit across the birth window drawn on the ribbon, with a "Jump to best fit" button.
+- **Fit curve:** the total score at each candidate birth time, drawn on the ribbon, with a "Jump to best fit" button (how the best fit is chosen is below).
 - **Indicative periods** for marriage, children, career and relocation.
+
+### How the best-fit time is chosen
+
+The best fit is the candidate birth time at which the most events find their dasha lords and Jupiter-Saturn transit linked to them. Ties go to the time nearest the one recorded.
+
+1. **Candidate times:** the recorded time shifted across the ribbon's window, every 30 seconds for ±20 or ±30 min and every 60 seconds for ±2 h (121 candidates at ±30 min).
+2. **Recompute:** at each candidate, the engine rebuilds the chart (D1 and the event vargas) and the Vimshottari periods from that time's Moon.
+3. **Score each event** on its date, taken at local noon:
+
+| Condition | Points |
+| --- | --- |
+| Antardasha lord linked to the event | +1 |
+| Mahadasha lord linked to the event | +0.5 |
+| Double transit: Jupiter and Saturn both occupy or aspect one of the event's D1 houses, counted from this candidate's Lagna | +0.5 |
+
+A lord is linked when, in D1 or the event's varga, it lords or occupies one of the event's houses, or is the event's natural karaka. An event scores at most 2: strong at 1.5 or more, partial at 0.75 or more, otherwise weak.
+
+4. **Total:** the event scores are added, up to 2 per event. Check-only events (deaths, illness) count like the others: they test a time and are never predicted.
+5. **Best fit:** the candidate with the highest total. When several share it, the one nearest the recorded time wins; between two equally near, the earlier.
+6. **Helps decide:** an event whose verdict changes somewhere in the window. An event with the same verdict everywhere adds the same points to every candidate and cannot move the best fit.
+
+**Limits of this score.**
+
+- Every event weighs the same, whatever its type.
+- Only the Vimshottari mahadasha and antardasha count; pratyantars do not.
+- The total moves in steps of 0.5, so the top is often a plateau several minutes wide. The button jumps to one point on it, the one nearest the recorded time; the curve on the ribbon shows how wide the plateau is, and that width is the real uncertainty.
+- The event rules are drafts (#20).
 
 ## Rule-based readings
 
