@@ -152,6 +152,8 @@ A best fit is always found somewhere, even for made-up dates. So the ribbon also
 | Weak life-event fit | above 0.05, up to 0.2 | Dashed | Some support, but random dates often come close. |
 | No signal in the life events | above 0.2 | Dashed | Random dates fit about as well; the best fit says nothing about the birth time. |
 
+The best-fit line on the curve follows the button: solid green only when the fit is unlikely by chance, dashed grey otherwise. The peak is always marked, so you can see where it is, but only a solid line is a suggested birth time.
+
 An example: "random dates fit as well in 163 of 200 tries (p = 0.816)" means 163 of the 200 invented sets of dates scored as high as the real events, so the peak is what these rules give for almost any dates.
 
 **When it says no signal:** add more events with exact dates (two or three rarely beat chance), prefer events dated to the day or month, and if it still says no signal, rely on the boundary marks and your own judgment rather than the curve.

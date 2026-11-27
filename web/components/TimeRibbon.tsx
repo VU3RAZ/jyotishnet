@@ -70,7 +70,8 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
             <polygon points={`${pct(pts[0].offset_s)},56 ${line} ${pct(pts[pts.length - 1].offset_s)},56`} />
             <polyline points={line} vectorEffect="non-scaling-stroke" />
             {best && <line x1={pct(best.offset_s)} x2={pct(best.offset_s)} y1={0} y2={56}
-              className="best" vectorEffect="non-scaling-stroke" />}
+              className={`best ${sig && sig.verdict !== "unlikely by chance" ? "doubtful" : ""}`}
+              vectorEffect="non-scaling-stroke" />}
           </svg>
         )}
         <div className="ribbon-ticks" aria-hidden="true">

@@ -264,6 +264,7 @@ button, input, select { font: inherit; color: inherit; }
 .fit-curve polygon { fill: rgba(227, 155, 18, 0.16); }
 .fit-curve polyline { fill: none; stroke: rgba(248, 249, 245, 0.85); stroke-width: 1.5; }
 .fit-curve .best { stroke: var(--leaf); stroke-width: 2; filter: brightness(1.6); }
+.fit-curve .best.doubtful { stroke: rgba(248, 249, 245, 0.55); stroke-dasharray: 3 3; filter: none; }
 .ribbon .best-fit { border-color: rgba(248, 249, 245, 0.7); }
 .ribbon .best-fit.doubtful { border-style: dashed; opacity: 0.8; }
 .fit-significance { margin: 0; flex-basis: 100%; font-size: var(--step--1); color: rgba(248, 249, 245, 0.85); }

@@ -15,7 +15,8 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   birth time on the ribbon (dasha lords, links, double transit, verdict, and
   whether it helps decide). The ribbon draws the total fit across the window
   with a "Jump to best fit" button and a line saying how often random event dates
-  fit as well (when often, the events carry no signal for the birth time), and a panel lists indicative periods for
+  fit as well (when often, the events carry no signal for the birth time, and the
+  best-fit line and button turn dashed), and a panel lists indicative periods for
   marriage, children, career and relocation. Events are kept per chart in
   this browser only.
 - **Analysis tabs**: Positions, Yogas (grouped, with the evidence for each and

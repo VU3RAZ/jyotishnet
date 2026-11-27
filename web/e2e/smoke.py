@@ -140,6 +140,9 @@ async def main() -> int:
         if "random dates fit as well in" not in sig:
             print(f"FAIL: unexpected significance line {sig!r}")
             raise SystemExit(1)
+        if "No signal" in sig and await page.locator(".fit-curve .best.doubtful").count() != 1:
+            print("FAIL: the best-fit line should be marked doubtful when there is no signal")
+            raise SystemExit(1)
         await step("life events and fit significance")
 
         # Saved charts and notes (M3.1): save, annotate, open another, reopen, delete.
