@@ -13,12 +13,13 @@ import { PanchangaPanel } from "@/components/PanchangaPanel";
 import { LibraryPanel } from "@/components/LibraryPanel";
 import { DEFAULT_CANVAS, VargaCanvas } from "@/components/VargaCanvas";
 import { DEFAULT_RECTIFY_RANGE, RECTIFY_RANGES, RibbonRange, TimeRibbon, TRANSIT_RANGES } from "@/components/TimeRibbon";
-import { analysis, api, Birth, btr, Chart, DashaSystem, DEFAULT_YOGA_OPTIONS, EventRule, library, LifeEvent,
+import { analysis, api, Birth, btr, Chart, DashaSystem, DEFAULT_YOGA_OPTIONS, EventRule, library, LifeEvent, readings, ReadingTopic,
   SavedChart, YogaOptions } from "@/lib/api";
 import { VimshopakaView } from "@/components/VimshopakaView";
 import { EventPanel } from "@/components/EventPanel";
 import { AnalysisTabs, TabId } from "@/components/AnalysisTabs";
 import { YogaView } from "@/components/YogaView";
+import { ReadingScope, ReadingView, Verdict } from "@/components/ReadingView";
 import { AshtakavargaView } from "@/components/AshtakavargaView";
 import { ShadbalaView } from "@/components/ShadbalaView";
 import { DashaTimeline } from "@/components/DashaTimeline";
@@ -53,8 +54,13 @@ export default function Workbench() {
   const [canvasVargas, setCanvasVargas] = useState<number[]>(DEFAULT_CANVAS);
   const [yogaOptions, setYogaOptions] = useState<YogaOptions>(DEFAULT_YOGA_OPTIONS);
   const [vimWeights, setVimWeights] = useState<"bphs" | "jhora">("bphs");
+  const [readingTopics, setReadingTopics] = useState<ReadingTopic[]>([]);
+  const [readingTopic, setReadingTopic] = useState("career");
+  const [readingScope, setReadingScope] = useState<ReadingScope>("period");
+  const [verdicts, setVerdicts] = useState<Record<string, Verdict>>({});
 
   useEffect(() => { btr.events().then((r) => setRules(r.events)).catch(() => {}); }, []);
+  useEffect(() => { readings.topics().then((r) => setReadingTopics(r.topics)).catch(() => {}); }, []);
   // Events belong to one person: kept with the saved chart, or per chart in this
   // browser for a chart that is not saved.
   const storeKey = `jyotishnet.events.${name}.${birth.local_datetime}`;
@@ -118,6 +124,16 @@ export default function Workbench() {
     () => analysis.transits(subject, transitAt), 250);
   const dashas = useLive(tab === "dashas" ? JSON.stringify([subject, dashaSystem]) : null,
     () => analysis.dashas(subject, dashaSystem), 250);
+  // Readings: the current-period scope uses the event date (rectify) or the ribbon's date (transit).
+  const readingDate = rectify ? eventDate : formatLocal(momentMs).slice(0, 10);
+  const reading = useLive(tab === "readings"
+    ? JSON.stringify([subject, readingTopic, readingScope === "period" ? readingDate : null]) : null,
+  () => readings.reading(subject, readingTopic, readingScope === "period" ? readingDate : null), 250);
+  const verdictKey = (factor: string) => `${name}|${readingTopic}|${factor}`;
+  function giveVerdict(factor: string, verdict: Verdict) {
+    setVerdicts((v) => ({ ...v, [verdictKey(factor)]: verdict }));
+    readings.feedback({ topic: readingTopic, factor, verdict, chart_id: savedId, birth: subject }).catch(() => {});
+  }
   const subjectChart = rectify ? chart_ : natal.data;
   const birthUtc = toUtcIso(parseLocal(subject.local_datetime), subject.utc_offset_hours) + "Z";
   const refUtc = (rectify ? `${eventDate}T12:00:00` : toUtcIso(momentMs, birth.utc_offset_hours)) + "Z";
@@ -236,7 +252,7 @@ export default function Workbench() {
       )}
 
       <AnalysisTabs tab={tab} onTab={setTab}
-        busy={canvas.loading || yogas.loading || av.loading || sb.loading || vim.loading || dashas.loading || gochara.loading}>
+        busy={canvas.loading || yogas.loading || av.loading || sb.loading || vim.loading || dashas.loading || gochara.loading || reading.loading}>
         {tab === "positions" && (
           <div className="details">
             {chart && (
@@ -259,6 +275,14 @@ export default function Workbench() {
         {tab === "yogas" && (yogas.data
           ? <YogaView yogas={yogas.data.yogas} options={yogaOptions} onOptions={setYogaOptions} />
           : <p className="muted">Finding yogas…</p>)}
+        {tab === "readings" && (
+          <ReadingView topics={readingTopics} topic={readingTopic} onTopic={setReadingTopic}
+            scope={readingScope} onScope={setReadingScope} dateLabel={prettyDate(`${readingDate}T12:00:00Z`)}
+            reading={reading.data ?? null} loading={reading.loading}
+            verdicts={Object.fromEntries((reading.data?.factors ?? []).filter((f) => verdicts[verdictKey(f.key)])
+              .map((f) => [f.key, verdicts[verdictKey(f.key)]]))}
+            onVerdict={giveVerdict} />
+        )}
         {tab === "ashtakavarga" && (av.data && subjectChart
           ? <AshtakavargaView av={av.data} lagnaSign={subjectChart.lagna.sign} />
           : <p className="muted">Counting bindus…</p>)}

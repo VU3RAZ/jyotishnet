@@ -64,13 +64,26 @@ async def main() -> int:
         await page.hover(".canvas-grid .chart-card:nth-child(3) .planet >> nth=0")
         await step("varga canvas", 1200)
 
-        for tab in ["Yogas", "Ashtakavarga", "Strengths", "Transits", "Dashas", "Positions"]:
+        for tab in ["Yogas", "Readings", "Ashtakavarga", "Strengths", "Transits", "Dashas", "Positions"]:
             await page.click(f"[role=tab]:has-text('{tab}')")
             await step(f"tab {tab}", 1500)
             if tab == "Yogas":
                 await page.select_option(".yoga-options label:has-text('Gajakesari') select", "phaladeepika")
                 await page.select_option(".yoga-options label:has-text('Strong Lagna') select", "shadbala")
                 await page.wait_for_selector(".yoga-group")
+            if tab == "Readings":
+                await page.wait_for_selector(".reading-factors tbody tr")
+                await page.wait_for_selector(".draft li .cite")
+                await page.click(".reading-factors tbody tr:first-child .verdict button:has-text('Accept')")
+                await page.wait_for_selector(".reading-factors tbody tr:first-child button[aria-pressed=true]")
+                await page.click(".reading-options button:has-text('Natal promise')")
+                await page.select_option(".reading-options select", "health")
+                await page.wait_for_selector(".reading-notes .disclaimer:has-text('not medical advice')")
+                assert await page.locator(".draft li").count() == 0
+                await step("reading health (technical only)", 900)
+                await page.select_option(".reading-options select", "marriage")
+                await page.wait_for_selector(".draft li .cite")
+                await step("reading marriage", 900)
             if tab == "Strengths":
                 await page.wait_for_selector("caption:has-text('Bhava bala')", state="attached")
                 await page.wait_for_selector("caption:has-text('Vimshopaka')", state="attached")

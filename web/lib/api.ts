@@ -217,3 +217,30 @@ export const library = {
   updateNote: (noteId: number, text: string) => post<Note>(`/v1/notes/${noteId}`, { text }, undefined, "PUT"),
   removeNote: (noteId: number) => call<void>(`/v1/notes/${noteId}`, "DELETE"),
 };
+
+// Rule-based readings (M3.4): ranked factors and a draft whose sentences cite engine facts.
+export type ReadingTopic = {
+  id: string; name: string; group: string; houses: number[]; karaka: string;
+  varga: number | null; technical_only: boolean;
+};
+export type ReadingFact = { id: string; kind: string; text: string };
+export type ReadingFactor = {
+  key: string; role: string; subject: string; varga: number;
+  direction: "supports" | "obstructs" | "mixed"; weight: number; score: number;
+  reasons: string[]; facts: string[]; uncertain: boolean;
+};
+export type ReadingSentence = { text: string; cites: string[]; factor: string; uncertain: boolean };
+export type Reading = {
+  topic: ReadingTopic & { source: { text: string; section: string }; status: string };
+  facts: ReadingFact[]; factors: ReadingFactor[]; sentences: ReadingSentence[];
+  dropped: { text: string | null; reason: string }[]; disclaimers: string[]; notes: string[]; note: string;
+};
+
+export const readings = {
+  topics: () => call<{ topics: ReadingTopic[] }>("/v1/reading/topics"),
+  /** `date` (local YYYY-MM-DD) adds the running Vimshottari lords; omit for the natal promise. */
+  reading: (birth: Birth, topic: string, date: string | null) =>
+    post<Reading>("/v1/reading", { birth, topic, ...(date ? { date } : {}) }),
+  feedback: (f: { topic: string; factor: string; verdict: "accept" | "reject"; chart_id: number | null; birth: Birth }) =>
+    post<{ id: number }>("/v1/reading/feedback", f),
+};

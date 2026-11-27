@@ -35,6 +35,15 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   Dashavarga, Shodashavarga or any choice). Hover a planet to light it up in every
   chart; click it, or its chip, to keep it lit, with its sign in each varga below.
   The charts follow the time ribbon.
+- **Readings tab**: pick one of 18 topics (career, marriage, children for fertility
+  only, health as technical factors only, ...) and see the factors the classical
+  rules weigh for it, ranked, with whether each supports or obstructs it, plus a
+  short draft in which every sentence cites the engine facts it rests on (hover a
+  sentence to light up its factor and facts). Scope: the natal promise, or also the
+  Vimshottari lords running on the event or transit date. Factors resting on a
+  varga Lagna that changes sign within 5 minutes of the birth time are marked
+  uncertain. Accept or reject each factor; the choices are kept in the local chart
+  store as future training labels. All topics are drafts awaiting expert review.
 - **Saved charts and notes**: save the chart on screen, find saved charts by name,
   reopen them, keep dated notes and the life events with each one, delete them.
   They are stored by the API in a SQLite file on this computer

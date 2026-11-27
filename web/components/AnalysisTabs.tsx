@@ -3,10 +3,10 @@
 
 import { KeyboardEvent, ReactNode, useRef } from "react";
 
-export type TabId = "positions" | "vargas" | "yogas" | "ashtakavarga" | "shadbala" | "dashas" | "transits";
+export type TabId = "positions" | "vargas" | "yogas" | "readings" | "ashtakavarga" | "shadbala" | "dashas" | "transits";
 const TABS: { id: TabId; label: string }[] = [
   { id: "positions", label: "Positions" }, { id: "vargas", label: "Vargas" },
-  { id: "yogas", label: "Yogas" },
+  { id: "yogas", label: "Yogas" }, { id: "readings", label: "Readings" },
   { id: "ashtakavarga", label: "Ashtakavarga" }, { id: "shadbala", label: "Strengths" },
   { id: "dashas", label: "Dashas" }, { id: "transits", label: "Transits" },
 ];
