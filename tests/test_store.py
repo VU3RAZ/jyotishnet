@@ -72,3 +72,21 @@ def test_validation(client):
                                            "events": [{"type": "x", "date": "15/02/2015"}]}).status_code == 422
     assert client.post("/v1/charts/999/notes", json={"text": "x"}).status_code == 404
     assert client.put("/v1/notes/999", json={"text": "x"}).status_code == 404
+
+
+def test_reading_and_feedback(client):
+    ts = client.get("/v1/reading/topics").json()["topics"]
+    assert {"career", "marriage", "health"} <= {t["id"] for t in ts}
+    r = client.post("/v1/reading", json={"birth": BIRTH, "topic": "career", "date": "2026-11-25"})
+    assert r.status_code == 200
+    d = r.json()
+    assert d["factors"] and d["sentences"] and d["facts"]
+    ids = {f["id"] for f in d["facts"]}
+    assert all(set(s["cites"]) <= ids for s in d["sentences"])
+    assert client.post("/v1/reading", json={"birth": BIRTH, "topic": "nope"}).status_code == 422
+    f = client.post("/v1/reading/feedback", json={"topic": "career", "factor": d["factors"][0]["key"],
+                                                   "verdict": "accept", "birth": BIRTH})
+    assert f.status_code == 201
+    assert main._store.feedback()[0]["verdict"] == "accept"
+    assert client.post("/v1/reading/feedback", json={"topic": "career", "factor": "x",
+                                                      "verdict": "maybe"}).status_code == 422

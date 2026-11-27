@@ -1,0 +1,185 @@
+# Topics for rule-based readings (M3.4; design doc, Layer 4 #4 and #5, without the
+# network). For each topic: the houses to judge (from the Lagna, whole sign), the
+# natural karaka, the governing varga (null: D1 only; the Hora has two signs and no
+# houses), and yogas that classical texts tie to the topic, with their direction.
+# Judging a house from its lord, occupants, aspects and karaka follows Phaladeepika,
+# "Bhava Chinta", and BPHS, "Effects of the lords of the houses". All drafts until
+# the user's Jyotish reviewer signs them off.
+#
+# theme: how sentences name the topic (default: the name in lower case).
+# technical_only: factors are computed and listed for the astrologer, but no draft
+# text is written (design doc, Safety filter). disclaimer: medical, legal or financial.
+- id: personality
+  name: Personality and temperament
+  group: Self
+  houses: [1]
+  karaka: Mo
+  varga: 9
+  yogas: {supports: [ruchaka, bhadra, hamsa, malavya, sasa, amala, parvata, shubha_kartari_lagna, budha_aditya],
+          obstructs: [papa_kartari_lagna, kemadruma]}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 1st house"}
+  status: draft
+- id: fame
+  name: Fame and reputation
+  group: Self
+  houses: [10, 1]
+  karaka: Su
+  varga: 10
+  yogas: {supports: [raja_kendra_trikona, dharma_karmadhipati, yogakaraka, ruchaka, bhadra, hamsa, malavya, sasa, amala, gajakesari],
+          obstructs: [kemadruma]}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 10th house"}
+  status: draft
+- id: earned_income
+  name: Earned income
+  group: Wealth
+  houses: [11, 2]
+  karaka: Ju
+  varga: null
+  disclaimer: financial
+  yogas: {supports: [dhana_2_11, dhana_wealth_trikona, lakshmi, vasumati], obstructs: [kemadruma]}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 11th house"}
+  status: draft
+- id: accumulated_wealth
+  name: Accumulated wealth
+  group: Wealth
+  houses: [2]
+  karaka: Ju
+  varga: null
+  disclaimer: financial
+  yogas: {supports: [dhana_2_11, dhana_wealth_trikona, lakshmi, vasumati, kahala], obstructs: [kemadruma]}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 2nd house"}
+  status: draft
+- id: career
+  name: Career direction
+  group: Work
+  houses: [10]
+  karaka: Sa
+  varga: 10
+  yogas: {supports: [raja_kendra_trikona, dharma_karmadhipati, yogakaraka, ruchaka, bhadra, hamsa, malavya, sasa, amala],
+          obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 10th house; Dasamsa"}
+  status: draft
+- id: partnerships
+  name: Business and partnerships
+  group: Work
+  houses: [7, 10]
+  karaka: Me
+  varga: 10
+  yogas: {supports: [dhana_2_11, raja_kendra_trikona], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 7th house"}
+  status: draft
+- id: marriage
+  name: Marriage quality
+  group: Relationships
+  houses: [7]
+  karaka: Ve
+  varga: 9
+  yogas: {supports: [malavya], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 7th house; Navamsa"}
+  status: draft
+- id: children
+  name: Children (fertility only)
+  theme: fertility
+  group: Family
+  houses: [5]
+  karaka: Ju
+  varga: 7
+  note: Fertility indications only. The sex of a child is never predicted.
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 5th house; Saptamsa"}
+  status: draft
+- id: father
+  name: Father
+  group: Family
+  houses: [9]
+  karaka: Su
+  varga: 12
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 9th house; Dwadasamsa"}
+  status: draft
+- id: mother
+  name: Mother
+  group: Family
+  houses: [4]
+  karaka: Mo
+  varga: 12
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th house; Dwadasamsa"}
+  status: draft
+- id: siblings
+  name: Siblings
+  group: Family
+  houses: [3]
+  karaka: Ma
+  varga: 3
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 3rd house; Drekkana"}
+  status: draft
+- id: property
+  name: Property and land
+  group: Home and assets
+  houses: [4]
+  karaka: Ma
+  varga: 4
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th house; Chaturthamsa"}
+  status: draft
+- id: vehicles
+  name: Vehicles
+  group: Home and assets
+  houses: [4]
+  karaka: Ve
+  varga: 16
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th house; Shodasamsa"}
+  status: draft
+- id: education
+  name: School and higher education
+  group: Learning
+  houses: [4, 5]
+  karaka: Me
+  varga: 24
+  yogas: {supports: [saraswati, budha_aditya], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 4th and 5th houses; Chaturvimsamsa"}
+  status: draft
+- id: foreign
+  name: Foreign travel and settlement
+  group: Travel
+  houses: [12, 9]
+  karaka: Ra
+  varga: null
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 12th and 9th houses"}
+  status: draft
+- id: disputes
+  name: Litigation, enemies and competition
+  theme: disputes and competition
+  group: Disputes
+  houses: [6]
+  karaka: Ma
+  varga: 6
+  disclaimer: legal
+  yogas: {supports: [harsha], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 6th house"}
+  status: draft
+- id: spiritual
+  name: Spiritual practice
+  group: Spiritual
+  houses: [9, 12]
+  karaka: Ju
+  varga: 20
+  yogas: {supports: [hamsa, amala], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 9th and 12th houses; Vimsamsa"}
+  status: draft
+- id: health
+  name: Health indicators (technical)
+  theme: health indicators
+  group: Health
+  houses: [1, 6, 8]
+  karaka: Su
+  varga: 30
+  technical_only: true
+  disclaimer: medical
+  yogas: {supports: [], obstructs: []}
+  source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 1st, 6th and 8th houses; Trimsamsa"}
+  status: draft

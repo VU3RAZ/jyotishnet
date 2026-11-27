@@ -34,6 +34,15 @@ CREATE TABLE IF NOT EXISTS notes (
     updated  TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS notes_chart ON notes(chart_id);
+CREATE TABLE IF NOT EXISTS feedback (      -- reading factors accepted or rejected (M3.4)
+    id       INTEGER PRIMARY KEY,
+    chart_id INTEGER REFERENCES charts(id) ON DELETE SET NULL,
+    birth    TEXT,
+    topic    TEXT NOT NULL,
+    factor   TEXT NOT NULL,
+    verdict  TEXT NOT NULL CHECK (verdict IN ('accept', 'reject')),
+    created  TEXT NOT NULL
+);
 """
 
 
@@ -139,3 +148,20 @@ class Store:
     def delete_note(self, note_id: int) -> bool:
         with self._lock, self._db:
             return self._db.execute("DELETE FROM notes WHERE id = ?", (note_id,)).rowcount > 0
+
+    # ---------------------------------------------------------------- feedback
+    def add_feedback(self, topic: str, factor: str, verdict: str, chart_id: int | None = None,
+                     birth: dict | None = None) -> dict:
+        t = _now()
+        if chart_id is not None and self.get_chart(chart_id) is None:
+            chart_id = None
+        with self._lock, self._db:
+            cur = self._db.execute(
+                "INSERT INTO feedback (chart_id, birth, topic, factor, verdict, created) VALUES (?,?,?,?,?,?)",
+                (chart_id, json.dumps(birth) if birth else None, topic, factor, verdict, t))
+        return {"id": cur.lastrowid, "topic": topic, "factor": factor, "verdict": verdict, "created": t}
+
+    def feedback(self) -> list[dict]:
+        with self._lock:
+            return [dict(r) for r in self._db.execute("SELECT * FROM feedback ORDER BY id")]
+

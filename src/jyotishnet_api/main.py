@@ -446,6 +446,67 @@ def btr_indicative(req: BtrRequest) -> dict:
                         for k, rows in out.items()}}
 
 
+# ------------------------------------------------------------------ readings (M3.4)
+
+class SavedBirthRef(BaseModel):
+    local_datetime: str
+    latitude: float
+    longitude: float
+    utc_offset_hours: float | None = None
+
+
+class ReadingRequest(BaseModel):
+    birth: BirthIn
+    config: ConfigIn = ConfigIn()
+    topic: str
+    date: date_type | None = Field(None, description="Local date for the current-period scope "
+                                   "(running Vimshottari periods); omit for the natal promise only")
+    stability_min: float = Field(5.0, ge=0, le=60,
+                                 description="Mark factors uncertain when the Lagna of their varga "
+                                             "changes sign within this many minutes of the birth time")
+    limit: int = Field(12, ge=1, le=30)
+
+
+@app.get("/v1/reading/topics")
+def reading_topics() -> dict:
+    from jyotishnet_engine.readings import topics
+    return {"topics": [{"id": t.id, "name": t.name, "group": t.group, "houses": list(t.houses),
+                        "karaka": t.karaka, "varga": t.varga, "technical_only": t.technical_only}
+                       for t in topics().values()]}
+
+
+@app.post("/v1/reading")
+def reading_endpoint(req: ReadingRequest) -> dict:
+    """Ranked factors for a topic and a short draft whose every sentence cites engine
+    facts, checked by the verifier and the safety filter (design doc, Layer 4)."""
+    from jyotishnet_engine.readings import reading, utc_date_of
+    birth = req.birth.to_birth()
+    try:
+        r = reading(birth, req.topic, utc_date_of(birth, req.date) if req.date else None,
+                    req.config.to_config(), req.stability_min, req.limit)
+    except ValueError as e:
+        raise HTTPException(422, str(e)) from e
+    out = r.to_dict()
+    out["note"] = "Rules are drafts pending expert review; wording is traditional interpretation."
+    return out
+
+
+class FeedbackIn(BaseModel):
+    topic: str = Field(min_length=1, max_length=60)
+    factor: str = Field(min_length=1, max_length=120)
+    verdict: str = Field(pattern="^(accept|reject)$")
+    chart_id: int | None = None
+    birth: SavedBirthRef | None = None
+
+
+@app.post("/v1/reading/feedback", status_code=201)
+def reading_feedback(req: FeedbackIn) -> dict:
+    """Astrologer accept/reject clicks on ranked factors, kept locally as future
+    training labels (design doc, Layer 4 #5)."""
+    return get_store().add_feedback(req.topic, req.factor, req.verdict, req.chart_id,
+                                    req.birth.model_dump() if req.birth else None)
+
+
 # ------------------------------------------------------------------ saved charts (M3.1)
 
 _store = None
