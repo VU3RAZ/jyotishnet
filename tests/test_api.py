@@ -118,6 +118,9 @@ def test_btr_endpoints():
     assert r.status_code == 200 and len(r.json()["checks"]) == 2
     r = client.post("/v1/btr/curve", json={"birth": BIRTH, "events": ev, "window_min": 5, "step_s": 60})
     assert r.status_code == 200 and len(r.json()["points"]) == 11
+    assert r.json()["significance"]["shuffles"] == 200
+    r = client.post("/v1/btr/curve", json={"birth": BIRTH, "events": ev, "window_min": 5, "step_s": 60, "shuffles": 0})
+    assert r.json()["significance"] is None
     r = client.post("/v1/btr/indicative", json={"birth": BIRTH})
     assert set(r.json()["periods"]) == {"marriage", "child", "career", "relocation"}
     r = client.post("/v1/btr/check", json={"birth": BIRTH, "events": [{"type": "lottery", "date": "2000-01-01"}]})

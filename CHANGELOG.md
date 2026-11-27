@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+- **Rectification: is the best fit real?** The fit curve now comes with a significance
+  test. The same chart is scored on 200 sets of random dates for the same event
+  types, and the ribbon says how often random dates fit as well. When they often
+  do, it says the life events carry no signal and the best fit says nothing about
+  the birth time. On random event dates the test flags 3.3% of charts at p ≤ 0.05;
+  on events planted where the rules expect them, 98%. See "Rectification fit
+  significance" in `docs/DECISIONS.md`.
+- The fit curve is computed about twice as fast (each candidate time's chart is
+  built once and reused).
+
 ## 1.0.0 (R1): astrologer workbench with rule-based readings
 
 The first release: milestones M1 to M3 of the plan. JyotishNet runs privately on

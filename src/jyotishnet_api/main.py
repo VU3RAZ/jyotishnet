@@ -390,6 +390,7 @@ class BtrRequest(BaseModel):
 class BtrCurveRequest(BtrRequest):
     window_min: float = Field(30.0, gt=0, le=120)
     step_s: int = Field(30, ge=10, le=600)
+    shuffles: int = Field(200, ge=0, le=2000, description="Sets of random event dates for the significance test (0 = skip)")
 
 
 def _events(req: BtrRequest) -> list[tuple[str, date_type]]:
@@ -431,9 +432,9 @@ def btr_curve(req: BtrCurveRequest) -> dict:
     """Total event score for candidate birth times around the recorded one."""
     from jyotishnet_engine.btr import fit_curve
     if not req.events:
-        return {"points": [], "best": None, "helps_decide": [], "max_score": 0}
+        return {"points": [], "best": None, "helps_decide": [], "max_score": 0, "significance": None}
     return fit_curve(req.birth.to_birth(), _events(req), req.window_min, req.step_s,
-                     req.config.to_config())
+                     req.config.to_config(), req.shuffles)
 
 
 @app.post("/v1/btr/indicative")

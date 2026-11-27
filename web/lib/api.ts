@@ -103,6 +103,12 @@ export type FitCurve = {
   best: { offset_s: number; score: number } | null;
   helps_decide: boolean[];
   max_score: number;
+  /** How often random event dates fit this chart as well as the real ones. */
+  significance: {
+    shuffles: number; random_at_least: number; p_value: number;
+    random_best_median: number; random_best_p95: number;
+    verdict: "unlikely by chance" | "weak" | "no signal"; null_dates: [string, string];
+  } | null;
 };
 export type IndicativePeriod = {
   mahadasha: string; antardasha: string; start: string; end: string;

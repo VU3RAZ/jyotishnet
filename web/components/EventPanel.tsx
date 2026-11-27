@@ -56,8 +56,9 @@ export function EventPanel({ rules, events, checks, helps, loading, onAdd, onRem
       </form>
 
       {events.length === 0 ? (
-        <p className="muted">No events yet. Two or three well-dated events (marriage, first child,
-          first job) are usually enough to see a peak.</p>
+        <p className="muted">No events yet. Add well-dated events (marriage, first child, first job);
+          the more there are, the better. The ribbon says whether together they point to a birth time
+          or could fit as well by chance.</p>
       ) : (
         <div className="table-wrap">
           <table className="event-table">

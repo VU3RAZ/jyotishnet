@@ -2,11 +2,13 @@
 # Copyright (C) 2026 Rahul Sathe
 """Rectification helpers: event links, double transit, scoring, curve, indicative periods."""
 
-from datetime import date, datetime
+import random
+from datetime import date, datetime, timedelta
 
 import pytest
 
 from jyotishnet_engine import BirthData, build_chart
+from jyotishnet_engine.timeutil import jd_to_datetime
 from jyotishnet_engine.btr import (
     check_events, double_transit, event_rules, fit_curve, indicative_periods, links,
     required_vargas, verdict)
@@ -67,8 +69,59 @@ def test_fit_curve():
     assert [p["offset_s"] for p in f["points"]] == list(range(-300, 301, 60))
     assert f["best"]["score"] == max(p["score"] for p in f["points"])
     assert len(f["helps_decide"]) == 2 and f["max_score"] == 4.0
-    zero = next(p for p in f["points"] if p["offset_s"] == 0)
-    assert zero["score"] == sum(c.score for c in check_events(GANDHI, EVENTS[:2]))
+    # Every candidate scores exactly as check_events does at that shifted time.
+    for p in f["points"]:
+        shifted = GANDHI.shifted(minutes=p["offset_s"] / 60)
+        assert p["score"] == sum(c.score for c in check_events(shifted, EVENTS[:2]))
+
+
+def test_significance_is_reproducible_and_bounded():
+    a = fit_curve(GANDHI, EVENTS, window_min=5, step_s=60, shuffles=100)["significance"]
+    b = fit_curve(GANDHI, EVENTS, window_min=5, step_s=60, shuffles=100)["significance"]
+    assert a == b                                   # seeded from the birth and the events
+    assert a["shuffles"] == 100 and 0 < a["p_value"] <= 1
+    assert a["p_value"] == pytest.approx((1 + a["random_at_least"]) / 101, abs=1e-4)
+    assert a["verdict"] in ("unlikely by chance", "weak", "no signal")
+    assert a["null_dates"][0] > "1869-10-02"        # never before birth
+    assert fit_curve(GANDHI, EVENTS, window_min=5, step_s=60, shuffles=0)["significance"] is None
+
+
+def _random_birth(rnd):
+    local = datetime(1945, 1, 1) + timedelta(seconds=rnd.randrange(0, 45 * 365 * 86400))
+    return BirthData(local, round(rnd.uniform(8, 32), 3), round(rnd.uniform(68, 90), 3), utc_offset_hours=5.5)
+
+
+def test_planted_events_are_found_significant():
+    """Events dated inside antardashas whose lords both link to them at the recorded
+    time: random dates should rarely fit as well."""
+    rnd = random.Random(5)
+    hits = 0
+    for _ in range(6):
+        b = _random_birth(rnd)
+        jd0 = b.jd_ut()
+        ip = indicative_periods(b)
+        ev = []
+        for t in ["marriage", "child", "career", "relocation"] * 2:
+            rows = [r for r in ip[t] if r["end_jd"] - r["start_jd"] > 60 and r["start_jd"] > jd0 + 18 * 365]
+            if rows:
+                r = rnd.choice(rows)
+                ev.append((t, jd_to_datetime(rnd.uniform(r["start_jd"], r["end_jd"])).date()))
+        f = fit_curve(b, ev, window_min=10, step_s=60, shuffles=200)
+        hits += f["significance"]["p_value"] <= 0.05
+    assert hits >= 5
+
+
+def test_random_events_are_rarely_significant():
+    """With dates unrelated to the chart the test should mostly say so (about 5% false alarms)."""
+    rnd = random.Random(9)
+    types = list(event_rules())
+    flagged = 0
+    for _ in range(12):
+        b = _random_birth(rnd)
+        ev = [(rnd.choice(types), (b.local_datetime + timedelta(days=rnd.uniform(18, 60) * 365.25)).date())
+              for _ in range(5)]
+        flagged += fit_curve(b, ev, window_min=10, step_s=60, shuffles=200)["significance"]["p_value"] <= 0.05
+    assert flagged <= 2
 
 
 def test_indicative_never_death_or_illness():

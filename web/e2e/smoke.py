@@ -130,6 +130,18 @@ async def main() -> int:
         await page.wait_for_selector(".form-warning", state="detached", timeout=5000)
         await step("birth form time-zone warning")
 
+        # Life events: the fit curve and its significance line on the ribbon.
+        for etype, d in [("marriage", "1968-05-01"), ("career", "1965-07-01"), ("child", "1970-03-01")]:
+            await page.select_option(".event-form select", etype)
+            await page.fill(".event-form input[type=date]", d)
+            await page.click(".event-form button:has-text('Add event')")
+        await page.wait_for_selector(".fit-significance", timeout=15000)
+        sig = await page.inner_text(".fit-significance")
+        if "random dates fit as well in" not in sig:
+            print(f"FAIL: unexpected significance line {sig!r}")
+            raise SystemExit(1)
+        await step("life events and fit significance")
+
         # Saved charts and notes (M3.1): save, annotate, open another, reopen, delete.
         page.on("dialog", lambda d: asyncio.ensure_future(d.accept()))
         await page.click("summary:has-text('Saved charts and notes')")

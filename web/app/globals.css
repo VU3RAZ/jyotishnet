@@ -265,6 +265,11 @@ button, input, select { font: inherit; color: inherit; }
 .fit-curve polyline { fill: none; stroke: rgba(248, 249, 245, 0.85); stroke-width: 1.5; }
 .fit-curve .best { stroke: var(--leaf); stroke-width: 2; filter: brightness(1.6); }
 .ribbon .best-fit { border-color: rgba(248, 249, 245, 0.7); }
+.ribbon .best-fit.doubtful { border-style: dashed; opacity: 0.8; }
+.fit-significance { margin: 0; flex-basis: 100%; font-size: var(--step--1); color: rgba(248, 249, 245, 0.85); }
+.fit-significance::before { content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; margin-right: 0.45rem; background: rgba(248, 249, 245, 0.5); }
+.fit-significance.unlikely-by-chance::before { background: #6cc49a; }
+.fit-significance.weak::before { background: var(--saffron); }
 
 .events { display: grid; gap: 1rem; }
 .events-head { display: grid; gap: 0.25rem; }

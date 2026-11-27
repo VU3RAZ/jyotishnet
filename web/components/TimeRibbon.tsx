@@ -49,6 +49,7 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
   const yOf = (s: number) => 52 - (s / (curve?.max_score || 1)) * 44;
   const line = pts.map((p) => `${pct(p.offset_s).toFixed(3)},${yOf(p.score).toFixed(2)}`).join(" ");
   const best = curve?.best && Math.abs(curve.best.offset_s) <= range.seconds ? curve.best : null;
+  const sig = best ? curve?.significance ?? null : null;
 
   return (
     <section className="ribbon">
@@ -94,12 +95,21 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
           ))}
           <button type="button" onClick={() => onChange(0)} disabled={value === 0}>Reset</button>
           {best && (
-            <button type="button" className="best-fit" onClick={() => onChange(best.offset_s)}
-              disabled={value === best.offset_s}>
+            <button type="button" className={`best-fit ${sig && sig.verdict !== "unlikely by chance" ? "doubtful" : ""}`}
+              onClick={() => onChange(best.offset_s)} disabled={value === best.offset_s}
+              aria-describedby={sig ? "fit-significance" : undefined}>
               Jump to best fit ({best.offset_s === 0 ? "recorded time" : describeOffset(best.offset_s)})
             </button>
           )}
         </div>
+        {sig && (
+          <p id="fit-significance" className={`fit-significance ${sig.verdict.replace(/ /g, "-")}`}>
+            {sig.verdict === "unlikely by chance" ? "Life-event fit unlikely by chance"
+              : sig.verdict === "weak" ? "Weak life-event fit" : "No signal in the life events"}
+            {": "}random dates fit as well in {sig.random_at_least} of {sig.shuffles} tries (p = {sig.p_value.toFixed(3)})
+            {sig.verdict === "no signal" ? ", so the best fit says nothing about the birth time." : "."}
+          </p>
+        )}
         {highlightKeys.length > 0 && (
           <p className="ribbon-legend">
             Marks show where {highlightKeys.map((k) => k.label).join(" and ")} change sign
