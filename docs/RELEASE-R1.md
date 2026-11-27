@@ -113,6 +113,8 @@ R1 shows what changes as the birth time moves, and scores dated life events agai
 
 ### How the best-fit time is chosen
 
+*This describes the scoring in 1.0.0. After the release, research found these linking rules are not stated in BPHS. They are kept as the "modern" rule set, and the default is now a classical rule set (below).*
+
 The best fit is the candidate birth time at which the most events find their dasha lords and Jupiter-Saturn transit linked to them. Ties go to the time nearest the one recorded.
 
 1. **Candidate times:** the recorded time shifted across the ribbon's window, every 30 seconds for ±20 or ±30 min and every 60 seconds for ±2 h (121 candidates at ±30 min).
@@ -165,6 +167,23 @@ An example: "random dates fit as well in 163 of 200 tries (p = 0.816)" means 163
 - It says whether the events carry a signal under the current rules. It does not show that the rules are right; that needs charts with known birth times and dated events.
 
 The curve and 200 random sets take under a second at ±30 min.
+
+### Classical rules (added after 1.0.0)
+
+The 1.0.0 rules link a dasha lord to an event through D1 and the event's varga, and score the Jupiter-Saturn double transit. Neither is stated in Brihat Parashara Hora Shastra. A new rule set, now the default, uses only conditions the texts give, each citing its verse (BPHS, and Phaladeepika in V. Subrahmanya Sastri's translation). The Life events panel switches between "Classical" and "Modern".
+
+| Part of the score | Classical rule | Points |
+| --- | --- | --- |
+| The antardasha lord gives the event | e.g. marriage: lords, occupies or aspects the 7th, or is Venus (Phaladeepika 10.13, 19.26); children: lords of 1, 5 or 7, in or aspecting the 5th, or Jupiter (Phaladeepika 12.25); career: the 10th lord (BPHS 48.6); property: the 4th lord (BPHS 48.3) | +1 |
+| The mahadasha lord gives the event | the same conditions | +0.5 |
+| The antardasha is good | its lord in a kendra, trikona or the 11th, exalted or in its own sign, or well placed from the mahadasha lord, with nothing against it (BPHS ch. 52-60; Phaladeepika 20.14, 20.29). Mixed scores +0.25 | +0.5 |
+| Jupiter's transit, where a text gives one | marriage: a trine to the 7th lord's sign or navamsa (Phaladeepika 10.14); children: the 5th or 11th from the Moon (Phaladeepika 26.19-20) | +0.5 |
+
+- **Events with no classical timing rule** (sibling, spiritual) are scored on the period's quality alone.
+- **Check-only events** (death, illness) also score on quality alone, the reverse way. No death-timing rule is used.
+- **Strong and partial** are set at 75% and 37.5% of each event's maximum.
+
+On random charts the classical curve has far fewer chance peaks than the 1.0.0 rules: it moves 0.9 points on average across ±30 minutes, against 2.7. The significance check flags 2.5% of random-event charts. The verse references, the measurements and the points still open for the reviewer are in `docs/research/BPHS-dasha-events.md`. All rules remain drafts (#20).
 
 ## Rule-based readings
 
