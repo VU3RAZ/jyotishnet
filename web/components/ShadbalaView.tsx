@@ -20,9 +20,11 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
     { label: "Drik", get: (g) => p[g].drik },
   ];
   const maxRatio = Math.max(1.6, ...GRAHAS7.map((g) => p[g].ratio));
+  const maxHouse = Math.max(...sb.houses.map((h) => h.rupas));
   const ranked = [...GRAHAS7].sort((a, b) => p[b].ratio - p[a].ratio);
   return (
     <div className="sb-view">
+      <h3>Shadbala</h3>
       <p className="view-lead">
         Strongest: {GRAHA_NAME[ranked[0]]} ({p[ranked[0]].ratio.toFixed(2)} × required); weakest:
         {" "}{GRAHA_NAME[ranked[6]]} ({p[ranked[6]].ratio.toFixed(2)} ×). A ratio of 1 or more meets the
@@ -57,7 +59,9 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
             ))}
             <tr className="sav-row">
               <th scope="row">Total</th>
-              {GRAHAS7.map((g) => <td key={g} className="num total">{p[g].rupas.toFixed(2)}</td>)}
+              {GRAHAS7.map((g) => (
+                <td key={g} className={`num total ${p[g].ratio >= 1 ? "good" : "low"}`}>{p[g].rupas.toFixed(2)}</td>
+              ))}
             </tr>
             <tr>
               <th scope="row">Required</th>
@@ -86,6 +90,7 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
               <th scope="col">House</th><th scope="col">Sign</th><th scope="col">Lord</th>
               <th scope="col" className="num">Lord&apos;s bala</th><th scope="col" className="num">Dig</th>
               <th scope="col" className="num">Drik</th><th scope="col" className="num">Total</th>
+              <td className="bar-cell" aria-hidden="true" />
             </tr>
           </thead>
           <tbody>
@@ -94,6 +99,9 @@ export function ShadbalaView({ sb }: { sb: Shadbala }) {
                 <th scope="row">{h.house}</th><td>{SIGNS[h.sign]}</td><td>{GRAHA_NAME[h.lord]}</td>
                 <td className="num">{r1(h.lord_virupas)}</td><td className="num">{r1(h.dig)}</td>
                 <td className="num">{r1(h.drik)}</td><td className="num total">{h.rupas.toFixed(2)}</td>
+                <td className="bar-cell" aria-hidden="true">
+                  <span className="inline-bar" style={{ width: `${(h.rupas / maxHouse) * 100}%` }} />
+                </td>
               </tr>
             ))}
           </tbody>

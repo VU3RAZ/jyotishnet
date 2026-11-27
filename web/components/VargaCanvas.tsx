@@ -88,16 +88,18 @@ export function VargaCanvas({ chart, vargas, onVargas, style }: Props) {
             })}
           </div>
           {highlight && (
-            <table className="planet-table follow-table">
-              <caption>
-                {highlight === "La" ? "The Lagna" : GRAHA_NAME[highlight] ?? highlight} in each varga
-              </caption>
-              <thead><tr>{vargas.map((v) => <th key={v} scope="col">D{v}</th>)}</tr></thead>
-              <tbody><tr>{vargas.map((v) => {
-                const s = signIn(highlight, v);
-                return <td key={v}>{s === undefined ? "–" : SIGNS[s].slice(0, 3)}</td>;
-              })}</tr></tbody>
-            </table>
+            <div className="table-wrap">
+              <table className="planet-table follow-table">
+                <caption>
+                  {highlight === "La" ? "The Lagna" : GRAHA_NAME[highlight] ?? highlight} in each varga
+                </caption>
+                <thead><tr>{vargas.map((v) => <th key={v} scope="col">D{v}</th>)}</tr></thead>
+                <tbody><tr>{vargas.map((v) => {
+                  const s = signIn(highlight, v);
+                  return <td key={v}>{s === undefined ? "–" : SIGNS[s].slice(0, 3)}</td>;
+                })}</tr></tbody>
+              </table>
+            </div>
           )}
         </>
       )}

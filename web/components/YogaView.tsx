@@ -34,17 +34,19 @@ export function YogaView({ yogas, options, onOptions }: {
           </select>
         </label>
       </div>
-      {groups.map((g) => (
-        <section key={g} className="yoga-group">
-          <h3>{g}</h3>
-          <ul>
-            {active.filter((y) => y.group === g).map((y) => <YogaItem key={y.id} y={y} />)}
-          </ul>
-        </section>
-      ))}
+      <div className="yoga-groups">
+        {groups.map((g) => (
+          <section key={g} className="yoga-group">
+            <h3>{g} <span className="count">{active.filter((y) => y.group === g).length}</span></h3>
+            <ul>
+              {active.filter((y) => y.group === g).map((y) => <YogaItem key={y.id} y={y} />)}
+            </ul>
+          </section>
+        ))}
+      </div>
       {cancelled.length > 0 && (
         <section className="yoga-group cancelled">
-          <h3>Formed but cancelled</h3>
+          <h3>Formed but cancelled <span className="count">{cancelled.length}</span></h3>
           <ul>{cancelled.map((y) => <YogaItem key={y.id} y={y} />)}</ul>
         </section>
       )}
@@ -55,14 +57,12 @@ export function YogaView({ yogas, options, onOptions }: {
 function YogaItem({ y }: { y: Yoga }) {
   return (
     <li className="yoga">
-      <div className="yoga-title">
-        <strong>{y.name}</strong>
-        <cite>{y.source.text}, {y.source.section}</cite>
-      </div>
+      <strong className="yoga-name">{y.name}</strong>
       <p>{y.summary}</p>
       <ul className="evidence">
         {y.evidence.map((e, i) => <li key={i}>{e}</li>)}
       </ul>
+      <cite>{y.source.text}, {y.source.section}</cite>
     </li>
   );
 }

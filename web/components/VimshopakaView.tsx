@@ -44,8 +44,10 @@ export function VimshopakaView({ v, weights, onWeights }: {
                     <td key={g} className="num">
                       {x === undefined ? "–" : (
                         <span className="vim-cell">
-                          <span className="vim-bar" style={{ width: `${(x / 20) * 100}%` }} />
                           <span>{x.toFixed(2)}</span>
+                          <span className="vim-track" aria-hidden="true">
+                            <span className="vim-bar" style={{ width: `${(x / 20) * 100}%` }} />
+                          </span>
                         </span>
                       )}
                     </td>

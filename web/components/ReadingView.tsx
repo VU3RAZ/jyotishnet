@@ -121,7 +121,12 @@ export function ReadingView({ topics, topic, onTopic, scope, onScope, dateLabel,
                         {f.uncertain && <span className="uncertain-mark" title="Depends on a Lagna that changes sign near the birth time"> uncertain</span>}
                       </th>
                       <td><span className={`dir ${f.direction}`}>{DIRECTION[f.direction]}</span></td>
-                      <td className="num">{f.score.toFixed(2)}</td>
+                      <td className="weight">
+                        <span className="weight-track" aria-hidden="true">
+                          <span className="inline-bar" style={{ width: `${Math.min(1, f.score) * 100}%` }} />
+                        </span>
+                        {f.score.toFixed(2)}
+                      </td>
                       <td className="why">{f.reasons.join("; ")}</td>
                       <td className="verdict">
                         {(["accept", "reject"] as Verdict[]).map((v) => (

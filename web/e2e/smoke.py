@@ -150,6 +150,21 @@ async def main() -> int:
         await page.click(f".library-list li[aria-current=true] button:has-text('Delete')")
         await page.wait_for_selector(".library-list li[aria-current=true]", state="detached")
         await step("delete saved chart")
+
+        # Phone width (M3.6): no analysis tab may widen the page; wide tables scroll in their box.
+        await page.set_viewport_size({"width": 420, "height": 900})
+        for tab in ["Positions", "Vargas", "Yogas", "Readings", "Ashtakavarga", "Strengths", "Dashas", "Transits"]:
+            await page.click(f"[role=tab]:has-text('{tab}')")
+            await page.wait_for_timeout(1500)
+            if tab == "Ashtakavarga":
+                await page.wait_for_selector(".sav-chart .sav-bar")
+            if tab == "Transits":
+                await page.wait_for_selector(".cycle .phase")
+            width = await page.evaluate("document.documentElement.scrollWidth")
+            if width > 420:
+                print(f"FAIL: tab {tab} widens the page to {width}px at a 420px viewport")
+                raise SystemExit(1)
+        await step("phone width, every tab")
         await browser.close()
     print("smoke test passed")
     return 0

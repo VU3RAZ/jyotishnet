@@ -29,6 +29,7 @@ export function AshtakavargaView({ av, lagnaSign }: { av: Ashtakavarga; lagnaSig
         Bindus per sign, in house order from the Lagna. Sarvashtakavarga totals of 28 or more mark
         signs that support results; below 25 is weak.
       </p>
+      <SavChart sav={av.sav} order={order} />
       <div role="group" aria-label="Reduction stage" className="segmented quiet">
         {(Object.keys(STAGE_LABEL) as Stage[]).map((s) => (
           <button key={s} type="button" aria-pressed={stage === s} onClick={() => setStage(s)}>
@@ -73,6 +74,7 @@ export function AshtakavargaView({ av, lagnaSign }: { av: Ashtakavarga; lagnaSig
         </table>
       </div>
       <h3>Shodhya pinda</h3>
+      <p className="muted small">Rasi pinda plus Graha pinda of each graha&apos;s reduced Ashtakavarga.</p>
       <div className="table-wrap">
         <table className="grid-table pinda">
           <thead>
@@ -92,5 +94,31 @@ export function AshtakavargaView({ av, lagnaSign }: { av: Ashtakavarga; lagnaSig
         </table>
       </div>
     </div>
+  );
+}
+
+/** Sarvashtakavarga by house as columns, with the 25 and 28 thresholds drawn across. */
+function SavChart({ sav, order }: { sav: number[]; order: number[] }) {
+  const top = Math.max(40, ...sav);
+  const y = (v: number) => `${100 - (v / top) * 100}%`;
+  return (
+    <figure className="sav-chart">
+      <figcaption><strong>Sarvashtakavarga by house</strong> <span className="muted">· 28 or more supports, below 25 is weak</span></figcaption>
+      <div className="sav-plot" role="img"
+        aria-label={`Sarvashtakavarga by house: ${order.map((s, i) => `house ${i + 1} ${sav[s]}`).join(", ")}`}>
+        <span className="sav-line strong" style={{ top: y(28) }}><span>28</span></span>
+        <span className="sav-line weak" style={{ top: y(25) }}><span>25</span></span>
+        {order.map((s, i) => (
+          <div key={s} className="sav-col" title={`House ${i + 1}, ${SIGNS[s]}: ${sav[s]} bindus`}>
+            <span className="sav-value">{sav[s]}</span>
+            <span className={`sav-bar ${sav[s] >= 28 ? "good" : sav[s] < 25 ? "low" : ""}`}
+              style={{ height: `${(sav[s] / top) * 100}%` }} />
+          </div>
+        ))}
+      </div>
+      <div className="sav-axis" aria-hidden="true">
+        {order.map((s, i) => <span key={s}>{i + 1}<small>{SIGN_SHORT[s]}</small></span>)}
+      </div>
+    </figure>
   );
 }

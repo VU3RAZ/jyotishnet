@@ -19,8 +19,8 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   this browser only.
 - **Analysis tabs**: Positions, Yogas (grouped, with the evidence for each and
   its source text; cancelled ones listed apart; settings for the strong Lagna lord
-  and Gajakesari's conditions), Ashtakavarga (bindus in house
-  order, by reduction stage, with pindas), Strengths (Shadbala components in rupas and
+  and Gajakesari's conditions), Ashtakavarga (Sarvashtakavarga by house as
+  columns against the 25 and 28 marks; bindus in house order, by reduction stage, with pindas), Strengths (Shadbala components in rupas and
   each planet's ratio to the required strength, Bhava bala, avasthas, and Vimshopaka
   bala in four schemes with BPHS or JHora Saptavarga weights), and Dashas (a lifetime
   timeline for Vimshottari, Ashtottari, Yogini or Chara, opening on the event
@@ -30,6 +30,8 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   ±1 year, ±12 years) and shows today's planets in the birth houses, with the
   periods running on that date.
 - The eight Jagannatha Hora reference charts are available as presets.
+- **Phone width**: every tab fits a 420 px screen; wide tables scroll inside their own
+  box (the smoke test checks that no tab widens the page).
 - **Vargas tab**: several divisional charts side by side (Shadvarga, Saptavarga,
   Dashavarga, Shodashavarga or any choice). Hover a planet to light it up in every
   chart; click it, or its chip, to keep it lit, with its sign in each varga below.
@@ -78,5 +80,4 @@ accepts browser calls from the origins in `JYOTISHNET_CORS`.
 
 ## Next steps
 
-1. Design pass over the analysis tabs (M3.6).
-2. A TypeScript client generated from the API's OpenAPI spec.
+1. A TypeScript client generated from the API's OpenAPI spec.
