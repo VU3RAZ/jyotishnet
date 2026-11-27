@@ -4,6 +4,8 @@
 # event's natural karaka. Houses count from that chart's Lagna (whole sign).
 # check_only events are accepted for checking a birth time but are never shown
 # as predictions. All rules are drafts until an expert signs them off.
+# The source fields name the BPHS topic only. The linking formula itself is not
+# stated in BPHS (see docs/research/BPHS-dasha-events.md).
 - id: marriage
   name: Marriage
   d1_houses: [7]
