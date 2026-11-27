@@ -1,9 +1,11 @@
 # JyotishNet
 
 A professional Vedic astrology workbench for astrologers, with a smaller
-consumer edition planned on the same platform. This repository holds
-**phase 1: the verified calculation core (Layer 0)**, its HTTP API, and a first
-version of the **workbench UI** (charts, live time slider, transits).
+consumer edition planned on the same platform. This repository holds **release R1:
+an astrologer workbench with rule-based readings**, built on the verified
+calculation core (phase 1, Layer 0) and its HTTP API. It runs privately on your own
+computer. The neural network (phases 2-5) has not started. What is in R1 and what
+is still draft is listed in [CHANGELOG.md](CHANGELOG.md).
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 [docs/DECISIONS.md](docs/DECISIONS.md) for open decisions.
@@ -14,7 +16,6 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | --- | --- |
 | Planets, ascendant, house cusps | Swiss Ephemeris; Lahiri, Raman, KP, True Chitra, Yukteshwar, Fagan-Bradley ayanamsas; mean or true nodes; apparent or true positions |
 | House systems | Whole-sign (default), Sripati, Placidus, Koch, Equal, Porphyry |
-| Vargas | All 16 Parashari Shodashavarga (D1-D60), with varga longitudes; D2 as Uma-Shambhu (JHora default) or Parashari hora |
 | Nakshatra, pada, dignity | Exaltation, moolatrikona, own, natural relationship; vargottama |
 | Aspects | Parashari graha drishti; optional Rahu/Ketu 5th/9th |
 | Special lagnas | Bhava, Hora, Ghati Lagna and Pranapada (sunrise mode configurable) |
@@ -22,7 +23,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Ashtakavarga | BAV with prastara, SAV, Trikona and Ekadhipatya shodhana, Shodhya pinda; BPHS and PVR variants |
 | Shadbala | Sthana (5 parts), Dig, Kala (Nathonnatha, Paksha, Tribhaga, Abda, Masa, Vara, Hora, Ayana), Cheshta, Naisargika, Drik, Yuddha (planetary war, BPHS); rupas and required minimums; Ishta and Kashta phala (BPHS ch. 27; Sun and Moon match JHora on 55 charts). Matches Jagannatha Hora on 23 charts to its printed precision except Yuddha and Cheshta (decided differences) |
 | Bhava bala | The twelve houses: lord's Shadbala, Bhava dig bala (by sign class) and Bhava drik bala (aspects on the house middle; Jupiter and Mercury in full), as Jagannatha Hora 8.0 computes them (read from its code); Dig and Drik match JHora on 23 charts (`src/jyotishnet_engine/bhavabala.py`) |
-| Vargas | All 22 divisional charts Jagannatha Hora draws (D1-D60, D81, D108, D144), each matching JHora's charts on the 55 golden charts, and the D150 nadiamsa (number and name, JHora's Chandra Kala Nadi division) (`src/jyotishnet_engine/vargas.py`) |
+| Vargas | All 22 divisional charts Jagannatha Hora draws (D1-D60, D81, D108, D144), each matching JHora's charts on the 55 golden charts, with varga longitudes; D2 as Uma-Shambhu (JHora default) or Parashari hora; and the D150 nadiamsa (number and name, JHora's Chandra Kala Nadi division) (`src/jyotishnet_engine/vargas.py`) |
 | Special points | Vighati, Varnada, Sree and Indu lagnas, Bhrigu Bindu, the Dhooma group and the time upagrahas (Gulika, Maandi, Kaala, Mrityu, Artha Prahara, Yama Ghantaka), Yogi, Sahayogi and Avayogi, as Jagannatha Hora 8.0 (matched on the 55 golden charts; `src/jyotishnet_engine/upagrahas.py`) |
 | Jaimini | Chara karakas, bhava arudhas (AL..UL) and 19 rasi dashas (Narayana, Lagnamsaka, Padanaathamsa, Sudasa, Drig, Lagna and AK Kendradi, Trikona, three Chara dashas, Yogardha, Shoola, Niryana Shoola, Brahma, Sthira, Mandooka, Navamsa, Varnada) as Jagannatha Hora 8.0 computes them, matching it on the golden charts (`src/jyotishnet_engine/jaimini_jhora.py`, `/v1/dasha`, Dashas tab) |
 | Panchanga | Birth panchanga (tithi, nakshatra, yoga, karana with lords and fraction left, weekday, hora lord, samvatsara, lunar month with Adhika/Nija, Janma ghatis) and the day panchanga from sunrise to sunrise (element end times, sunrise and sunset, Rahu kala, Gulika kala, Yamaganda, durmuhurta, varjya, moonrise and moonset, the Moon's sign), as Jagannatha Hora 8.0; matches its Key info on the 55 golden charts and its monthly panchanga on about 1,700 days (`src/jyotishnet_engine/panchanga.py`, `POST /v1/panchanga`, Positions tab) |
@@ -32,9 +33,11 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 | Rectification helpers | 12 event types in YAML (`rules/btr_events.yaml`, cited, draft) with governing vargas and karakas; event check table (dasha lords linked by lordship, occupancy or karaka in D1 and the event varga, Jupiter-Saturn double transit, score and verdict), fit curve over the birth window with best fit, indicative periods for marriage, children, career and relocation. Death and illness are check-only, never predicted |
 | Boundary map (BTR) | Every Lagna, Moon-varga, special-lagna and Moon-pada change in a window, refined to 1 second, plus segments |
 | Yogas | 56 rules in YAML (`src/jyotishnet_engine/rules/yogas/`), each citing text and section, with evidence and cancellation: Pancha Mahapurusha, Chandra, Surya, Raja, Viparita, Neecha Bhanga, Parivartana, Dhana, Lakshmi, Amala, Saraswati, Parvata, Kahala, Kartari, Nabhasa (Sankhya, Ashraya, Dala, Akriti); strength conditions as settings (strong Lagna lord for Lakshmi and Kahala by dignity or Shadbala; Gajakesari as BPHS/JHora or with Phaladeepika's conditions). All `draft` pending expert review |
-| API | FastAPI: `/v1/chart`, `/v1/dasha` (vimshottari, ashtottari, yogini and the rasi dashas of `/v1/dasha/systems`), `/v1/ashtakavarga`, `/v1/shadbala` (with planetary wars and Bhava bala), `/v1/panchanga`, `/v1/vimshopaka`, `/v1/avasthas`, `/v1/transits`, `/v1/birth/warnings` (historical Indian time zones), `/v1/yogas`, `/v1/boundaries`, `/v1/btr/events|check|curve|indicative`, saved charts `/v1/charts` (list, save, reopen, update, delete) with `/v1/charts/{id}/notes` and `/v1/notes/{id}`; CORS via `JYOTISHNET_CORS` |
+| Readings | 18 topics (career, marriage, children for fertility only, health as technical factors only, ...) in `rules/readings/topics.yaml`, cited and `draft`: a fact sheet from the engine, the factors the classical rules weigh for the topic ranked with whether each supports or obstructs it, and a short draft in which every sentence cites the facts it rests on and passes a verifier and safety filter (no child's sex, no timing of death, illness or accidents). Natal promise or the Vimshottari lords running on a date; factors that rest on a varga Lagna changing sign near the birth time are marked uncertain; accept/reject labels kept in the local store (`src/jyotishnet_engine/readings.py`) |
+| Browser engine | Swiss Ephemeris compiled to WebAssembly (`web/public/engine/swe.wasm`, reproducible from `tools/build_swe_wasm.sh`) with a TypeScript port of the chart, running-dasha and boundary code in a Web Worker: the time slider runs every frame and works with the API stopped; equal to the API on about 700 charts (`web/e2e/engine_parity.py`) |
+| API | FastAPI: `/v1/chart`, `/v1/dasha` (vimshottari, ashtottari, yogini and the rasi dashas of `/v1/dasha/systems`), `/v1/ashtakavarga`, `/v1/shadbala` (with planetary wars and Bhava bala), `/v1/panchanga`, `/v1/vimshopaka`, `/v1/avasthas`, `/v1/transits`, `/v1/birth/warnings` (historical Indian time zones), `/v1/yogas`, `/v1/boundaries`, `/v1/btr/events|check|curve|indicative`, `/v1/reading/topics`, `/v1/reading`, `/v1/reading/feedback`, saved charts `/v1/charts` (list, save, reopen, update, delete) with `/v1/charts/{id}/notes` and `/v1/notes/{id}`; CORS via `JYOTISHNET_CORS` |
 | Saved charts | Charts with their life events and notes, in a local SQLite file (`$JYOTISHNET_DB`, default `~/.local/share/jyotishnet/jyotishnet.db`, owner-only permissions); nothing leaves the computer (`src/jyotishnet_api/store.py`) |
-| Workbench UI | Next.js app in `web/`: saved charts and notes (save, find, reopen, annotate, delete); a multi-varga canvas (Shadvarga to Shodashavarga or any choice of vargas side by side, following the ribbon; hover or pin a planet to light it up in every chart, with its sign in each varga); North and South Indian charts for any varga; time ribbon for birth-time rectification (±30 min by default, ±20 min or ±2 h, with Lagna-change marks) and transits (±3 days to ±12 years); sign changes flash; positions table; Vimshottari periods on an event date; life events with the event check table, a fit curve and "jump to best fit" on the ribbon, and indicative periods; analysis tabs for yogas (with evidence and citations), Ashtakavarga (by reduction stage, with pindas), Strengths (Shadbala components, strength ratios, Bhava bala, avasthas and Vimshopaka bala) and a lifetime dasha timeline (Vimshottari, Ashtottari, Yogini and 19 Jaimini rasi dashas) with antar and pratyantar drill-down; special lagnas, upagrahas, the Yogi, chara karakas, arudhas and the panchanga under the positions table; the 8 JHora charts as presets. See [web/README.md](web/README.md) |
+| Workbench UI | Next.js app in `web/`: saved charts and notes (save, find, reopen, annotate, delete); a multi-varga canvas (Shadvarga to Shodashavarga or any choice of vargas side by side, following the ribbon; hover or pin a planet to light it up in every chart, with its sign in each varga); North and South Indian charts for any varga; time ribbon for birth-time rectification (±30 min by default, ±20 min or ±2 h, with Lagna-change marks) and transits (±3 days to ±12 years); sign changes flash; positions table; Vimshottari periods on an event date; life events with the event check table, a fit curve and "jump to best fit" on the ribbon, and indicative periods; analysis tabs for yogas (with evidence and citations), Ashtakavarga (by reduction stage, with pindas), Strengths (Shadbala components, strength ratios, Bhava bala, avasthas and Vimshopaka bala) and a lifetime dasha timeline (Vimshottari, Ashtottari, Yogini and 19 Jaimini rasi dashas) with antar and pratyantar drill-down; special lagnas, upagrahas, the Yogi, chara karakas, arudhas and the panchanga under the positions table; a Readings tab (ranked factors with accept/reject and a cited draft); the slider computed in the browser; every tab usable at phone width; the 8 JHora charts as presets. See [web/README.md](web/README.md) |
 
 A full chart with all 16 vargas takes about 8 ms; the D1 + one varga request
 behind the slider about 3 ms; a ±60 minute boundary map about 0.1 s.
@@ -125,8 +128,9 @@ Workbench UI: with the API running on port 8000,
 cd web && npm ci && npm run dev    # http://localhost:3000
 ```
 
-CI runs the tests, the PyJHora cross-checks, and the web build and type-check
-on every push.
+CI runs the tests, the PyJHora cross-checks, the web build and type-check, the
+browser smoke test (including phone width), the browser engine's parity and offline
+tests, and a rebuild of `swe.wasm` that must match the committed file, on every push.
 
 API and library examples:
 

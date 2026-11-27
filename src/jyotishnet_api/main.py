@@ -20,10 +20,11 @@ from jyotishnet_engine import (
     boundary_map, build_chart, running, vimshottari, yogini,
     ashtottari,
 )
+from jyotishnet_engine import __version__
 from jyotishnet_engine.constants import MODEL_VARGAS, SHODASHAVARGA
 from jyotishnet_engine.timeutil import jd_to_datetime, zone_warnings
 
-app = FastAPI(title="JyotishNet API", version="0.1.0")
+app = FastAPI(title="JyotishNet API", version=__version__)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[o for o in os.environ.get(
