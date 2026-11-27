@@ -5,7 +5,8 @@ consumer edition planned on the same platform. This repository holds **release R
 an astrologer workbench with rule-based readings**, built on the verified
 calculation core (phase 1, Layer 0) and its HTTP API. It runs privately on your own
 computer. The neural network (phases 2-5) has not started. What is in R1 and what
-is still draft is listed in [CHANGELOG.md](CHANGELOG.md).
+is still draft is listed in [CHANGELOG.md](CHANGELOG.md); every capability of R1, with
+how each was checked, is in [docs/RELEASE-R1.md](docs/RELEASE-R1.md).
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the five-layer design and
 [docs/DECISIONS.md](docs/DECISIONS.md) for open decisions.

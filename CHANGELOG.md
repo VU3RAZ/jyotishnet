@@ -6,6 +6,8 @@ The first release: milestones M1 to M3 of the plan. JyotishNet runs privately on
 your own computer (`scripts/start.sh`, or `scripts\start.bat` on Windows); both
 servers listen on 127.0.0.1 only and saved charts stay in a local SQLite file.
 Hosting and accounts (M4) and the neural network (phases 2-5) are not part of R1.
+The full list of capabilities, with how each was checked, is in
+[docs/RELEASE-R1.md](docs/RELEASE-R1.md).
 
 ### What is in it
 
