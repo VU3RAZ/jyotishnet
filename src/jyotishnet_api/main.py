@@ -396,6 +396,10 @@ class BtrCurveRequest(BtrRequest):
     shuffles: int = Field(200, ge=0, le=2000, description="Sets of random event dates for the significance test (0 = skip)")
 
 
+class BtrIndicativeRequest(BtrRequest):
+    min_age_years: float = Field(16.0, ge=0, le=90, description="List periods from this age (default 16)")
+
+
 def _events(req: BtrRequest) -> list[tuple[str, date_type]]:
     from jyotishnet_engine.btr import event_rules
     rules = event_rules()
@@ -443,12 +447,13 @@ def btr_curve(req: BtrCurveRequest) -> dict:
 
 
 @app.post("/v1/btr/indicative")
-def btr_indicative(req: BtrRequest) -> dict:
+def btr_indicative(req: BtrIndicativeRequest) -> dict:
     """Antardashas that point to marriage, children, career or relocation (see
     btr.indicative_periods for each rule set). Death and illness are never offered."""
     from jyotishnet_engine.btr import indicative_periods
-    out = indicative_periods(req.birth.to_birth(), req.config.to_config(), rule_set=req.rule_set)
-    return {"periods": {k: [{**{x: v for x, v in r.items() if not x.endswith("_jd")},
+    out = indicative_periods(req.birth.to_birth(), req.config.to_config(), rule_set=req.rule_set,
+                             min_age_years=req.min_age_years)
+    return {"min_age_years": req.min_age_years, "periods": {k: [{**{x: v for x, v in r.items() if not x.endswith("_jd")},
                              "start": _iso(r["start_jd"]), "end": _iso(r["end_jd"])} for r in rows]
                         for k, rows in out.items()}}
 

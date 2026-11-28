@@ -465,16 +465,21 @@ def fit_curve(birth: BirthData, events: list[tuple[str, date]], window_min: floa
 
 def indicative_periods(birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
                        max_age_years: float = 90.0, chart: Chart | None = None,
-                       rule_set: str = "classical") -> dict[str, list[dict]]:
+                       rule_set: str = "classical", min_age_years: float = 16.0) -> dict[str, list[dict]]:
     """Antardashas that point to an event, for the event types allowed as indicative
     periods (never death or illness).
 
     classical: the antardasha lord gives the event by the cited rules and the
     antardasha is good (its lord well placed and dignified, nothing against it).
-    modern: both the mahadasha and the antardasha lords are linked to the event."""
+    modern: both the mahadasha and the antardasha lords are linked to the event.
+
+    Only periods from `min_age_years` (default 16, the user's choice: the texts give no
+    age limit) to `max_age_years` are listed; a period running at the lower age is
+    clipped to start there."""
     chart = chart or build_chart(birth, cfg, required_vargas())
     periods = vimshottari(chart.grahas["Mo"].longitude, chart.jd_ut, cfg, levels=2)
     limit = chart.jd_ut + max_age_years * 365.25
+    first = chart.jd_ut + min_age_years * 365.25
     out: dict[str, list[dict]] = {}
     for rule in event_rules().values():
         if not rule.indicative or rule.check_only:
@@ -486,13 +491,13 @@ def indicative_periods(birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
             if not cr and not ml:
                 continue
             for ad in md.children:
-                if ad.start_jd > limit or ad.end_jd < chart.jd_ut:
+                if ad.start_jd > limit or ad.end_jd <= first:
                     continue
                 al = significator_reasons(chart, cr, ad.lord) if cr else links(chart, rule, ad.lord)
                 if not al:
                     continue
                 row = {"mahadasha": md.lord, "antardasha": ad.lord,
-                       "start_jd": max(ad.start_jd, chart.jd_ut), "end_jd": ad.end_jd,
+                       "start_jd": max(ad.start_jd, first), "end_jd": ad.end_jd,
                        "maha_links": ml, "antar_links": al}
                 if cr:
                     q, good, _bad = antardasha_quality(chart, md.lord, ad.lord)

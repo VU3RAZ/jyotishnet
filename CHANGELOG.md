@@ -38,6 +38,8 @@
   as supporting travel (BPHS 23.11-12), and the health topic reads the 6th and 8th
   lords in a dusthana as favourable (Harsha and Sarala). Every rule cites its verse
   in the "Why" column; see "Reading house rules" in `docs/DECISIONS.md`.
+- **Indicative periods start at age 16** (`min_age_years`, default 16). Before, they
+  started at birth, so marriage and career periods showed up in childhood.
 - Indicative periods now say how much of adult life such periods cover, and that
   one match is weak evidence.
 - The fit curve is computed about twice as fast (each candidate time's chart is

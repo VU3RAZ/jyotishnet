@@ -155,6 +155,7 @@ async def main() -> int:
         await page.click("[aria-label='Rectification rules'] button:has-text('Modern')")
         await page.wait_for_selector(".event-table th:has-text('Jupiter and Saturn')")
         await page.wait_for_selector(".indicative p:has-text('modern rules')")
+        await page.wait_for_selector(".indicative p:has-text('from age 16')")
         await page.click("[aria-label='Rectification rules'] button:has-text('Classical')")
         await page.wait_for_selector(".event-table th:has-text('Period and transit')")
         await page.wait_for_selector(".fit-significance", timeout=15000)

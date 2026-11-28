@@ -20,14 +20,14 @@ export function IndicativePanel({ periods, loading, ruleSet }: {
         {ruleSet === "classical"
           ? "Antardashas whose lord gives the matter by the cited rules and is well placed and dignified, with nothing against it. "
           : "Antardashas whose two lords both link to the matter (modern rules). "}
-        Such periods cover roughly a tenth to a fifth of adult life, so one match with a known event
+        Listed from age 16 (the texts set no age limit). Such periods cover roughly a tenth to a fifth of adult life, so one match with a known event
         is weak evidence; several together, or the life-event fit above, say more.</p>
       {periods && (
         <div className="indicative-grid">
           {Object.entries(LABEL).map(([key, label]) => (
             <div key={key}>
               <h3>{label}</h3>
-              {(periods[key] ?? []).length === 0 ? <p className="muted">None in 90 years</p> : (
+              {(periods[key] ?? []).length === 0 ? <p className="muted">None from age 16 to 90</p> : (
                 <ul>
                   {periods[key].slice(0, 8).map((p) => (
                     <li key={p.start}>

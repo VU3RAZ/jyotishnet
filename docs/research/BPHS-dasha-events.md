@@ -239,4 +239,5 @@ Not yet used, and open for the reviewer:
 - the drekkana timing within a dasha (BPHS 47.3-4);
 - BPHS 48.5 against PD 20.8 on the 7th lord;
 - the strength fractions of PD 20.30;
-- an age window for indicative periods: the lists start at birth, so childhood periods appear.
+- an age window for indicative periods: decided by the user on 28 Nov 2026, the lists start at age 16
+  (`min_age_years`; the texts give no age limit).

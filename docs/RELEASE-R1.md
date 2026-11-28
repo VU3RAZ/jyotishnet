@@ -109,7 +109,7 @@ R1 shows what changes as the birth time moves, and scores dated life events agai
   - the Jupiter-Saturn double transit;
   - a score and a verdict, and whether the event helps decide between times.
 - **Fit curve:** the total score at each candidate birth time, drawn on the ribbon, with a "Jump to best fit" button (how the best fit is chosen is below).
-- **Indicative periods** for marriage, children, career and relocation.
+- **Indicative periods** for marriage, children, career and relocation. Since 1.0.0 they are listed from age 16 (the texts give no age limit; in 1.0.0 they started at birth).
 
 ### How the best-fit time is chosen
 

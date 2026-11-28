@@ -183,3 +183,14 @@ def test_indicative_never_death_or_illness():
         for r in rows:
             assert r["antar_links"] and r["quality_reasons"]
             assert antardasha_quality(c, r["mahadasha"], r["antardasha"])[0] == "good"
+
+
+@pytest.mark.parametrize("rule_set", RULE_SETS)
+def test_indicative_periods_start_at_16_by_default(rule_set):
+    jd0 = GANDHI.jd_ut()
+    ip = indicative_periods(GANDHI, rule_set=rule_set)
+    starts = [r["start_jd"] for rows in ip.values() for r in rows]
+    assert starts and min(starts) >= jd0 + 16 * 365.25 - 1e-6
+    young = indicative_periods(GANDHI, rule_set=rule_set, min_age_years=0)
+    assert sum(map(len, young.values())) > sum(map(len, ip.values()))
+    assert min(r["start_jd"] for rows in young.values() for r in rows) < jd0 + 16 * 365.25

@@ -131,6 +131,9 @@ def test_btr_endpoints():
     assert all(e["classical"]["polarity"] in ("good", "adverse") for e in client.get("/v1/btr/events").json()["events"])
     r = client.post("/v1/btr/indicative", json={"birth": BIRTH})
     assert set(r.json()["periods"]) == {"marriage", "child", "career", "relocation"}
+    assert r.json()["min_age_years"] == 16
+    assert client.post("/v1/btr/indicative", json={"birth": BIRTH, "min_age_years": 0}).json()["min_age_years"] == 0
+    assert client.post("/v1/btr/indicative", json={"birth": BIRTH, "min_age_years": -1}).status_code == 422
     r = client.post("/v1/btr/check", json={"birth": BIRTH, "events": [{"type": "lottery", "date": "2000-01-01"}]})
     assert r.status_code == 422
 
