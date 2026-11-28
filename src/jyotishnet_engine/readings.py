@@ -452,9 +452,9 @@ def _theme(topic: Topic) -> str:
 
 def _verdict(direction: str, what: str, topic: Topic) -> str:
     t = _theme(topic)
-    return {"supports": f"classical texts read {what} as supporting {t}",
-            "obstructs": f"classical texts read {what} as obstructing {t}",
-            "mixed": f"classical texts give {what} mixed results for {t}"}[direction]
+    return {"supports": f"classical texts read {what} as favouring the native in matters of {t}",
+            "obstructs": f"classical texts read {what} as against the native in matters of {t}",
+            "mixed": f"classical texts give {what} mixed results for the native in matters of {t}"}[direction]
 
 
 def _place_phrase(sh: Sheet, p: str, v: int, in_v: str = "") -> tuple[str, list[dict]]:
@@ -521,11 +521,12 @@ def write(sh: Sheet, topic: Topic, f: Factor) -> Sentence:
                 claims.append({"kind": "lordship", "varga": fa.data["varga"], "house": fa.data["house"], "lord": p})
             if fa.kind == "placement" and fa.data["planet"] == p:
                 claims.append({"kind": "placement", **{k: fa.data[k] for k in ("planet", "varga", "sign", "house")}})
+        how = {"supports": "favouring the native by the lord's condition",
+               "obstructs": "against the native by the lord's condition",
+               "mixed": "with mixed results for the native"}[f.direction]
         text = (f"The Vimshottari {level} of {name(p)} runs from {d['start']} to {d['end']}, and {name(p)} is "
                 f"tied to the topic ({'; '.join(links)}); classical texts associate the period of a linked lord "
-                f"with these matters coming forward, {f.direction.replace('mixed', 'with mixed results')}"
-                + ("" if f.direction == "mixed" else " by the lord's condition") + ".")
-        text = text.replace(", supports by", ", supporting them by").replace(", obstructs by", ", obstructing them by")
+                f"with matters of {_theme(topic)} coming forward, {how}.")
     return Sentence(text, list(f.facts), claims, f.key, f.uncertain)
 
 

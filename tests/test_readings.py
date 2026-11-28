@@ -43,6 +43,7 @@ def test_every_sentence_is_grounded(c):
         for s in r.sentences:
             assert s.cites and set(s.cites) <= ids, s
             assert "classical texts" in s.text            # traditional-interpretation framing
+            assert "the native" in s.text and "supporting" not in s.text and "obstructing" not in s.text
             assert safety(s.text) is None
         scores = [f.score for f in r.factors]
         assert scores == sorted(scores, reverse=True)
@@ -152,7 +153,7 @@ def test_disputes_follow_the_6th_house_rules(c):
         if f.key.startswith("aspect.D1.H6.") and "natural malefic" in f.reasons:
             assert f.direction == "supports", f
     assert r.topic["labels"]["supports"] == "favours the native"
-    assert all("success over enemies" in s.text for s in r.sentences)
+    assert all("the native in matters of enemies, disputes and competition" in s.text for s in r.sentences)
 
 
 def test_foreign_12th_occupants_support_travel_either_way():

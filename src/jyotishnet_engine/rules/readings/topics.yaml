@@ -6,7 +6,7 @@
 # "Bhava Chinta", and BPHS, "Effects of the lords of the houses". All drafts until
 # the user's Jyotish reviewer signs them off.
 #
-# theme: how sentences name the topic (default: the name in lower case).
+# theme: how sentences name the topic, after "in matters of" (default: the name in lower case).
 # house_rules: where a text gives a house its own rule, it replaces the general one
 #   (benefic occupants and aspects support a house, malefic ones obstruct it; its lord
 #   in a kendra or trikona supports it, in a dusthana obstructs it). Per house:
@@ -98,6 +98,7 @@
   status: draft
 - id: father
   name: Father
+  theme: the father
   group: Family
   houses: [9]
   karaka: Su
@@ -107,6 +108,7 @@
   status: draft
 - id: mother
   name: Mother
+  theme: the mother
   group: Family
   houses: [4]
   karaka: Mo
@@ -171,7 +173,7 @@
   status: draft
 - id: disputes
   name: Litigation, enemies and competition
-  theme: success over enemies, in disputes and in competition
+  theme: enemies, disputes and competition
   group: Disputes
   houses: [6]
   karaka: Ma

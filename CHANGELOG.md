@@ -21,9 +21,9 @@
   its reasons.
 - **Readings: "favours the native" or "against the native".** In every topic, each
   factor now reads as favouring the native, against the native, or mixed, in place of
-  "supports" and "obstructs".
-- **Readings: litigation, enemies and competition.** The draft speaks of success
-  over enemies and in disputes. Planets in the 6th follow what Phaladeepika ch. 8
+  "supports" and "obstructs", in the table and in the draft sentences ("classical
+  texts read ... as favouring the native in matters of the father").
+- **Readings: litigation, enemies and competition.** Planets in the 6th follow what Phaladeepika ch. 8
   says of each one (Mars, Jupiter, Ketu and others destroy enemies; Saturn, Rahu and
   the Moon go against), malefic aspects on the 6th and the 6th lord in the 6th, 8th or
   12th favour (Harsha yoga, Phaladeepika 6.57, 6.63). Before, the general rule

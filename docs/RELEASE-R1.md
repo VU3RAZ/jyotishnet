@@ -205,7 +205,7 @@ All 18 topics and their factor weights are `draft` (decision #24).
 
 ### Favours the native or against the native (added after 1.0.0)
 
-Each factor now reads as **favours the native**, **against the native** or **mixed**, in every topic. In 1.0.0 the labels were "supports" and "obstructs". For litigation and enemies, that left it unclear whether "supports" meant more disputes or winning them. A line above the factor table names what the readings are for. For disputes, that is success over enemies, in disputes and in competition.
+Each factor now reads as **favours the native**, **against the native** or **mixed**, in every topic. In 1.0.0 the labels were "supports" and "obstructs". For litigation and enemies, that left it unclear whether "supports" meant more disputes or winning them. The draft sentences use the same words, for example "classical texts read this yoga as favouring the native in matters of enemies, disputes and competition". A line above the factor table names what the readings are for.
 
 **The general rule** is unchanged for most topics:
 
