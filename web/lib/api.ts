@@ -267,6 +267,11 @@ export type Reading = {
   topic: ReadingTopic & { source: { text: string; section: string }; status: string };
   facts: ReadingFact[]; factors: ReadingFactor[]; sentences: ReadingSentence[];
   dropped: { text: string | null; reason: string }[]; disclaimers: string[]; notes: string[]; note: string;
+  /** Current-period scope only: the running mahadasha and antardasha, with how each is tied to the topic. */
+  periods: ReadingPeriod[];
+};
+export type ReadingPeriod = {
+  level: number; lord: string; start: string; end: string; tied: string[]; factor: string | null;
 };
 
 export const readings = {

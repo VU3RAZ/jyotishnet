@@ -76,7 +76,14 @@ async def main() -> int:
                 await page.wait_for_selector(".draft li .cite")
                 await page.click(".reading-factors tbody tr:first-child .verdict button:has-text('Accept')")
                 await page.wait_for_selector(".reading-factors tbody tr:first-child button[aria-pressed=true]")
+                # The default chart (1869) is past its 120-year Vimshottari cycle today: the panel says so.
+                await page.wait_for_selector(".reading-periods p:has-text('120-year cycle')")
+                await page.select_option(".field.preset select", label="P. V. R. Narasimha Rao")
+                await page.wait_for_function("document.querySelectorAll('.reading-periods li').length === 2")
+                await page.select_option(".field.preset select", label="Mahatma Gandhi")
+                await page.wait_for_selector(".reading-periods p:has-text('120-year cycle')")
                 await page.click(".reading-options button:has-text('Natal promise')")
+                await page.wait_for_selector(".reading-periods", state="detached")
                 await page.select_option(".reading-options select", "health")
                 await page.wait_for_selector(".reading-notes .disclaimer:has-text('not medical advice')")
                 assert await page.locator(".draft li").count() == 0

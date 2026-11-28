@@ -71,6 +71,32 @@ export function ReadingView({ topics, topic, onTopic, scope, onScope, dateLabel,
             </ul>
           )}
 
+          {scope === "period" && (
+            <section className="reading-periods" aria-labelledby="reading-periods-h">
+              <h3 id="reading-periods-h">Periods running on {dateLabel}</h3>
+              <ul>
+                {r.periods.map((p) => (
+                  <li key={p.level} className={p.factor ? "tied" : "not-tied"}>
+                    <strong>{p.level === 1 ? "Mahadasha" : "Antardasha"} of {GRAHA_NAME[p.lord] ?? p.lord}</strong>
+                    {" "}<span className="muted">({p.start} to {p.end})</span>:{" "}
+                    {p.tied.length === 0
+                      ? "not tied to this topic (it lords none of the topic's houses, sits in none and is not its karaka), so it adds no factor."
+                      : p.factor
+                        ? <>tied to this topic ({p.tied.join("; ")}); added as a ranked factor below.</>
+                        : <>tied to this topic ({p.tied.join("; ")}), but ranked below the factors shown.</>}
+                  </li>
+                ))}
+              </ul>
+              {r.periods.length === 0 && (
+                <p className="muted">No Vimshottari period runs on this date: it falls outside the 120-year cycle
+                  from birth. Pick an event or transit date within it.</p>
+              )}
+              {r.periods.every((p) => !p.factor) && (
+                <p className="muted">So for this topic and date, the reading is the same as the natal promise.</p>
+              )}
+            </section>
+          )}
+
           <section className="reading-draft" aria-labelledby="reading-draft-h">
             <h3 id="reading-draft-h">Draft</h3>
             {r.sentences.length === 0 ? (

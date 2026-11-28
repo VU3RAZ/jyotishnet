@@ -195,7 +195,7 @@ How a reading is built:
 
 1. **Fact sheet:** the engine's facts for the chart, each with an id, such as the lord of the 10th, a graha's dignity, a yoga, or a Shadbala ratio.
 2. **Ranked factors:** the house lord, occupants, aspects, karaka, yogas and the governing varga's lord. Each is weighted for the topic and read as favouring the native, against the native, or mixed.
-3. **Scope:** the natal promise alone, or also the Vimshottari lords running on a chosen date.
+3. **Scope:** the natal promise alone, or also the Vimshottari lords running on a chosen date. A running lord adds a factor only if it is tied to the topic (it lords or occupies one of its houses, or is its karaka). Since 1.0.0 the reading always lists the running mahadasha and antardasha and says whether each was added.
 4. **Uncertainty:** factors that rest on a varga Lagna changing sign within 5 minutes of the birth time are marked uncertain.
 5. **Cited draft:** a sentence for each factor, with links to the facts it cites. A verifier drops any sentence that fails one of three checks: every claim must rest on a cited fact, every claim is rechecked against the chart, and every graha, sign or house the sentence names must be one of its claims. Dropped sentences are listed with the reason.
 6. **Safety filter:** it never states a child's sex, and never gives timing of death, serious illness or accidents. Health is technical factors only, with a disclaimer.

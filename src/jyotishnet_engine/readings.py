@@ -178,6 +178,8 @@ class Reading:
     dropped: list[dict] = field(default_factory=list)
     disclaimers: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
+    # Current-period scope: the running mahadasha and antardasha, tied to the topic or not.
+    periods: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -671,6 +673,14 @@ def reading(birth: BirthData, topic_id: str, at: date | datetime | None = None,
                 continue
             sentences.append(s)
 
+    periods = []
+    if at_jd is not None:
+        for per in running(vimshottari(chart.grahas["Mo"].longitude, chart.jd_ut, cfg, levels=2), at_jd)[:2]:
+            key = f"{'dasha_maha' if per.level == 1 else 'dasha_antar'}.{per.lord}"
+            periods.append({"level": per.level, "lord": per.lord, "start": _date(per.start_jd),
+                            "end": _date(per.end_jd), "tied": [label for label, _ in _links(sh, t, per.lord)],
+                            "factor": key if key in by_key else None})
+
     notes = []
     if t.note:
         notes.append(t.note)
@@ -686,7 +696,7 @@ def reading(birth: BirthData, topic_id: str, at: date | datetime | None = None,
                "labels": {d: t.label(d) for d in READS}},
         facts=[f for fid, f in sh.facts.items() if fid in used],
         factors=factors, sentences=sentences, dropped=dropped,
-        disclaimers=[DISCLAIMERS[t.disclaimer]] if t.disclaimer else [], notes=notes)
+        disclaimers=[DISCLAIMERS[t.disclaimer]] if t.disclaimer else [], notes=notes, periods=periods)
 
 
 def utc_date_of(birth: BirthData, d: date) -> datetime:

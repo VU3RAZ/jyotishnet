@@ -23,6 +23,12 @@
   factor now reads as favouring the native, against the native, or mixed, in place of
   "supports" and "obstructs", in the table and in the draft sentences ("classical
   texts read ... as favouring the native in matters of the father").
+- **Readings: the current-period scope always shows the running periods.** With
+  "Periods running on …" selected, the reading lists the Vimshottari mahadasha and
+  antardasha on that date and says whether each is tied to the topic and added as a
+  ranked factor. Before, a lord not tied to the topic added nothing and the reading
+  looked the same as the natal promise, with no explanation. A date outside the
+  120-year cycle from birth (the 19th-century presets today) is said so.
 - **Readings: litigation, enemies and competition.** Planets in the 6th follow what Phaladeepika ch. 8
   says of each one (Mars, Jupiter, Ketu and others destroy enemies; Saturn, Rahu and
   the Moon go against), malefic aspects on the 6th and the 6th lord in the 6th, 8th or

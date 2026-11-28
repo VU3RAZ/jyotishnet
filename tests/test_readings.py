@@ -171,3 +171,18 @@ def test_topics_without_house_rules_keep_the_general_rule():
     assert not [f for f in r.factors if any("Phaladeepika" in x or "BPHS" in x for x in f.reasons)]
     assert r.topic["labels"] == {"supports": "favours the native", "obstructs": "against the native",
                                  "mixed": "mixed"}
+
+
+def test_current_period_scope_always_lists_the_running_lords():
+    natal = reading(PVR, "career", stability_min=0)
+    assert natal.periods == []
+    for tid in topics():
+        r = reading(PVR, tid, at=date(2026, 11, 25), stability_min=0)
+        assert [p["level"] for p in r.periods] == [1, 2], tid
+        keys = {f.key for f in r.factors}
+        for p in r.periods:
+            assert p["start"] <= "2026-11-25" <= p["end"]
+            if p["factor"]:
+                assert p["tied"] and p["factor"] in keys
+            if not p["tied"]:
+                assert p["factor"] is None

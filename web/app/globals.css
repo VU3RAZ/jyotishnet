@@ -475,6 +475,9 @@ button, input, select { font: inherit; color: inherit; }
 .reading-options .field.inline select { max-width: min(22rem, 100%); }
 .reading-notes { margin: 0; padding-left: 1.1rem; color: var(--muted); font-size: var(--step--1); max-width: 80ch; }
 .reading-notes .disclaimer { color: var(--sindoor); }
+.reading-periods ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; max-width: 80ch; }
+.reading-periods li.not-tied { color: var(--muted); }
+.reading-periods p { margin: 0.4rem 0 0; font-size: var(--step--1); }
 .draft { margin: 0; padding-left: 2.2rem; display: grid; gap: 0.5rem; max-width: 80ch; font-family: var(--serif); line-height: 1.7; }
 .draft li { padding: 0.1rem 0.4rem; border-radius: 4px; }
 .draft li.focus, .reading-factors tr.focus, .reading-facts li.focus { background: var(--saffron-wash); }
