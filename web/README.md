@@ -51,7 +51,9 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   uncertain. Accept or reject each factor; the choices are kept in the local chart
   store as future training labels. All topics are drafts awaiting expert review.
 - **Saved charts and notes**: save the chart on screen, find saved charts by name,
-  reopen them, keep dated notes and the life events with each one, delete them.
+  reopen them, keep dated notes and the life events with each one (listed in the
+  panel, with a count per chart), delete them. The last saved chart opened comes
+  back after a reload; picking a preset detaches it.
   They are stored by the API in a SQLite file on this computer
   (`JYOTISHNET_DB`, default `~/.local/share/jyotishnet/jyotishnet.db`). Life events of
   a chart that is not saved stay in this browser, as before.

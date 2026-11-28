@@ -427,6 +427,10 @@ button, input, select { font: inherit; color: inherit; }
 .note-list { list-style: none; margin: 0; padding: 0; }
 .note-list li { border-left: 3px solid var(--rule); padding: 0.2rem 0 0.2rem 0.6rem; margin-bottom: 0.6rem; }
 .note-list p { margin: 0; white-space: pre-wrap; }
+.library-events-h { margin-top: 1rem !important; }
+.library-events { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; }
+.library-events li { display: flex; justify-content: space-between; gap: 1rem; max-width: 28rem; }
+.events-stored { margin: 0; font-size: var(--step--1); }
 .note-meta { font-size: var(--step--1); }
 .notes textarea {
   width: 100%; font: inherit; color: var(--ink); background: var(--surface);

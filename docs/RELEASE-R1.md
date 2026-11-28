@@ -270,7 +270,7 @@ The workbench is a web app at http://localhost:3000, built around a time ribbon 
   - **Dashas**, a lifetime timeline with drill-down into antar and pratyantar;
   - **Transits**, with Sade Sati cycles.
 - **Life events:** dated events with the event check table, the fit curve and indicative periods.
-- **Saved charts and notes:** save, search by name, reopen, keep dated notes and life events, delete.
+- **Saved charts and notes:** save, search by name, reopen, keep dated notes and life events, delete. Since 1.0.0 the panel lists the open chart's life events and each chart's event count, the Life events panel says where its events are kept, a failed save is shown, the last saved chart reopens after a reload, and picking a preset detaches the saved chart so its events stay its own.
 - **Presets:** the 8 JHora reference charts.
 - **Phone width:** every tab fits a 420 px screen.
 

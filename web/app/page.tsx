@@ -36,6 +36,8 @@ function degreesOf(c: Chart): Record<string, number> {
   return Object.fromEntries(GRAHA_ORDER.filter((k) => c.grahas[k]).map((k) => [k, c.grahas[k].degree]));
 }
 
+const LAST_CHART_KEY = "jyotishnet.lastChart";
+
 export default function Workbench() {
   const [name, setName] = useState(PRESETS[0].name);
   const [birth, setBirth] = useState<Birth>(PRESETS[0].birth);
@@ -69,14 +71,32 @@ export default function Workbench() {
     if (savedId !== null) return;
     try { setEvents(JSON.parse(localStorage.getItem(storeKey) ?? "[]")); } catch { setEvents([]); }
   }, [storeKey, savedId]);
-  function openSaved(c: SavedChart) {
-    setSavedId(c.id); setName(c.name); setBirth(c.birth); setEvents(c.events); setOffset(0);
+  const [savedName, setSavedName] = useState<string | null>(null);
+  const [eventSaveError, setEventSaveError] = useState("");
+  function remember(c: SavedChart | null) {
+    setSavedId(c?.id ?? null); setSavedName(c?.name ?? null);
+    try {
+      if (c) localStorage.setItem(LAST_CHART_KEY, String(c.id)); else localStorage.removeItem(LAST_CHART_KEY);
+    } catch { /* storage unavailable */ }
   }
+  function openSaved(c: SavedChart) {
+    remember(c); setName(c.name); setBirth(c.birth); setEvents(c.events); setOffset(0); setEventSaveError("");
+  }
+  // Reopen the saved chart that was open last, with its life events.
+  useEffect(() => {
+    let id: number | null = null;
+    try { id = Number(localStorage.getItem(LAST_CHART_KEY)) || null; } catch { /* storage unavailable */ }
+    if (id === null) return;
+    library.get(id).then(openSaved).catch(() => remember(null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   function saveEvents(next: LifeEvent[]) {
     const sorted = [...next].sort((a, b) => a.date.localeCompare(b.date));
     setEvents(sorted);
     if (savedId !== null) {
-      library.update(savedId, { events: sorted }).catch(() => {});
+      setEventSaveError("");
+      library.update(savedId, { events: sorted }).catch((e) =>
+        setEventSaveError(`The events could not be saved with the chart: ${e instanceof Error ? e.message : e}`));
       return;
     }
     try { localStorage.setItem(storeKey, JSON.stringify(sorted)); } catch { /* storage unavailable */ }
@@ -195,11 +215,16 @@ export default function Workbench() {
           </p>
         </div>
         <BirthForm key={`${name}-${birth.local_datetime}`} name={name} birth={birth}
-          onSubmit={(n, b) => { setName(n); setBirth(b); setOffset(0); }} />
+          onSubmit={(n, b, preset) => {
+            // A preset is another person: detach the saved chart so its events stay its own.
+            if (preset) remember(null);
+            setName(n); setBirth(b); setOffset(0);
+          }} />
       </header>
 
       <LibraryPanel name={name} birth={birth} events={events} savedId={savedId}
-        onOpen={openSaved} onSaved={(c) => setSavedId(c.id)} onForget={() => setSavedId(null)} />
+        eventNames={Object.fromEntries(rules.map((r) => [r.id, r.name]))}
+        onOpen={openSaved} onSaved={(c) => remember(c)} onForget={() => remember(null)} />
 
       <nav className="mode-bar" aria-label="What the slider moves">
         <div role="group" aria-label="Mode" className="segmented">
@@ -255,6 +280,7 @@ export default function Workbench() {
 
       {rectify && (
         <EventPanel rules={rules} events={events} loading={checks.loading || curve.loading}
+          storedWith={savedId !== null ? savedName : null} saveError={eventSaveError}
           ruleSet={ruleSet} onRuleSet={setRuleSet}
           checks={events.length ? checks.data?.checks ?? null : null}
           helps={events.length ? curve.data?.helps_decide ?? null : null}

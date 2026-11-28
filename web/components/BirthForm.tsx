@@ -5,7 +5,8 @@ import { FormEvent, useEffect, useState } from "react";
 import { api, Birth } from "@/lib/api";
 import { PRESETS } from "@/lib/presets";
 
-type Props = { name: string; birth: Birth; onSubmit: (name: string, b: Birth) => void };
+/** `preset`: true when a preset was picked (another person), false for an edit of this one. */
+type Props = { name: string; birth: Birth; onSubmit: (name: string, b: Birth, preset: boolean) => void };
 
 export function BirthForm({ name, birth, onSubmit }: Props) {
   const [draftName, setDraftName] = useState(name);
@@ -44,7 +45,7 @@ export function BirthForm({ name, birth, onSubmit }: Props) {
     setLon(String(p.birth.longitude));
     setTz(String(p.birth.utc_offset_hours));
     setError("");
-    onSubmit(p.name, p.birth);
+    onSubmit(p.name, p.birth, true);
   }
 
   function submit(e: FormEvent) {
@@ -61,7 +62,7 @@ export function BirthForm({ name, birth, onSubmit }: Props) {
     setError("");
     onSubmit(draftName || "Untitled chart", {
       local_datetime: `${date}T${t}`, latitude: la, longitude: lo, utc_offset_hours: off,
-    });
+    }, false);
   }
 
   return (

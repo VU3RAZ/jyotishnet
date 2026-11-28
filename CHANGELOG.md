@@ -38,6 +38,13 @@
   as supporting travel (BPHS 23.11-12), and the health topic reads the 6th and 8th
   lords in a dusthana as favourable (Harsha and Sarala). Every rule cites its verse
   in the "Why" column; see "Reading house rules" in `docs/DECISIONS.md`.
+- **Saved charts keep their life events visibly.** The saved-charts panel lists
+  the open chart's life events and shows each chart's event count. The Life events
+  panel says whether its events are kept with a saved chart or only in this browser,
+  and shows an error when saving them fails (before, a failure was silent). The last
+  saved chart opened comes back, with its events, after a reload. Picking a preset
+  now detaches the saved chart, so events added for the preset no longer go into
+  the saved chart.
 - **Rectification: Phaladeepika 10.14 for marriage.** The strongest by Shadbala of
   the lords of the 7th lord's sign and navamsa, Venus and the Moon now gives marriage
   in its dasha, and Jupiter's transit for marriage counts only in that planet's

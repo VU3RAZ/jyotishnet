@@ -13,16 +13,21 @@ type Props = {
   birth: Birth;
   events: LifeEvent[];
   savedId: number | null;
+  eventNames: Record<string, string>;
   onOpen: (c: SavedChart) => void;
   onSaved: (c: SavedChart) => void;
   onForget: () => void;
 };
 
+function eventCount(events: LifeEvent[]): string {
+  return events.length ? ` · ${events.length} life event${events.length > 1 ? "s" : ""}` : "";
+}
+
 const sameBirth = (a: Birth, b: Birth) =>
   a.local_datetime === b.local_datetime && a.latitude === b.latitude &&
   a.longitude === b.longitude && a.utc_offset_hours === b.utc_offset_hours;
 
-export function LibraryPanel({ name, birth, events, savedId, onOpen, onSaved, onForget }: Props) {
+export function LibraryPanel({ name, birth, events, savedId, eventNames, onOpen, onSaved, onForget }: Props) {
   const [charts, setCharts] = useState<SavedChart[] | null>(null);
   const [query, setQuery] = useState("");
   const [current, setCurrent] = useState<SavedChart | null>(null);
@@ -120,7 +125,8 @@ export function LibraryPanel({ name, birth, events, savedId, onOpen, onSaved, on
                   <button type="button" className="library-open" onClick={() => open(c.id)}>
                     <strong>{c.name}</strong>
                     <span className="muted">{prettyLocal(parseLocal(c.birth.local_datetime))}
-                      {c.note_count ? ` · ${c.note_count} note${c.note_count > 1 ? "s" : ""}` : ""}</span>
+                      {c.note_count ? ` · ${c.note_count} note${c.note_count > 1 ? "s" : ""}` : ""}
+                      {eventCount(c.id === current?.id ? events : c.events)}</span>
                   </button>
                   <button type="button" className="link-button" aria-label={`Delete ${c.name}`} onClick={() => remove(c)}>
                     Delete
@@ -161,6 +167,19 @@ export function LibraryPanel({ name, birth, events, savedId, onOpen, onSaved, on
                   placeholder="A note on this chart" />
                 <button type="submit" className="primary" disabled={!draft.trim()}>Add note</button>
               </form>
+              <h3 className="library-events-h">Life events on {current.name}</h3>
+              {events.length === 0 ? (
+                <p className="muted">None yet. Add them in the Life events panel (Rectify birth time); they are
+                  saved with this chart as you add them.</p>
+              ) : (
+                <ul className="library-events">
+                  {events.map((e, i) => (
+                    <li key={`${e.type}-${e.date}-${i}`}>
+                      <span>{eventNames[e.type] ?? e.type}</span> <span className="muted">{e.date}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </>
           )}
         </div>

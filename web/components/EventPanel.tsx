@@ -16,6 +16,9 @@ type Props = {
   onRuleSet: (r: RuleSet) => void;
   onAdd: (e: LifeEvent) => void;
   onRemove: (i: number) => void;
+  /** The saved chart the events are kept with; null: kept in this browser only. */
+  storedWith: string | null;
+  saveError: string;
 };
 
 function linkText(links: string[], ruleSet: RuleSet): string {
@@ -32,7 +35,8 @@ function qualityText(c: EventCheck): string {
   return `${c.quality} antardasha`;
 }
 
-export function EventPanel({ rules, events, checks, helps, loading, ruleSet, onRuleSet, onAdd, onRemove }: Props) {
+export function EventPanel({ rules, events, checks, helps, loading, ruleSet, onRuleSet, onAdd, onRemove,
+  storedWith, saveError }: Props) {
   const [type, setType] = useState("marriage");
   const [date, setDate] = useState("");
 
@@ -51,6 +55,12 @@ export function EventPanel({ rules, events, checks, helps, loading, ruleSet, onR
           Enter dated events the person is sure of. Each is checked against the dasha and transits
           for the birth time on the ribbon; the curve on the ribbon adds them up.
         </p>
+        <p className="muted events-stored">
+          {storedWith !== null
+            ? <>Kept with the saved chart “{storedWith}”.</>
+            : <>Kept in this browser only. Save the chart (Saved charts and notes) to keep them with it.</>}
+        </p>
+        {saveError && <p className="form-error" role="alert">{saveError}</p>}
         <div role="group" aria-label="Rectification rules" className="segmented quiet">
           {(Object.keys(RULE_SET_LABEL) as RuleSet[]).map((r) => (
             <button key={r} type="button" aria-pressed={ruleSet === r} onClick={() => onRuleSet(r)}>

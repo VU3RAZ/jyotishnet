@@ -175,12 +175,26 @@ async def main() -> int:
         await page.click("button:has-text('Add note')")
         await page.wait_for_selector(".note-list p:has-text('Smoke-test note')")
         await step("save chart + note")
+        # Life events go with the saved chart: listed in the panel, kept across a reload.
+        n_events = await page.locator(".event-table tbody tr").count()
+        assert n_events == 3, n_events
+        await page.wait_for_selector(".events-stored:has-text('Kept with the saved chart')")
+        await page.wait_for_function("document.querySelectorAll('.library-events li').length === 3")
+        await page.reload()
+        await page.wait_for_function("(s) => document.querySelector('h1').innerText.trim() === s", arg=saved,
+                                     timeout=10000)
+        await page.wait_for_function("document.querySelectorAll('.event-table tbody tr').length === 3")
+        await page.click("summary:has-text('Saved charts and notes')")
+        await page.wait_for_selector(".library-list li[aria-current=true]:has-text('3 life events')")
+        await step("saved chart and its events reopen after a reload")
         await page.select_option(".field.preset select", index=2)
         await page.wait_for_function("(s) => document.querySelector('h1').innerText.trim() !== s", arg=saved)
+        await page.wait_for_selector(".events-stored:has-text('Kept in this browser only')")
         await page.click(f".library-open:has-text('{saved}')")
         await page.wait_for_function("(s) => document.querySelector('h1').innerText.trim() === s", arg=saved,
                                      timeout=5000)
         await page.wait_for_selector(".note-list p:has-text('Smoke-test note')")
+        await page.wait_for_function("document.querySelectorAll('.event-table tbody tr').length === 3")
         await step("reopen saved chart")
         await page.click(f".library-list li[aria-current=true] button:has-text('Delete')")
         await page.wait_for_selector(".library-list li[aria-current=true]", state="detached")
