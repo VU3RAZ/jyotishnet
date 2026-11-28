@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- **Engine text in Hindi and Marathi.** Reading drafts, the "Why" reasons, the fact
+  list, notes and disclaimers, yoga summaries and evidence, rectification reasons and
+  the birth-record warnings now come in the chosen language (API: `?lang=hi|mr` on
+  `/v1/reading`, `/v1/yogas`, `/v1/btr/check`, `/v1/btr/indicative`,
+  `/v1/birth/warnings`, `/v1/chart`). The engine still writes and checks English: each
+  string keeps its template and values (`jyotishnet_engine/i18n.py`), and the Hindi or
+  Marathi text is written from the same values, never translated from English. The
+  safety filter also runs on the Hindi and Marathi text of every sentence. Houses use
+  the Sanskrit ordinals (सप्तम भाव / सप्तम स्थान). Book titles in source citations and
+  the verifier's technical details stay English. The 16 Nabhasa yoga names were
+  missing from the interface vocabulary and are added. Catalogues:
+  `src/jyotishnet_engine/locales/hi.yaml`, `mr.yaml`; `tests/test_engine_i18n.py`
+  checks they are complete and match the web vocabulary. Draft wording for review.
 - **Hindi and Marathi interface.** A language switch in the header (English,
   हिन्दी, मराठी), remembered in the browser. The interface text and the Jyotish
   vocabulary are translated: tabs, forms, tables, help text, chart labels

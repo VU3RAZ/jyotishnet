@@ -165,6 +165,12 @@ const YOGA: Table = {
   shubha_kartari_lagna: { hi: "शुभ कर्तरी (लग्न)" }, papa_kartari_lagna: { hi: "पाप कर्तरी (लग्न)" },
   vesi: { hi: "वेशि" }, vosi: { hi: "वोशि" }, ubhayachari: { hi: "उभयचरी" },
   budha_aditya: { hi: "बुध-आदित्य (निपुण)" }, gada: { hi: "गदा" }, hala: { hi: "हल" }, vapi: { hi: "वापी" },
+  // Nabhasa yogas (BPHS ch. 35)
+  vallaki: { hi: "वल्लकी (वीणा)" }, damini: { hi: "दामिनी" }, pasha: { hi: "पाश" }, kedara: { hi: "केदार" },
+  shoola: { hi: "शूल" }, yuga: { hi: "युग" }, gola: { hi: "गोल" }, rajju: { hi: "रज्जु" },
+  musala: { hi: "मुसल" }, nala: { hi: "नल" }, mala: { hi: "माला (स्रक्)" }, sarpa: { hi: "सर्प" },
+  shakata_akriti: { hi: "शकट (आकृति)", mr: "शकट (आकृती)" }, vihaga: { hi: "विहग" },
+  shringataka: { hi: "शृंगाटक" }, kamala: { hi: "कमल (पद्म)" },
 };
 
 const TOPIC: Table = {

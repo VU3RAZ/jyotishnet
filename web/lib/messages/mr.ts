@@ -16,7 +16,6 @@ export const MR: Record<string, string> = {
   "The browser engine could not start; charts come from the API": "ब्राउझर इंजिन सुरू होऊ शकले नाही; कुंडल्या API कडून येत आहेत",
   "computed in this browser": "याच ब्राउझरमध्ये गणना",
   "computed by the API": "API द्वारे गणना",
-  "Text the engine writes (reading drafts, reasons, yoga evidence, warnings) is still in English.": "इंजिन लिहिते तो मजकूर (फलादेशाचा मसुदा, कारणे, योगांचे पुरावे, इशारे) अजून इंग्रजीत आहे.",
   "What the slider moves": "स्लायडर काय बदलतो",
   "Mode": "पद्धत",
   "Rectify birth time": "जन्मवेळ शोधन",
@@ -438,4 +437,5 @@ export const MR: Record<string, string> = {
   "{n} h": "{n} ता",
   "{n} min": "{n} मि",
   "{n} s": "{n} से",
+  "Book titles in source citations and the checks' technical details stay in English.": "स्रोत संदर्भांतील ग्रंथांची नावे आणि तपासण्यांचे तांत्रिक तपशील इंग्रजीत राहतात.",
 };

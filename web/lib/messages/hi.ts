@@ -16,7 +16,6 @@ export const HI: Record<string, string> = {
   "The browser engine could not start; charts come from the API": "ब्राउज़र इंजन शुरू नहीं हो सका; कुंडलियाँ API से आ रही हैं",
   "computed in this browser": "इसी ब्राउज़र में गणना",
   "computed by the API": "API द्वारा गणना",
-  "Text the engine writes (reading drafts, reasons, yoga evidence, warnings) is still in English.": "इंजन द्वारा लिखा पाठ (फलादेश का प्रारूप, कारण, योगों के प्रमाण, चेतावनियाँ) अभी अंग्रेज़ी में है।",
   "What the slider moves": "स्लाइडर क्या बदलता है",
   "Mode": "मोड",
   "Rectify birth time": "जन्म समय शोधन",
@@ -438,4 +437,5 @@ export const HI: Record<string, string> = {
   "{n} h": "{n} घं",
   "{n} min": "{n} मि",
   "{n} s": "{n} से",
+  "Book titles in source citations and the checks' technical details stay in English.": "स्रोत उद्धरणों में ग्रंथों के नाम और जाँचों के तकनीकी विवरण अंग्रेज़ी में रहते हैं।",
 };

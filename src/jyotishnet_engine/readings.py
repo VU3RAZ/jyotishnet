@@ -41,6 +41,8 @@ from .config import DEFAULT_CONFIG, SchoolConfig
 from .constants import (EXALTATION, GRAHA_DRISHTI, GRAHA_NAMES, NATURAL_ENEMIES, NATURAL_FRIENDS,
                         OWN_SIGNS, SIGN_LORD, SIGNS)
 from .dasha import running, vimshottari
+from .i18n import Join, M, graha, sign as sign_name
+from .i18n import ordinal as _ordinal
 
 TOPICS_FILE = Path(__file__).parent / "rules" / "readings" / "topics.yaml"
 GRAHAS = ["Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa", "Ra", "Ke"]
@@ -51,27 +53,37 @@ COMBUST_ORB_RETRO = {"Me": 12.0, "Ve": 8.0}
 WEIGHTS = {"lord": 1.0, "dasha_maha": 1.0, "yoga": 0.9, "occupant": 0.8, "dasha_antar": 0.8,
            "karaka": 0.7, "aspect": 0.6, "varga_lord": 0.6, "varga_occupant": 0.5}
 
+SEX_OF_CHILD = M("the sex of a child is never predicted")
+NO_HARM = M("no death, illness, accident or pregnancy content in drafts")
 BLOCKED = [
     (re.compile(r"\b(son|sons|daughter|daughters|boy|girl|male child|female child|sex of)\b", re.I),
-     "the sex of a child is never predicted"),
+     SEX_OF_CHILD),
     (re.compile(r"\b(death|die|dies|dying|longevity|lifespan|life span|maraka|accident\w*|illness\w*|"
                 r"disease\w*|surgery|pregnan\w*|miscarriage|abortion)\b", re.I),
-     "no death, illness, accident or pregnancy content in drafts"),
+     NO_HARM),
+]
+# The same filter on the Hindi and Marathi text of each sentence: words beginning with
+# these stems (death, longevity, accident, illness, surgery, pregnancy, son, daughter).
+_DEVA = "\u0900-\u097F"
+BLOCKED_DEVA = [
+    (re.compile(rf"(?<![{_DEVA}])(पुत्र|पुत्री|बेटा|बेटे|बेटी|लड़का|लड़की|मुलगा|मुलगे|मुलगी|लिंग)"), SEX_OF_CHILD),
+    (re.compile(rf"(?<![{_DEVA}])(मृत्यु|मृत्यू|मौत|मरण|मारक|आयु|आयुष्य|दुर्घटना|अपघात|रोग|बीमार|आजार|व्याधि|"
+                rf"शस्त्रक्रिया|गर्भ)"), NO_HARM),
 ]
 DISCLAIMERS = {
-    "financial": "Classical indications for study, not financial advice.",
-    "legal": "Classical indications for study, not legal advice.",
-    "medical": "Technical factors for the astrologer's own judgment; not medical advice. "
-               "No illness is predicted and no text is drafted for this topic.",
+    "financial": M("Classical indications for study, not financial advice."),
+    "legal": M("Classical indications for study, not legal advice."),
+    "medical": M("Technical factors for the astrologer's own judgment; not medical advice. "
+                 "No illness is predicted and no text is drafted for this topic."),
 }
 
 
-def ordinal(n: int) -> str:
-    return {1: "1st", 2: "2nd", 3: "3rd"}.get(n, f"{n}th")
+def ordinal(n: int) -> M:
+    return _ordinal(n)
 
 
-def name(p: str) -> str:
-    return GRAHA_NAMES.get(p, p)
+def name(p: str) -> M:
+    return graha(p)
 
 
 def sign_dignity(planet: str, sign: int) -> str:
@@ -93,9 +105,13 @@ def sign_dignity(planet: str, sign: int) -> str:
     return "neutral"
 
 
-DIGNITY_WORDS = {"exalted": "exalted", "moolatrikona": "in its moolatrikona sign", "own": "in its own sign",
-                 "friend": "in a friend's sign", "enemy": "in an enemy's sign",
-                 "debilitated": "debilitated", "neutral": "", "node": ""}
+DIGNITY_WORDS = {"exalted": M("exalted"), "moolatrikona": M("in its moolatrikona sign"),
+                 "own": M("in its own sign"), "friend": M("in a friend's sign"),
+                 "enemy": M("in an enemy's sign"), "debilitated": M("debilitated"), "neutral": "", "node": ""}
+# A dignity as one word (facts and reasons): "Venus is friend in D9".
+DIGNITY_NAME = {"exalted": M("exalted"), "moolatrikona": M("moolatrikona"), "own": M("own"),
+                "friend": M("friend"), "enemy": M("enemy"), "debilitated": M("debilitated"),
+                "neutral": M("neutral"), "node": M("node")}
 READS = {"supports": 1.0, "obstructs": -1.0, "mixed": 0.0}
 # How the workbench names a factor's reading, for every topic.
 DIRECTION_LABELS = {"supports": "favours the native", "obstructs": "against the native", "mixed": "mixed"}
@@ -224,22 +240,23 @@ class Sheet:
     def placement(self, p: str, v: int) -> str:
         s, h = self.sign(p, v), self.house(p, v)
         return self.add(f"place.D{v}.{p}", "placement", {"planet": p, "varga": v, "sign": s, "house": h},
-                        f"{name(p)} is in {SIGNS[s]}, the {ordinal(h)} house of D{v}.")
+                        M("{p} is in {s}, the {h} house of D{v}.", p=name(p), s=sign_name(s), h=ordinal(h), v=v))
 
     def dignity_fact(self, p: str, v: int) -> str:
         d = self.dignity(p, v)
         return self.add(f"dignity.D{v}.{p}", "dignity", {"planet": p, "varga": v, "dignity": d},
-                        f"{name(p)} is {d} in D{v}.")
+                        M("{p} is {d} in D{v}.", p=name(p), d=DIGNITY_NAME[d], v=v))
 
     def lordship(self, h: int, v: int) -> str:
         s = (self.lagna(v) + h - 1) % 12
         lo = SIGN_LORD[s]
         return self.add(f"lord.D{v}.H{h}", "lordship", {"varga": v, "house": h, "sign": s, "lord": lo},
-                        f"The {ordinal(h)} house of D{v} is {SIGNS[s]}, ruled by {name(lo)}.")
+                        M("The {h} house of D{v} is {s}, ruled by {lo}.", h=ordinal(h), v=v, s=sign_name(s),
+                          lo=name(lo)))
 
     def aspect(self, p: str, h: int) -> str:
         return self.add(f"aspect.D1.{p}.H{h}", "aspect", {"planet": p, "house": h, "varga": 1},
-                        f"{name(p)} aspects the {ordinal(h)} house (graha drishti).")
+                        M("{p} aspects the {h} house (graha drishti).", p=name(p), h=ordinal(h)))
 
     def strength(self, p: str) -> str | None:
         if p in ("Ra", "Ke"):
@@ -250,7 +267,7 @@ class Sheet:
             self._shadbala = {q: s.rupas / REQUIRED_RUPAS[q] for q, s in shadbala(full, self.birth, self.cfg).items()}
         r = round(self._shadbala[p], 2)
         return self.add(f"shadbala.{p}", "strength", {"planet": p, "ratio": r, "meets": r >= 1.0},
-                        f"{name(p)} has {r:.2f} times its required Shadbala.")
+                        M("{p} has {r:.2f} times its required Shadbala.", p=name(p), r=r))
 
     def combust(self, p: str) -> str | None:
         if p not in COMBUST_ORB:
@@ -259,7 +276,8 @@ class Sheet:
         orb = (COMBUST_ORB_RETRO if g[p].retrograde else COMBUST_ORB).get(p, COMBUST_ORB[p])
         sep = abs((g[p].longitude - g["Su"].longitude + 180.0) % 360.0 - 180.0)
         return self.add(f"combust.{p}", "combust", {"planet": p, "combust": sep < orb, "separation": round(sep, 2)},
-                        f"{name(p)} is {sep:.1f} deg from the Sun ({'combust' if sep < orb else 'not combust'}).")
+                        M("{p} is {sep:.1f} deg from the Sun ({state}).", p=name(p), sep=sep,
+                          state=M("combust") if sep < orb else M("not combust")))
 
     def yoga(self, yid: str) -> str | None:
         if self._yoga_results is None:
@@ -269,11 +287,17 @@ class Sheet:
         if y is None or not y.present or y.cancelled:
             return None
         return self.add(f"yoga.{yid}", "yoga", {"yoga": yid, "name": y.name, "present": True},
-                        f"{y.name} yoga is present ({'; '.join(y.evidence)}); source: "
-                        f"{y.source.get('text')}, {y.source.get('section')}.")
+                        M("{y} yoga is present ({ev}); source: {text}, {section}.", y=y.name,
+                          ev=Join("; ", y.evidence), text=str(y.source.get("text")),
+                          section=str(y.source.get("section"))))
 
 
 # ------------------------------------------------------------- planet condition
+
+KENDRA_TRIKONA_WORD = M("kendra or trikona")
+DUSTHANA_WORD = M("dusthana")
+BENEFIC, MALEFIC = M("natural benefic"), M("natural malefic")
+
 
 def _condition(sh: Sheet, p: str, v: int = 1, lord_rule: dict | None = None) -> tuple[float, list[str], list[str]]:
     """Net classical condition of a planet as a significator: dignity, house, strength,
@@ -284,32 +308,32 @@ def _condition(sh: Sheet, p: str, v: int = 1, lord_rule: dict | None = None) -> 
     facts += [sh.placement(p, v), sh.dignity_fact(p, v)]
     if DIGNITY_SCORE[d]:
         net += DIGNITY_SCORE[d]
-        why.append(f"{d} in D{v}")
+        why.append(M("{d} in D{v}", d=DIGNITY_NAME[d], v=v))
     h = sh.house(p, v)
     place = "kendra_trikona" if h in KENDRA_TRIKONA else "dusthana" if h in DUSTHANA else None
     rule = (lord_rule or {}).get(place) if place else None
     if rule:
         net += READS[rule["reads"]]
-        kind = "kendra or trikona" if place == "kendra_trikona" else "dusthana"
-        why.append(f"in the {ordinal(h)} house ({kind}; {rule['cite']})")
+        kind = KENDRA_TRIKONA_WORD if place == "kendra_trikona" else DUSTHANA_WORD
+        why.append(M("in the {h} house ({kind}; {cite})", h=ordinal(h), kind=kind, cite=M(rule["cite"])))
     elif h in KENDRA_TRIKONA:
         net += 1.0
-        why.append(f"in the {ordinal(h)} house (kendra or trikona)")
+        why.append(M("in the {h} house ({kind})", h=ordinal(h), kind=KENDRA_TRIKONA_WORD))
     elif h in DUSTHANA:
         net -= 1.0
-        why.append(f"in the {ordinal(h)} house (dusthana)")
+        why.append(M("in the {h} house ({kind})", h=ordinal(h), kind=DUSTHANA_WORD))
     if v == 1:
         f = sh.strength(p)
         if f:
             facts.append(f)
             meets = sh.facts[f].data["meets"]
             net += 0.5 if meets else -0.5
-            why.append("meets its required Shadbala" if meets else "below its required Shadbala")
+            why.append(M("meets its required Shadbala") if meets else M("below its required Shadbala"))
         f = sh.combust(p)
         if f and sh.facts[f].data["combust"]:
             facts.append(f)
             net -= 1.0
-            why.append("combust")
+            why.append(M("combust"))
     return net, why, facts
 
 
@@ -325,7 +349,7 @@ def _occupant(sh: Sheet, hr: dict, p: str, v: int) -> tuple[float, list[str]]:
     adjusted by dignity. A topic's house rule, where it has one, gives the reading instead."""
     rule = _house_rule(sh, hr, "occupant", p)
     if rule:
-        return READS[rule["reads"]], [rule["cite"]]
+        return READS[rule["reads"]], [M(rule["cite"])]
     return (1.0 if p in sh.benefics else -1.0) + DIGNITY_SCORE[sh.dignity(p, v)], []
 
 
@@ -358,8 +382,9 @@ def _stability(sh: Sheet, window_min: float) -> dict[int, float | None]:
     for v, d in out.items():
         sh.add(f"stability.D{v}", "stability", {"varga": v, "window_min": window_min,
                                                 "lagna_change_min": None if d is None else round(d, 1)},
-               f"The D{v} Lagna {'keeps its sign' if d is None else f'changes sign {d:.1f} min from the recorded time'}"
-               f" within ±{window_min:g} min.")
+               M("The D{v} Lagna keeps its sign within ±{w:g} min.", v=v, w=window_min) if d is None else
+               M("The D{v} Lagna changes sign {d:.1f} min from the recorded time within ±{w:g} min.",
+                 v=v, d=d, w=window_min))
     return out
 
 
@@ -370,38 +395,38 @@ def rank(sh: Sheet, topic: Topic, at_jd: float | None, unstable: set[int]) -> li
         hr = topic.house_rules.get(h, {})
         lo = sh.lord(h, 1)
         net, why, facts = _condition(sh, lo, 1, hr.get("lord"))
-        out.append(_factor(f"lord.D1.H{h}", "lord", lo, 1, net, [f"lord of the {ordinal(h)}"] + why,
+        out.append(_factor(f"lord.D1.H{h}", "lord", lo, 1, net, [M("lord of the {h}", h=ordinal(h))] + why,
                            [sh.lordship(h, 1)] + facts, u1))
         for p in GRAHAS:
-            nature = "natural benefic" if p in sh.benefics else "natural malefic"
+            nature = BENEFIC if p in sh.benefics else MALEFIC
             if sh.house(p, 1) == h:
                 net, why = _occupant(sh, hr, p, 1)
                 out.append(_factor(f"occupant.D1.H{h}.{p}", "occupant", p, 1, net,
-                                   [f"in the {ordinal(h)}", nature] + why,
+                                   [M("in the {h}", h=ordinal(h)), nature] + why,
                                    [sh.placement(p, 1), sh.dignity_fact(p, 1)], u1))
             elif p in GRAHA_DRISHTI and (h - sh.house(p, 1)) % 12 + 1 in GRAHA_DRISHTI[p]:
                 rule = _house_rule(sh, hr, "aspect", p)
                 net = READS[rule["reads"]] if rule else (1.0 if p in sh.benefics else -1.0)
                 out.append(_factor(f"aspect.D1.H{h}.{p}", "aspect", p, 1, net,
-                                   [f"aspects the {ordinal(h)}", nature] + ([rule["cite"]] if rule else []),
+                                   [M("aspects the {h}", h=ordinal(h)), nature] + ([M(rule["cite"])] if rule else []),
                                    [sh.aspect(p, h), sh.placement(p, 1)], u1))
         v = topic.varga
         if v:
             lo_v = sh.lord(h, v)
             net, why, facts = _condition(sh, lo_v, v, hr.get("lord"))
             out.append(_factor(f"lord.D{v}.H{h}", "varga_lord", lo_v, v, net,
-                               [f"lord of the {ordinal(h)} in D{v}"] + why, [sh.lordship(h, v)] + facts,
+                               [M("lord of the {h} in D{v}", h=ordinal(h), v=v)] + why, [sh.lordship(h, v)] + facts,
                                v in unstable))
             for p in GRAHAS:
                 if sh.house(p, v) == h:
                     net, why = _occupant(sh, hr, p, v)
                     out.append(_factor(f"occupant.D{v}.H{h}.{p}", "varga_occupant", p, v, net,
-                                       [f"in the {ordinal(h)} of D{v}",
-                                        "natural benefic" if p in sh.benefics else "natural malefic"] + why,
+                                       [M("in the {h} of D{v}", h=ordinal(h), v=v),
+                                        BENEFIC if p in sh.benefics else MALEFIC] + why,
                                        [sh.placement(p, v), sh.dignity_fact(p, v)], v in unstable))
     k = topic.karaka
     net, why, facts = _condition(sh, k)
-    out.append(_factor(f"karaka.{k}", "karaka", k, 1, net, ["natural karaka of the topic"] + why, facts, u1))
+    out.append(_factor(f"karaka.{k}", "karaka", k, 1, net, [M("natural karaka of the topic")] + why, facts, u1))
     for direction, ids in (("supports", topic.yogas.get("supports", [])), ("obstructs", topic.yogas.get("obstructs", []))):
         for yid in ids:
             f = sh.yoga(yid)
@@ -417,11 +442,12 @@ def rank(sh: Sheet, topic: Topic, at_jd: float | None, unstable: set[int]) -> li
             fid = sh.add(f"dasha.L{per.level}", "dasha",
                          {"system": "vimshottari", "level": per.level, "lord": per.lord,
                           "start": _date(per.start_jd), "end": _date(per.end_jd), "at": _date(at_jd)},
-                         f"The Vimshottari {'mahadasha' if per.level == 1 else 'antardasha'} of {name(per.lord)} "
-                         f"runs {_date(per.start_jd)} to {_date(per.end_jd)}.")
+                         M("The Vimshottari {level} of {p} runs {a} to {b}.", level=_level(per.level),
+                           p=name(per.lord), a=_date(per.start_jd), b=_date(per.end_jd)))
             net, why, facts = _condition(sh, per.lord)
             out.append(_factor(f"{role}.{per.lord}", role, per.lord, 1, net,
-                               [f"running {'mahadasha' if per.level == 1 else 'antardasha'} lord"] + [x for x, _ in links] + why,
+                               [M("running mahadasha lord") if per.level == 1 else M("running antardasha lord")]
+                               + [x for x, _ in links] + why,
                                [fid] + [f for _, f in links] + facts, u1))
     out.sort(key=lambda f: (-f.score, f.key))
     return out
@@ -433,12 +459,16 @@ def _links(sh: Sheet, topic: Topic, p: str) -> list[tuple[str, str]]:
     for v in [1] + ([topic.varga] if topic.varga else []):
         for h in topic.houses:
             if sh.lord(h, v) == p:
-                out.append((f"lord of the {ordinal(h)} in D{v}", sh.lordship(h, v)))
+                out.append((M("lord of the {h} in D{v}", h=ordinal(h), v=v), sh.lordship(h, v)))
             if sh.house(p, v) == h:
-                out.append((f"in the {ordinal(h)} in D{v}", sh.placement(p, v)))
+                out.append((M("in the {h} in D{v}", h=ordinal(h), v=v), sh.placement(p, v)))
     if p == topic.karaka:
-        out.append(("natural karaka", sh.placement(p, 1)))
+        out.append((M("natural karaka"), sh.placement(p, 1)))
     return out
+
+
+def _level(level: int) -> M:
+    return M("mahadasha") if level == 1 else M("antardasha")
 
 
 def _date(jd: float) -> str:
@@ -448,21 +478,26 @@ def _date(jd: float) -> str:
 
 # ------------------------------------------------------------------- sentences
 
-def _theme(topic: Topic) -> str:
-    return topic.theme or topic.name[0].lower() + topic.name[1:]
+def _theme(topic: Topic) -> M:
+    return M(topic.theme or topic.name[0].lower() + topic.name[1:])
 
 
-def _verdict(direction: str, what: str, topic: Topic) -> str:
+def _verdict(direction: str, what: M, topic: Topic) -> M:
     t = _theme(topic)
-    return {"supports": f"classical texts read {what} as favouring the native in matters of {t}",
-            "obstructs": f"classical texts read {what} as against the native in matters of {t}",
-            "mixed": f"classical texts give {what} mixed results for the native in matters of {t}"}[direction]
+    if direction == "supports":
+        return M("classical texts read {what} as favouring the native in matters of {t}", what=what, t=t)
+    if direction == "obstructs":
+        return M("classical texts read {what} as against the native in matters of {t}", what=what, t=t)
+    return M("classical texts give {what} mixed results for the native in matters of {t}", what=what, t=t)
 
 
-def _place_phrase(sh: Sheet, p: str, v: int, in_v: str = "") -> tuple[str, list[dict]]:
+def _place_phrase(sh: Sheet, p: str, v: int, in_v: bool = False) -> tuple[M, list[dict]]:
     s, h, d = sh.sign(p, v), sh.house(p, v), sh.dignity(p, v)
     dw = DIGNITY_WORDS[d]
-    where = f"in the {ordinal(h)} house{in_v} in {SIGNS[s]}" + (f", {dw}" if dw else "")
+    where = (M("in the {h} house of the D{v} chart in {s}", h=ordinal(h), v=v, s=sign_name(s)) if in_v
+             else M("in the {h} house in {s}", h=ordinal(h), s=sign_name(s)))
+    if dw:
+        where = M("{where}, {dignity}", where=where, dignity=dw)
     claims = [{"kind": "placement", "planet": p, "varga": v, "sign": s, "house": h},
               {"kind": "dignity", "planet": p, "varga": v, "dignity": d}]
     return where, claims
@@ -470,7 +505,7 @@ def _place_phrase(sh: Sheet, p: str, v: int, in_v: str = "") -> tuple[str, list[
 
 def write(sh: Sheet, topic: Topic, f: Factor) -> Sentence:
     p, v = f.subject, f.varga
-    in_v = "" if v == 1 else f" of the D{v} chart"
+    in_v = v != 1
     claims: list[dict] = [{"kind": "direction", "factor": f.key, "direction": f.direction}]
     if f.role in ("lord", "varga_lord"):
         h = int(f.key.split(".H")[1])
@@ -480,42 +515,46 @@ def write(sh: Sheet, topic: Topic, f: Factor) -> Sentence:
         for fid in f.facts:
             fa = sh.facts[fid]
             if fa.kind == "strength":
-                extra.append("meets its required Shadbala" if fa.data["meets"] else "is below its required Shadbala")
+                extra.append(M("meets its required Shadbala") if fa.data["meets"]
+                             else M("is below its required Shadbala"))
                 claims.append({"kind": "strength", "planet": p, "meets": fa.data["meets"]})
             if fa.kind == "combust" and fa.data["combust"]:
-                extra.append("is combust")
+                extra.append(M("is combust"))
                 claims.append({"kind": "combust", "planet": p, "combust": True})
-        text = (f"The lord of the {ordinal(h)} house{in_v}, {name(p)}, is {where}"
-                + (f", and {' and '.join(extra)}" if extra else "")
-                + f"; {_verdict(f.direction, 'a house lord placed so', topic)}.")
+        head = (M("The lord of the {h} house of the D{v} chart, {p}, is {where}", h=ordinal(h), v=v, p=name(p),
+                  where=where) if in_v else
+                M("The lord of the {h} house, {p}, is {where}", h=ordinal(h), p=name(p), where=where))
+        if extra:
+            head = M("{head}, and {more}", head=head, more=Join(M(" and "), extra))
+        text = M("{head}; {verdict}.", head=head, verdict=_verdict(f.direction, M("a house lord placed so"), topic))
     elif f.role in ("occupant", "varga_occupant"):
         where, c = _place_phrase(sh, p, v, in_v)
         claims += c
-        kind = "a natural benefic" if p in sh.benefics else "a natural malefic"
-        text = (f"{name(p)}, {kind}, is {where}; "
-                f"{_verdict(f.direction, 'such an occupant of the house', topic)}.")
+        kind = M("a natural benefic") if p in sh.benefics else M("a natural malefic")
+        text = M("{p}, {kind}, is {where}; {verdict}.", p=name(p), kind=kind, where=where,
+                 verdict=_verdict(f.direction, M("such an occupant of the house"), topic))
     elif f.role == "aspect":
         h = int(f.key.split(".H")[1].split(".")[0])
         claims.append({"kind": "aspect", "planet": p, "house": h})
-        kind = "a natural benefic" if p in sh.benefics else "a natural malefic"
-        text = (f"{name(p)}, {kind}, aspects the {ordinal(h)} house; "
-                f"{_verdict(f.direction, 'its aspect on the house', topic)}.")
+        kind = M("a natural benefic") if p in sh.benefics else M("a natural malefic")
+        text = M("{p}, {kind}, aspects the {h} house; {verdict}.", p=name(p), kind=kind, h=ordinal(h),
+                 verdict=_verdict(f.direction, M("its aspect on the house"), topic))
     elif f.role == "karaka":
         where, c = _place_phrase(sh, p, 1)
         claims += c
-        text = (f"{name(p)}, the natural karaka for {_theme(topic)}, is {where}; "
-                f"{_verdict(f.direction, 'the karaka placed so', topic)}.")
+        text = M("{p}, the natural karaka for {t}, is {where}; {verdict}.", p=name(p), t=_theme(topic),
+                 where=where, verdict=_verdict(f.direction, M("the karaka placed so"), topic))
     elif f.role == "yoga":
         yname = sh.facts[f.facts[0]].data["name"]
         claims.append({"kind": "yoga", "yoga": p, "present": True})
-        label = yname if "yoga" in yname.lower() else f"{yname} yoga"
-        text = f"{label} is present; {_verdict(f.direction, 'this yoga', topic)}."
+        label = yname if "yoga" in yname.lower() else M("{y} yoga", y=yname)
+        text = M("{label} is present; {verdict}.", label=label, verdict=_verdict(f.direction, M("this yoga"), topic))
     else:  # dasha
         dfa = next(sh.facts[x] for x in f.facts if sh.facts[x].kind == "dasha")
         d = dfa.data
         claims.append({"kind": "dasha", "level": d["level"], "lord": p, "start": d["start"], "end": d["end"],
                        "at": d["at"]})
-        level = "mahadasha" if d["level"] == 1 else "antardasha"
+        level = _level(d["level"])
         links = [label for label, _ in _links(sh, topic, p)]
         for fid in f.facts:
             fa = sh.facts[fid]
@@ -523,12 +562,12 @@ def write(sh: Sheet, topic: Topic, f: Factor) -> Sentence:
                 claims.append({"kind": "lordship", "varga": fa.data["varga"], "house": fa.data["house"], "lord": p})
             if fa.kind == "placement" and fa.data["planet"] == p:
                 claims.append({"kind": "placement", **{k: fa.data[k] for k in ("planet", "varga", "sign", "house")}})
-        how = {"supports": "favouring the native by the lord's condition",
-               "obstructs": "against the native by the lord's condition",
-               "mixed": "with mixed results for the native"}[f.direction]
-        text = (f"The Vimshottari {level} of {name(p)} runs from {d['start']} to {d['end']}, and {name(p)} is "
-                f"tied to the topic ({'; '.join(links)}); classical texts associate the period of a linked lord "
-                f"with matters of {_theme(topic)} coming forward, {how}.")
+        how = {"supports": M("favouring the native by the lord's condition"),
+               "obstructs": M("against the native by the lord's condition"),
+               "mixed": M("with mixed results for the native")}[f.direction]
+        text = M("The Vimshottari {level} of {p} runs from {a} to {b}, and {p} is tied to the topic ({links}); "
+                 "classical texts associate the period of a linked lord with matters of {t} coming forward, {how}.",
+                 level=level, p=name(p), a=d["start"], b=d["end"], links=Join("; ", links), t=_theme(topic), how=how)
     return Sentence(text, list(f.facts), claims, f.key, f.uncertain)
 
 
@@ -622,10 +661,16 @@ def verify(s: Sentence, sh: Sheet, at_jd: float | None, topic: Topic, factors: d
     return None
 
 
-def safety(text: str) -> str | None:
+def safety(text: str) -> M | None:
     for rx, why in BLOCKED:
         if rx.search(text):
             return why
+    if isinstance(text, M):                    # the same sentence in Hindi and Marathi
+        for lang in ("hi", "mr"):
+            local = text.render(lang)
+            for rx, why in BLOCKED_DEVA:
+                if rx.search(local):
+                    return why
     return None
 
 
@@ -643,7 +688,7 @@ def reading(birth: BirthData, topic_id: str, at: date | datetime | None = None,
     sh = Sheet(chart, birth, cfg, vargas)
     for v in vargas:
         sh.add(f"lagna.D{v}", "lagna", {"varga": v, "sign": sh.lagna(v)},
-               f"The D{v} Lagna is {SIGNS[sh.lagna(v)]}.")
+               M("The D{v} Lagna is {s}.", v=v, s=sign_name(sh.lagna(v))))
     at_jd = None
     if at is not None:
         from .timeutil import datetime_to_jd
@@ -659,17 +704,17 @@ def reading(birth: BirthData, topic_id: str, at: date | datetime | None = None,
 
     sentences, dropped = [], []
     if t.technical_only:
-        dropped.append({"text": None, "reason": "technical topic: factors only, no drafted text"})
+        dropped.append({"text": None, "reason": M("technical topic: factors only, no drafted text")})
     else:
         for f in factors:
             s = write(sh, t, f)
             why = verify(s, sh, at_jd, t, by_key)
             if why:
-                dropped.append({"text": s.text, "reason": f"verifier: {why}"})
+                dropped.append({"text": s.text, "reason": M("verifier: {why}", why=why)})
                 continue
             why = safety(s.text)
             if why:
-                dropped.append({"text": s.text, "reason": f"safety filter: {why}"})
+                dropped.append({"text": s.text, "reason": M("safety filter: {why}", why=why)})
                 continue
             sentences.append(s)
 
@@ -683,12 +728,12 @@ def reading(birth: BirthData, topic_id: str, at: date | datetime | None = None,
 
     notes = []
     if t.note:
-        notes.append(t.note)
+        notes.append(M(t.note))
     for v, d in stab.items():
         if d is not None:
-            notes.append(f"The D{v} Lagna changes sign {d:.1f} min from the recorded birth time: factors that "
-                         f"count houses in D{v} are marked uncertain.")
-    notes.append("A high rank means important to examine for this topic, not that something will happen.")
+            notes.append(M("The D{v} Lagna changes sign {d:.1f} min from the recorded birth time: factors that "
+                           "count houses in D{v} are marked uncertain.", v=v, d=d))
+    notes.append(M("A high rank means important to examine for this topic, not that something will happen."))
     used = {fid for f in factors for fid in f.facts} | {fid for fid in sh.facts if fid.startswith(("lagna.", "stability."))}
     return Reading(
         topic={"id": t.id, "name": t.name, "group": t.group, "houses": list(t.houses), "karaka": t.karaka,

@@ -131,7 +131,7 @@ export function ReadingView({ topics, topic, onTopic, scope, onScope, dateLabel,
             <h3 id="reading-factors-h">{t("Ranked factors")}</h3>
             <p className="muted reads-as-note">
               {t("“Reads as” says how the rule in “Why” reads each factor for {theme}: “{a}”, “{b}” or “{c}”.", {
-                theme: getLang() === "en" ? r.topic.theme : topicName(r.topic.id, r.topic.name),
+                theme: r.topic.theme,           // written by the engine in the interface language
                 a: dirLabel(r, "supports"), b: dirLabel(r, "obstructs"), c: dirLabel(r, "mixed") })}
             </p>
             <div className="table-wrap">

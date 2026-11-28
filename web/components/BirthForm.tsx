@@ -4,7 +4,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { api, Birth } from "@/lib/api";
 import { PRESETS } from "@/lib/presets";
-import { t } from "@/lib/i18n";
+import { getLang, t } from "@/lib/i18n";
 
 /** `preset`: true when a preset was picked (another person), false for an edit of this one. */
 type Props = { name: string; birth: Birth; onSubmit: (name: string, b: Birth, preset: boolean) => void };
@@ -18,6 +18,7 @@ export function BirthForm({ name, birth, onSubmit }: Props) {
   const [tz, setTz] = useState(String(birth.utc_offset_hours));
   const [error, setError] = useState("");
   const [warnings, setWarnings] = useState<string[]>([]);
+  const lang = getLang();            // warnings come back in the interface language
 
   // Check the time zone as the user types (historical Indian zones, decision
   // "Historical Indian zones"): a warning only, the chart is never changed.
@@ -35,7 +36,7 @@ export function BirthForm({ name, birth, onSubmit }: Props) {
         ctl.signal).then((r) => setWarnings(r.warnings)).catch(() => {});
     }, 300);
     return () => { clearTimeout(timer); ctl.abort(); };
-  }, [date, time, lat, lon, tz]);
+  }, [date, time, lat, lon, tz, lang]);
 
   function load(i: number) {
     const p = PRESETS[i];

@@ -61,7 +61,8 @@ Next.js + React + TypeScript front end for the JyotishNet API.
 - **Languages**: English, हिन्दी or मराठी from the switch in the header (kept in this
   browser). The interface and the Jyotish vocabulary are translated (charts use
   सू चं मं … and Devanagari sign names); text the engine writes (reading drafts,
-  reasons, yoga evidence) is still English. Strings are wrapped in `t("…")` with the
+  reasons, yoga evidence, warnings) comes from the API in the same language
+  (`?lang=`, catalogues in `src/jyotishnet_engine/locales/`). Strings are wrapped in `t("…")` with the
   English as the key (`lib/i18n.ts`); add the Hindi and Marathi entries to
   `lib/messages/hi.ts` and `mr.ts` (`tests/test_web_i18n.py` fails on a missing one).
   Names the engine sends (nakshatras, panchanga, avasthas, ...) are in `lib/vocab.ts`.

@@ -19,6 +19,8 @@ from zoneinfo import ZoneInfo
 
 import swisseph as swe
 
+from .i18n import M
+
 
 @dataclass(frozen=True)
 class BirthData:
@@ -102,23 +104,24 @@ def zone_warnings(local: datetime, lat: float, lon: float, offset_hours: float) 
     # City times ran beside IST, from 1906; before that local mean time covers them.
     city = local.year >= 1906
     if city and _km((lat, lon), BOMBAY) <= 250 and not near(BOMBAY_TIME):
-        out.append("Bombay and nearby kept Bombay Time (UTC+4:51) beside IST until about 1955. "
-                   "If the record was written in Bombay Time, enter 4.85 as the UTC offset.")
+        out.append(M("Bombay and nearby kept Bombay Time (UTC+4:51) beside IST until about 1955. "
+                     "If the record was written in Bombay Time, enter 4.85 as the UTC offset."))
     if city and _km((lat, lon), CALCUTTA) <= 150 and local.year < 1949 and not near(CALCUTTA_TIME):
-        out.append("Calcutta and nearby kept Calcutta Time (UTC+5:53:20) beside IST until 1948. "
-                   "If the record was written in Calcutta Time, enter 5.8889 as the UTC offset.")
+        out.append(M("Calcutta and nearby kept Calcutta Time (UTC+5:53:20) beside IST until 1948. "
+                     "If the record was written in Calcutta Time, enter 5.8889 as the UTC offset."))
     if near(BOMBAY_TIME) or near(CALCUTTA_TIME):
         return out
     if local.year < 1906:
         lmt = lon / 15
         if not near(lmt) and not near(MADRAS_TIME):
-            out.append(f"Before IST (1906) records usually give local mean time ({format_offset(lmt)} "
-                       f"at this longitude) or, from 1870, Madras time (UTC+5:21:10). "
-                       f"You entered {format_offset(offset_hours)}.")
+            out.append(M("Before IST (1906) records usually give local mean time ({lmt} "
+                         "at this longitude) or, from 1870, Madras time (UTC+5:21:10). "
+                         "You entered {entered}.", lmt=format_offset(lmt), entered=format_offset(offset_hours)))
         return out
     iana = local.replace(tzinfo=ZoneInfo("Asia/Kolkata")).utcoffset().total_seconds() / 3600
     if not near(iana):
-        what = "war time" if abs(iana - 6.5) < 1e-6 else "the official time"
-        out.append(f"On this date India used {what}, {format_offset(iana)}; you entered "
-                   f"{format_offset(offset_hours)}. Check which time the record was written in.")
+        what = M("war time") if abs(iana - 6.5) < 1e-6 else M("the official time")
+        out.append(M("On this date India used {what}, {iana}; you entered {entered}. "
+                     "Check which time the record was written in.", what=what, iana=format_offset(iana),
+                     entered=format_offset(offset_hours)))
     return out

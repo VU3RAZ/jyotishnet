@@ -11,7 +11,7 @@ import os
 from datetime import date as date_type, datetime
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -23,7 +23,12 @@ from jyotishnet_engine import (
 )
 from jyotishnet_engine import __version__
 from jyotishnet_engine.constants import MODEL_VARGAS, SHODASHAVARGA
+from jyotishnet_engine.i18n import M, localize
 from jyotishnet_engine.timeutil import jd_to_datetime, zone_warnings
+
+# Language of the text the engine writes (reading drafts, reasons, facts, yoga
+# evidence, rectification reasons, warnings): en, hi (Hindi) or mr (Marathi).
+Lang = Query("en", pattern="^(en|hi|mr)$", description="Language of engine text: en, hi or mr")
 
 app = FastAPI(title="JyotishNet API", version=__version__)
 app.add_middleware(
@@ -118,14 +123,14 @@ def health() -> dict:
 
 
 @app.post("/v1/chart")
-def chart(req: ChartRequest) -> dict:
+def chart(req: ChartRequest, lang: str = Lang) -> dict:
     try:
         c = build_chart(req.birth.to_birth(), req.config.to_config(), req.vargas)
     except ValueError as e:
         raise HTTPException(422, str(e)) from e
     out = c.to_dict()
     out["sunrise_utc"] = _iso(c.sunrise_jd)
-    out["warnings"] = req.birth.warnings()
+    out["warnings"] = localize(req.birth.warnings(), lang)
     return out
 
 
@@ -134,10 +139,10 @@ class BirthCheck(BaseModel):
 
 
 @app.post("/v1/birth/warnings")
-def birth_warnings(req: BirthCheck) -> dict:
+def birth_warnings(req: BirthCheck, lang: str = Lang) -> dict:
     """Warnings about the birth record's time zone (India before 1956: war time,
     Bombay and Calcutta city times, local mean time). Never changes a chart."""
-    return {"warnings": req.birth.warnings()}
+    return {"warnings": localize(req.birth.warnings(), lang)}
 
 
 def _period_json(p, depth: int) -> dict:
@@ -362,17 +367,17 @@ class YogaRequest(ChartRequest):
 
 
 @app.post("/v1/yogas")
-def yogas_endpoint(req: YogaRequest) -> dict:
+def yogas_endpoint(req: YogaRequest, lang: str = Lang) -> dict:
     from dataclasses import asdict
     from jyotishnet_engine.yogas import YogaOptions, find_yogas
     birth, cfg = req.birth.to_birth(), req.config.to_config()
     c = build_chart(birth, cfg, [1])
     ys = find_yogas(c, include_absent=req.include_absent,
                     options=YogaOptions(req.strong_lord, req.gajakesari), birth=birth, cfg=cfg)
-    return {
+    return localize({
         "yogas": [asdict(y) for y in ys],
-        "note": "Rules are drafts pending expert review; see each rule's source and status.",
-    }
+        "note": M("Rules are drafts pending expert review; see each rule's source and status."),
+    }, lang)
 
 
 # ------------------------------------------------------------------ rectification helpers
@@ -427,12 +432,13 @@ def btr_event_types() -> dict:
 
 
 @app.post("/v1/btr/check")
-def btr_check(req: BtrRequest) -> dict:
+def btr_check(req: BtrRequest, lang: str = Lang) -> dict:
     """Event check table for the birth time given."""
     from dataclasses import asdict
     from jyotishnet_engine.btr import check_events
-    return {"checks": [asdict(c) for c in check_events(req.birth.to_birth(), _events(req),
-                                                       req.config.to_config(), rule_set=req.rule_set)]}
+    return localize({"checks": [asdict(c) for c in check_events(req.birth.to_birth(), _events(req),
+                                                                req.config.to_config(), rule_set=req.rule_set)]},
+                    lang)
 
 
 @app.post("/v1/btr/curve")
@@ -447,15 +453,15 @@ def btr_curve(req: BtrCurveRequest) -> dict:
 
 
 @app.post("/v1/btr/indicative")
-def btr_indicative(req: BtrIndicativeRequest) -> dict:
+def btr_indicative(req: BtrIndicativeRequest, lang: str = Lang) -> dict:
     """Antardashas that point to marriage, children, career or relocation (see
     btr.indicative_periods for each rule set). Death and illness are never offered."""
     from jyotishnet_engine.btr import indicative_periods
     out = indicative_periods(req.birth.to_birth(), req.config.to_config(), rule_set=req.rule_set,
                              min_age_years=req.min_age_years)
-    return {"min_age_years": req.min_age_years, "periods": {k: [{**{x: v for x, v in r.items() if not x.endswith("_jd")},
-                             "start": _iso(r["start_jd"]), "end": _iso(r["end_jd"])} for r in rows]
-                        for k, rows in out.items()}}
+    return localize({"min_age_years": req.min_age_years, "periods": {
+        k: [{**{x: v for x, v in r.items() if not x.endswith("_jd")}, "start": _iso(r["start_jd"]),
+             "end": _iso(r["end_jd"])} for r in rows] for k, rows in out.items()}}, lang)
 
 
 # ------------------------------------------------------------------ readings (M3.4)
@@ -490,7 +496,7 @@ def reading_topics() -> dict:
 
 
 @app.post("/v1/reading")
-def reading_endpoint(req: ReadingRequest) -> dict:
+def reading_endpoint(req: ReadingRequest, lang: str = Lang) -> dict:
     """Ranked factors for a topic and a short draft whose every sentence cites engine
     facts, checked by the verifier and the safety filter (design doc, Layer 4)."""
     from jyotishnet_engine.readings import reading, utc_date_of
@@ -501,8 +507,8 @@ def reading_endpoint(req: ReadingRequest) -> dict:
     except ValueError as e:
         raise HTTPException(422, str(e)) from e
     out = r.to_dict()
-    out["note"] = "Rules are drafts pending expert review; wording is traditional interpretation."
-    return out
+    out["note"] = M("Rules are drafts pending expert review; wording is traditional interpretation.")
+    return localize(out, lang)
 
 
 class FeedbackIn(BaseModel):

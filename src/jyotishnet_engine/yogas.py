@@ -29,6 +29,9 @@ from .constants import (
     EXALTATION, GRAHA_DRISHTI, MOOLATRIKONA, NATURAL_ENEMIES, NATURAL_FRIENDS, OWN_SIGNS,
     SIGN_LORD, SIGNS, modality,
 )
+from .i18n import Code, Join, M
+from .i18n import ordinal as _ordinal
+from .i18n import sign as sign_name
 
 RULES_DIR = Path(__file__).parent / "rules" / "yogas"
 GRAHAS7 = ["Su", "Mo", "Ma", "Me", "Ju", "Ve", "Sa"]
@@ -36,11 +39,23 @@ GRAHAS9 = GRAHAS7 + ["Ra", "Ke"]
 KENDRAS = [1, 4, 7, 10]
 TRIKONAS = [1, 5, 9]
 DUSTHANAS = [6, 8, 12]
-ORD = {1: "1st", 2: "2nd", 3: "3rd"}
 
 
-def ordinal(n: int) -> str:
-    return ORD.get(n, f"{n}th")
+def ordinal(n: int) -> M:
+    return _ordinal(n)
+
+
+def codes(points) -> list[Code]:
+    return [Code(p) for p in points]
+
+
+# Words in evidence strings, as the English has always spelled them.
+DIGNITY = {"exalted": M("exalted"), "debilitated": M("debilitated"), "moolatrikona": M("moolatrikona"),
+           "own": M("own"), "friend": M("friend"), "enemy": M("enemy"), "other": M("other"), "node": M("node")}
+RELATION = {"conjunction": M("conjunction"), "mutual_aspect": M("mutual_aspect"), "aspect": M("aspect"),
+            "exchange": M("exchange")}
+MODALITY = {"movable": M("movable"), "fixed": M("fixed"), "dual": M("dual")}
+NONE = M("none")
 
 
 # Combustion orbs (degrees from the Sun; Surya Siddhanta as given in BPHS commentaries);
@@ -148,14 +163,14 @@ class Context:
         return [p for p in GRAHAS9 if p not in self.benefics]
 
     @staticmethod
-    def label(spec, exclude=()) -> str:
+    def label(spec, exclude=()) -> M:
         """Readable name of a planet group, for evidence strings."""
         if isinstance(spec, list):
-            return "/".join(spec)
-        name = {"grahas7": "planets", "grahas9": "planets or nodes", "benefics": "benefics",
-                "malefics": "malefics", "malefics7": "malefics",
-                "benefics_no_moon": "benefics other than the Moon"}.get(spec, spec)
-        return f"{name} other than {'/'.join(exclude)}" if exclude else name
+            return Join("/", codes(spec))
+        name = {"grahas7": M("planets"), "grahas9": M("planets or nodes"), "benefics": M("benefics"),
+                "malefics": M("malefics"), "malefics7": M("malefics"),
+                "benefics_no_moon": M("benefics other than the Moon")}.get(spec, spec)
+        return M("{name} other than {ex}", name=name, ex=Join("/", codes(exclude))) if exclude else name
 
     def group(self, spec) -> list[str]:
         if isinstance(spec, list):
@@ -189,12 +204,12 @@ class Context:
         h = (self.sign_of(b) - self.signs[a]) % 12 + 1
         return h in GRAHA_DRISHTI[a]
 
-    def name(self, point: str) -> str:
+    def name(self, point: str) -> M:
         if point == "La":
-            return "Lagna"
+            return M("Lagna")
         if point.startswith("lord:"):
-            return f"{ordinal(int(point[5:]))} lord ({self.lord(int(point[5:]))})"
-        return point
+            return M("{n} lord ({p})", n=ordinal(int(point[5:])), p=Code(self.lord(int(point[5:]))))
+        return Code(point)
 
 
 def _resolve(ctx: Context, point: str) -> str:
@@ -222,7 +237,7 @@ def dignity(ctx: Context, a: dict) -> Result:
         d = "friend"
     elif d == "other" and p in NATURAL_ENEMIES and SIGN_LORD[ctx.signs[p]] in NATURAL_ENEMIES[p]:
         d = "enemy"
-    return d in a["in"], [f"{ctx.name(a['planet'])} {d} in {SIGNS[ctx.signs[p]]}"]
+    return d in a["in"], [M("{p} {d} in {s}", p=ctx.name(a["planet"]), d=DIGNITY[d], s=sign_name(ctx.signs[p]))]
 
 
 @predicate
@@ -234,7 +249,7 @@ def in_house(ctx: Context, a: dict) -> Result:
     for pt in pts:
         h = ctx.house(_resolve(ctx, pt), ref)
         ok &= h in a["houses"]
-        ev.append(f"{ctx.name(pt)} in {ordinal(h)} from {ctx.name(ref)}")
+        ev.append(M("{p} in {h} from {ref}", p=ctx.name(pt), h=ordinal(h), ref=ctx.name(ref)))
     return ok, ev
 
 
@@ -261,18 +276,18 @@ def occupants(ctx: Context, a: dict) -> Result:
         raise ValueError(mode)
     if "min" in a:
         ok = ok and len(there) >= a["min"]
-    hs = "/".join(ordinal(h) for h in a["houses"])
-    desc = ", ".join(there) if there else "none"
+    hs = Join("/", [ordinal(h) for h in a["houses"]])
+    desc = Join(", ", codes(there)) if there else NONE
     who = ctx.label(a.get("of", "grahas7"), a.get("exclude", ()))
-    return ok, [f"{who} in the {hs} from {ctx.name(ref)}: {desc}"]
+    return ok, [M("{who} in the {hs} from {ref}: {desc}", who=who, hs=hs, ref=ctx.name(ref), desc=desc)]
 
 
 @predicate
 def conjunct(ctx: Context, a: dict) -> Result:
     pts = [_resolve(ctx, p) for p in a["planets"]]
     s = {ctx.signs[p] for p in pts}
-    return len(s) == 1, [f"{' + '.join(a['planets'])} together in {SIGNS[ctx.signs[pts[0]]]}"
-                         if len(s) == 1 else f"{' and '.join(a['planets'])} not conjunct"]
+    return len(s) == 1, [M("{ps} together in {s}", ps=Join(" + ", codes(a["planets"])), s=sign_name(ctx.signs[pts[0]]))
+                         if len(s) == 1 else M("{ps} not conjunct", ps=Join(M(" and "), codes(a["planets"])))]
 
 
 def _relations(ctx: Context, x: str, y: str) -> list[str]:
@@ -294,9 +309,10 @@ def related(ctx: Context, a: dict) -> Result:
     x, y = _resolve(ctx, a["a"]), _resolve(ctx, a["b"])
     types = a.get("types", ["conjunction", "mutual_aspect", "exchange"])
     if x == y:
-        return a.get("same_planet_counts", True), [f"{ctx.name(a['a'])} is also {ctx.name(a['b'])}"]
+        return a.get("same_planet_counts", True), [M("{a} is also {b}", a=ctx.name(a["a"]), b=ctx.name(a["b"]))]
     found = [r for r in _relations(ctx, x, y) if r in types]
-    return bool(found), [f"{ctx.name(a['a'])} and {ctx.name(a['b'])}: {', '.join(found) or 'no relation'}"]
+    return bool(found), [M("{a} and {b}: {rel}", a=ctx.name(a["a"]), b=ctx.name(a["b"]),
+                           rel=Join(", ", [RELATION[r] for r in found]) if found else M("no relation"))]
 
 
 @predicate
@@ -311,11 +327,12 @@ def lords_related(ctx: Context, a: dict) -> Result:
             x, y = ctx.lord(ha), ctx.lord(hb)
             if x == y:
                 if a.get("same_planet_counts", False):
-                    ev.append(f"{x} lords both the {ordinal(ha)} and {ordinal(hb)}")
+                    ev.append(M("{x} lords both the {a} and {b}", x=Code(x), a=ordinal(ha), b=ordinal(hb)))
                 continue
             found = [r for r in _relations(ctx, x, y) if r in types]
             if found:
-                ev.append(f"{ordinal(ha)} lord {x} and {ordinal(hb)} lord {y}: {', '.join(found)}")
+                ev.append(M("{a} lord {x} and {b} lord {y}: {rel}", a=ordinal(ha), x=Code(x), b=ordinal(hb),
+                            y=Code(y), rel=Join(", ", [RELATION[r] for r in found])))
     return bool(ev), sorted(set(ev))
 
 
@@ -323,7 +340,7 @@ def lords_related(ctx: Context, a: dict) -> Result:
 def lord_in_house(ctx: Context, a: dict) -> Result:
     lord = ctx.lord(a["house"])
     h = ctx.house(lord, a.get("from", "La"))
-    return h in a["houses"], [f"{ordinal(a['house'])} lord {lord} in {ordinal(h)}"]
+    return h in a["houses"], [M("{n} lord {p} in {h}", n=ordinal(a["house"]), p=Code(lord), h=ordinal(h))]
 
 
 @predicate
@@ -335,7 +352,8 @@ def same_lord_owns(ctx: Context, a: dict) -> Result:
         ka = [h for h in owned if h in a["houses_a"] and h != 1]
         kb = [h for h in owned if h in a["houses_b"] and h != 1]
         if ka and kb:
-            ev.append(f"{p} lords the {'/'.join(map(ordinal, ka))} and {'/'.join(map(ordinal, kb))}")
+            ev.append(M("{p} lords the {a} and {b}", p=Code(p), a=Join("/", map(ordinal, ka)),
+                        b=Join("/", map(ordinal, kb))))
     return bool(ev), ev
 
 
@@ -353,7 +371,8 @@ def parivartana(ctx: Context, a: dict) -> Result:
                 pair = {h1, h2}
                 kind = "dainya" if pair & dusthana else ("khala" if 3 in pair else "maha")
                 if kind == a["kind"]:
-                    ev.append(f"{ordinal(h1)} lord {x} and {ordinal(h2)} lord {y} exchange signs")
+                    ev.append(M("{a} lord {x} and {b} lord {y} exchange signs", a=ordinal(h1), x=Code(x),
+                                b=ordinal(h2), y=Code(y)))
     return bool(ev), ev
 
 
@@ -361,8 +380,8 @@ def parivartana(ctx: Context, a: dict) -> Result:
 def sign_count(ctx: Context, a: dict) -> Result:
     grp = ctx.group(a.get("of", "grahas7"))
     n = len({ctx.signs[p] for p in grp})
-    return n == a["count"], [f"the seven planets occupy {n} signs" if a.get("of", "grahas7") == "grahas7"
-                             else f"{ctx.label(a['of'])} occupy {n} signs"]
+    return n == a["count"], [M("the seven planets occupy {n} signs", n=n) if a.get("of", "grahas7") == "grahas7"
+                             else M("{who} occupy {n} signs", who=ctx.label(a["of"]), n=n)]
 
 
 @predicate
@@ -370,7 +389,8 @@ def all_in_modality(ctx: Context, a: dict) -> Result:
     grp = ctx.group(a.get("of", "grahas7"))
     want = {"movable": 0, "fixed": 1, "dual": 2}[a["modality"]]
     ok = all(modality(ctx.signs[p]) == want for p in grp)
-    return ok, [f"all seven planets in {a['modality']} signs" if ok else "planets in mixed modalities"]
+    return ok, [M("all seven planets in {m} signs", m=MODALITY[a["modality"]]) if ok
+                else M("planets in mixed modalities")]
 
 
 @predicate
@@ -380,7 +400,7 @@ def houses_exactly(ctx: Context, a: dict) -> Result:
     hs = {ctx.house(p) for p in grp}
     want = set(a["houses"])
     ok = hs == want if a.get("all_occupied", True) else hs <= want
-    return ok, [f"the seven planets in houses {', '.join(map(str, sorted(hs)))}"]
+    return ok, [M("the seven planets in houses {hs}", hs=", ".join(map(str, sorted(hs))))]
 
 
 @predicate
@@ -389,7 +409,7 @@ def distinct_houses(ctx: Context, a: dict) -> Result:
     grp = ctx.group(a["of"])
     hs = [ctx.house(p) for p in grp]
     ok = all(h in a["houses"] for h in hs) and len(set(hs)) == a["count"]
-    return ok, [f"{'/'.join(grp)} in houses {', '.join(map(str, sorted(set(hs))))}"]
+    return ok, [M("{who} in houses {hs}", who=Join("/", codes(grp)), hs=", ".join(map(str, sorted(set(hs)))))]
 
 
 @predicate
@@ -397,7 +417,8 @@ def houses_occupied_by(ctx: Context, a: dict) -> Result:
     """At least `min` of `houses` hold a planet from the group (from the Lagna)."""
     grp = ctx.group(a["of"])
     held = sorted({ctx.house(p) for p in grp if ctx.house(p) in a["houses"]})
-    return len(held) >= a["min"], [f"{ctx.label(a['of'])} in houses {', '.join(map(str, held)) or 'none'}"]
+    return len(held) >= a["min"], [M("{who} in houses {hs}", who=ctx.label(a["of"]),
+                                     hs=", ".join(map(str, held)) if held else NONE)]
 
 
 @predicate
@@ -410,10 +431,11 @@ def debilitation_cancelled(ctx: Context, a: dict) -> Result:
             continue
         deb_lord = SIGN_LORD[ctx.signs[p]]
         ex_lord = SIGN_LORD[EXALTATION[p][0]]
-        for who, role in ((deb_lord, "lord of its debilitation sign"), (ex_lord, "lord of its exaltation sign")):
+        for who, role in ((deb_lord, M("lord of its debilitation sign")), (ex_lord, M("lord of its exaltation sign"))):
             for ref in ("La", "Mo"):
                 if who != p and who != ref and ctx.house(who, ref) in KENDRAS:
-                    ev.append(f"{p} debilitated; {who} ({role}) in a kendra from {ctx.name(ref)}")
+                    ev.append(M("{p} debilitated; {who} ({role}) in a kendra from {ref}", p=Code(p), who=Code(who),
+                                role=role, ref=ctx.name(ref)))
     return bool(ev), sorted(set(ev))
 
 
@@ -424,8 +446,9 @@ def kartari(ctx: Context, a: dict) -> Result:
     grp = [p for p in ctx.group(a["by"]) if p != ref]
     h2 = [p for p in grp if ctx.house(p, ref) == 2]
     h12 = [p for p in grp if ctx.house(p, ref) == 12]
-    return bool(h2 and h12), [f"{ctx.label(a['by'])} in the 2nd from {ctx.name(ref)}: {', '.join(h2) or 'none'}; "
-                            f"in the 12th: {', '.join(h12) or 'none'}"]
+    return bool(h2 and h12), [M("{who} in the 2nd from {ref}: {a}; in the 12th: {b}", who=ctx.label(a["by"]),
+                                ref=ctx.name(ref), a=Join(", ", codes(h2)) if h2 else NONE,
+                                b=Join(", ", codes(h12)) if h12 else NONE)]
 
 
 @predicate
@@ -437,16 +460,16 @@ def strong(ctx: Context, a: dict) -> Result:
         if ctx.shadbala_ratio is None:
             raise ValueError('strong_lord="shadbala" needs a context built with the birth data')
         r = ctx.shadbala_ratio[p]
-        return r >= 1.0, [f"{who} Shadbala {r:.2f} of its required rupas"]
+        return r >= 1.0, [M("{p} Shadbala {r:.2f} of its required rupas", p=who, r=r)]
     d = ctx.dignity(p)
     h = ctx.house(p)
     if d == "debilitated":
-        return False, [f"{who} debilitated in {SIGNS[ctx.signs[p]]}"]
+        return False, [M("{p} debilitated in {s}", p=who, s=sign_name(ctx.signs[p]))]
     if d in ("exalted", "moolatrikona", "own"):
-        return True, [f"{who} strong: {d} in {SIGNS[ctx.signs[p]]}"]
+        return True, [M("{p} strong: {d} in {s}", p=who, d=DIGNITY[d], s=sign_name(ctx.signs[p]))]
     if h in KENDRAS or h in TRIKONAS:
-        return True, [f"{who} strong: in the {ordinal(h)} house"]
-    return False, [f"{who} not strong: {d} sign, {ordinal(h)} house"]
+        return True, [M("{p} strong: in the {h} house", p=who, h=ordinal(h))]
+    return False, [M("{p} not strong: {d} sign, {h} house", p=who, d=DIGNITY[d], h=ordinal(h))]
 
 
 @predicate
@@ -455,7 +478,8 @@ def combust(ctx: Context, a: dict) -> Result:
     p = _resolve(ctx, a["planet"])
     orb = (COMBUST_ORB_RETRO if ctx.retrograde.get(p) else COMBUST_ORB).get(p, COMBUST_ORB[p])
     sep = abs((ctx.degrees[p] - ctx.degrees["Su"] + 180.0) % 360.0 - 180.0)
-    return sep < orb, [f"{ctx.name(a['planet'])} {sep:.1f} deg from the Sun (combust within {orb:g})"]
+    return sep < orb, [M("{p} {sep:.1f} deg from the Sun (combust within {orb:g})", p=ctx.name(a["planet"]),
+                         sep=sep, orb=orb)]
 
 
 @predicate
@@ -464,8 +488,8 @@ def joined_or_aspected(ctx: Context, a: dict) -> Result:
     p = _resolve(ctx, a["planet"])
     grp = [q for q in ctx.group(a["by"]) if q != p]
     hits = [q for q in grp if ctx.signs[q] == ctx.signs[p] or ctx.aspects(q, p)]
-    return bool(hits), [f"{ctx.label(a['by'])} with or aspecting {ctx.name(a['planet'])}: "
-                        f"{', '.join(hits) or 'none'}"]
+    return bool(hits), [M("{who} with or aspecting {p}: {hits}", who=ctx.label(a["by"]), p=ctx.name(a["planet"]),
+                          hits=Join(", ", codes(hits)) if hits else NONE)]
 
 
 @predicate
@@ -500,7 +524,7 @@ def evaluate(cond, ctx: Context) -> Result:
         return ok, hits if ok else misses        # when nothing holds, say why
     if key == "not":
         r, e = evaluate(val, ctx)
-        return not r, [f"not: {x}" for x in e]
+        return not r, [M("not: {x}", x=x) for x in e]
     if key not in PREDICATES:
         raise ValueError(f"Unknown predicate {key!r}")
     return PREDICATES[key](ctx, val or {})
@@ -569,8 +593,8 @@ def find_yogas(chart_or_ctx: Chart | Context, rules: list[Rule] | None = None,
         if present and r.cancelled_by:
             cancelled, cev = evaluate(r.cancelled_by, ctx)
             if cancelled:
-                ev = ev + [f"Cancelled: {x}" for x in cev]
+                ev = ev + [M("Cancelled: {x}", x=x) for x in cev]
         if present or include_absent:
-            out.append(YogaResult(r.id, r.name, r.group, present, cancelled, ev, r.summary,
+            out.append(YogaResult(r.id, M(r.name), r.group, present, cancelled, ev, M(r.summary),
                                   r.source, r.status))
     return out

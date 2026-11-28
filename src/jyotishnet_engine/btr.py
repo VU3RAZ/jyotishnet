@@ -52,6 +52,7 @@ from .config import DEFAULT_CONFIG, SchoolConfig
 from .constants import GRAHA_DRISHTI, GRAHA_NAMES, SIGN_LORD, SIGNS
 from .dasha import Period, running, vimshottari
 from .ephemeris import body_longitude
+from .i18n import Join, M, graha, sign as sign_name
 from .timeutil import BirthData
 
 RULES_FILE = Path(__file__).parent / "rules" / "btr_events.yaml"
@@ -113,9 +114,9 @@ def _links_in(chart: Chart, varga: int, houses: tuple[int, ...], planet: str) ->
     for h in houses:
         sign = (lagna + h - 1) % 12
         if SIGN_LORD[sign] == planet:
-            reasons.append(f"lords D{varga} house {h}")
+            reasons.append(M("lords D{v} house {h}", v=varga, h=h))
         if chart.grahas[planet].vargas[key] == sign:
-            reasons.append(f"in D{varga} house {h}")
+            reasons.append(M("in D{v} house {h}", v=varga, h=h))
     return reasons
 
 
@@ -124,7 +125,7 @@ def links(chart: Chart, rule: EventRule, planet: str) -> list[str]:
     if rule.varga != 1:
         reasons += _links_in(chart, rule.varga, rule.varga_houses, planet)
     if planet == rule.karaka:
-        reasons.append("natural karaka")
+        reasons.append(M("natural karaka"))
     return reasons
 
 
@@ -180,9 +181,9 @@ def _strongest(chart: Chart, cond: dict, st: dict[str, float]) -> tuple[str, lis
     """The strongest planet of a `strongest` condition, and the (role, planet) candidates."""
     lord = chart.grahas[chart.house_lords[cond["house"]]]
     h = cond["house"]
-    roles = {"sign_lord": (f"lord of the {h}th lord's sign", SIGN_LORD[lord.sign]),
-             "navamsa_lord": (f"lord of the {h}th lord's navamsa", SIGN_LORD[lord.vargas[9]])}
-    cands = [roles[x] if x in roles else (GRAHA_NAMES[x], x) for x in cond["of"]]
+    roles = {"sign_lord": (M("lord of the {h}th lord's sign", h=h), SIGN_LORD[lord.sign]),
+             "navamsa_lord": (M("lord of the {h}th lord's navamsa", h=h), SIGN_LORD[lord.vargas[9]])}
+    cands = [roles[x] if x in roles else (graha(x), x) for x in cond["of"]]
     best = max(cands, key=lambda rp: (st[rp[1]], -cands.index(rp)))[1]
     return best, cands
 
@@ -209,7 +210,7 @@ def significator_reasons(chart: Chart, rule: ClassicalRule, planet: str,
     p = chart.grahas[planet]
     out = []
     for c in rule.significators:
-        kind, cite = c["kind"], c["cite"]
+        kind, cite = c["kind"], M(c["cite"])
         if kind == "strongest":
             if st:
                 best, cands = _strongest(chart, c, st)
@@ -219,24 +220,24 @@ def significator_reasons(chart: Chart, rule: ClassicalRule, planet: str,
                         roles.setdefault(q, [])
                         if role != GRAHA_NAMES[q]:
                             roles[q].append(role)
-                    names = "; ".join(f"{GRAHA_NAMES[q]} " + (f"({', '.join(r)}) " if r else "") + f"{st[q]:.2f}"
-                                      for q, r in roles.items())
-                    out.append(f"strongest by Shadbala rupas of {names} ({cite})")
+                    names = Join("; ", [M("{p} ({roles}) {r:.2f}", p=graha(q), roles=Join(", ", r), r=st[q]) if r
+                                        else M("{p} {r:.2f}", p=graha(q), r=st[q]) for q, r in roles.items()])
+                    out.append(M("strongest by Shadbala rupas of {names} ({cite})", names=names, cite=cite))
             continue
         if kind == "graha":
             if planet == c["graha"]:
-                out.append(f"is {GRAHA_NAMES[planet]} ({cite})")
+                out.append(M("is {p} ({cite})", p=graha(planet), cite=cite))
             continue
         for h in c["houses"]:
             lord = chart.house_lords[h]
             if kind == "lord" and lord == planet:
-                out.append(f"lords house {h} ({cite})")
+                out.append(M("lords house {h} ({cite})", h=h, cite=cite))
             elif kind == "occupies" and p.house == h:
-                out.append(f"in house {h} ({cite})")
+                out.append(M("in house {h} ({cite})", h=h, cite=cite))
             elif kind == "aspects" and h in p.aspects_houses and p.house != h:
-                out.append(f"aspects house {h} ({cite})")
+                out.append(M("aspects house {h} ({cite})", h=h, cite=cite))
             elif kind == "joined_lord" and lord != planet and chart.grahas[lord].sign == p.sign:
-                out.append(f"with the lord of house {h} ({cite})")
+                out.append(M("with the lord of house {h} ({cite})", h=h, cite=cite))
     return out
 
 
@@ -267,21 +268,23 @@ def antardasha_quality(chart: Chart, maha: str, antar: str) -> tuple[str, list[s
     p, m = chart.grahas[antar], chart.grahas[maha]
     good, bad = [], []
     if p.house in KENDRA_TRIKONA_11:
-        good.append(f"in house {p.house} from the Lagna (BPHS 52-60; PD 20.14)")
+        good.append(M("in house {h} from the Lagna (BPHS 52-60; PD 20.14)", h=p.house))
     if p.house in DUSTHANA:
-        bad.append(f"in house {p.house} from the Lagna (BPHS 47.6; PD 20.14)")
+        bad.append(M("in house {h} from the Lagna (BPHS 47.6; PD 20.14)", h=p.house))
     if antar != maha:
         rel = (p.sign - m.sign) % 12 + 1
         if rel in GOOD_FROM_DASHA_LORD:
-            good.append(f"{rel} from the mahadasha lord (BPHS 54.17, 59.40)")
+            good.append(M("{rel} from the mahadasha lord (BPHS 54.17, 59.40)", rel=rel))
         if rel in DUSTHANA:
-            bad.append(f"{rel} from the mahadasha lord (PD 20.29)")
+            bad.append(M("{rel} from the mahadasha lord (PD 20.29)", rel=rel))
     if p.dignity in ("exalted", "moolatrikona", "own"):
-        good.append(f"{p.dignity} (BPHS 47.7; PD 20.14)")
+        good.append(M("{d} (BPHS 47.7; PD 20.14)", d={"exalted": M("exalted"), "moolatrikona": M("moolatrikona"),
+                                                      "own": M("own")}[p.dignity]))
     if p.dignity in ("debilitated", "enemy"):
-        bad.append(f"{'in an enemy sign' if p.dignity == 'enemy' else 'debilitated'} (BPHS 47.6; PD 20.14)")
+        bad.append(M("in an enemy sign (BPHS 47.6; PD 20.14)") if p.dignity == "enemy"
+                   else M("debilitated (BPHS 47.6; PD 20.14)"))
     if _combust(chart, antar):
-        bad.append("combust (BPHS 47.6)")
+        bad.append(M("combust (BPHS 47.6)"))
     q = "good" if good and not bad else "bad" if bad and not good else "mixed"
     return q, good, bad
 
@@ -441,11 +444,12 @@ def check_events(birth: BirthData, events: list[tuple[str, date]],
         tr = []
         gate = cand.gate.get(etype)
         if cr.transit and signs["Ju"] in cand.transit[etype] and (gate is None or gate in (md, ad)):
-            within = f", in the dasha of {GRAHA_NAMES[gate]}" if gate else ""
-            tr = [f"Jupiter in {SIGNS[signs['Ju']]}{within} ({cr.transit['cite']})"]
+            ju, cite = sign_name(signs["Ju"]), M(cr.transit["cite"])
+            tr = [M("Jupiter in {s}, in the dasha of {p} ({cite})", s=ju, p=graha(gate), cite=cite) if gate
+                  else M("Jupiter in {s} ({cite})", s=ju, cite=cite)]
         out.append(EventCheck(etype, rule.name, d.isoformat(), md, ad, ml, al, [], score,
                               verdict(score, mx), rule.check_only, rule_set, mx, q,
-                              [f"good: {r}" for r in good] + [f"bad: {r}" for r in bad], tr))
+                              [M("good: {r}", r=r) for r in good] + [M("bad: {r}", r=r) for r in bad], tr))
     return out
 
 

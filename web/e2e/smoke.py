@@ -215,7 +215,7 @@ async def main() -> int:
                 raise SystemExit(1)
         await step("phone width, every tab")
 
-        # Hindi and Marathi (interface text and vocabulary; engine text stays English).
+        # Hindi and Marathi: interface text, vocabulary and the text the engine writes.
         tabs_by_lang = {"हिन्दी": ["स्थिति", "वर्ग", "योग", "फलादेश", "अष्टकवर्ग", "बल", "दशाएँ", "गोचर"],
                         "मराठी": ["स्थिती", "वर्ग", "योग", "फलादेश", "अष्टकवर्ग", "बल", "दशा", "गोचर"]}
         for lang, tabs in tabs_by_lang.items():
@@ -234,6 +234,18 @@ async def main() -> int:
                     print(f"FAIL: {lang} tab {tab} widens the page to {width}px at a 420px viewport")
                     raise SystemExit(1)
             await step(f"{lang}: tabs, chart labels, phone width")
+            # Engine text (layer 3): readings, yoga evidence and event reasons come back in the language.
+            deva = "(els) => els.length > 0 && els.every(e => /[\\u0900-\\u097F]/.test(e.innerText))"
+            await page.click(f"[role=tab]:has-text('{tabs[3]}')")
+            await page.wait_for_function(f"({deva})([...document.querySelectorAll('.reading-facts li, td.why')])",
+                                         timeout=15000)
+            if await page.locator(".draft li").count():
+                await page.wait_for_function(f"({deva})([...document.querySelectorAll('.draft li')])")
+            await page.click(f"[role=tab]:has-text('{tabs[2]}')")
+            await page.wait_for_function(f"({deva})([...document.querySelectorAll('.evidence li')])", timeout=15000)
+            if await page.locator(".event-table td.links small").count():
+                await page.wait_for_function(f"({deva})([...document.querySelectorAll('.event-table td.links small')])")
+            await step(f"{lang}: readings, yoga evidence and event reasons in the language")
         await page.reload()
         await page.wait_for_selector("[role=tab]:has-text('दशा')")
         await page.click(".lang-switch button:has-text('English')")

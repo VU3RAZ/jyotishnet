@@ -132,18 +132,18 @@ export default function Workbench() {
 
   const rectify = mode === "rectify";
   const evKey = JSON.stringify(events);
-  const checks = useLive(rectify && events.length ? JSON.stringify([moving, evKey, ruleSet]) : null,
+  const checks = useLive(rectify && events.length ? JSON.stringify([moving, evKey, ruleSet, lang]) : null,
     () => btr.check(moving, events, ruleSet), 120);
   const windowMin = Math.min(range.seconds / 60, 120);
   const curve = useLive(rectify && events.length ? JSON.stringify([birth, evKey, windowMin, ruleSet]) : null,
     () => btr.curve(birth, events, windowMin, windowMin <= 30 ? 30 : 60, ruleSet), 300);
-  const indicative = useLive(rectify ? JSON.stringify([moving, ruleSet]) : null,
+  const indicative = useLive(rectify ? JSON.stringify([moving, ruleSet, lang]) : null,
     () => btr.indicative(moving, ruleSet), 250);
 
   // Analysis views follow the chart on the ribbon in rectify mode, the birth chart in transit mode.
   const subject = rectify ? moving : birth;
   const subjectKey = JSON.stringify(subject);
-  const yogas = useLive(tab === "yogas" ? JSON.stringify([subject, yogaOptions]) : null,
+  const yogas = useLive(tab === "yogas" ? JSON.stringify([subject, yogaOptions, lang]) : null,
     () => analysis.yogas(subject, yogaOptions), 200);
   const av = useLive(tab === "ashtakavarga" ? subjectKey : null, () => analysis.ashtakavarga(subject), 200);
   const sb = useLive(tab === "shadbala" ? subjectKey : null, () => analysis.shadbala(subject), 200);
@@ -161,7 +161,7 @@ export default function Workbench() {
   // Readings: the current-period scope uses the event date (rectify) or the ribbon's date (transit).
   const readingDate = rectify ? eventDate : formatLocal(momentMs).slice(0, 10);
   const reading = useLive(tab === "readings"
-    ? JSON.stringify([subject, readingTopic, readingScope === "period" ? readingDate : null]) : null,
+    ? JSON.stringify([subject, readingTopic, readingScope === "period" ? readingDate : null, lang]) : null,
   () => readings.reading(subject, readingTopic, readingScope === "period" ? readingDate : null), 250);
   const verdictKey = (factor: string) => `${name}|${readingTopic}|${factor}`;
   function giveVerdict(factor: string, verdict: Verdict) {
@@ -235,7 +235,7 @@ export default function Workbench() {
           </p>
           {lang !== "en" && (
             <p className="muted small lang-note">
-              {t("Text the engine writes (reading drafts, reasons, yoga evidence, warnings) is still in English.")}
+              {t("Book titles in source citations and the checks' technical details stay in English.")}
             </p>
           )}
         </div>

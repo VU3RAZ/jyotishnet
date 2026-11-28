@@ -2,6 +2,10 @@
 // Typed client for the JyotishNet API (proxied at /api).
 
 import { engineCall, engineOk } from "./engine/client";
+import { getLang } from "./i18n";
+
+/** Endpoints that return engine-written text take the interface language (layer 3). */
+const lang = (path: string) => (getLang() === "en" ? path : `${path}?lang=${getLang()}`);
 
 export type Birth = {
   local_datetime: string; // "YYYY-MM-DDTHH:MM:SS", local clock time
@@ -74,13 +78,13 @@ export type Source = "browser" | "api";
 
 export const api = {
   chart: (birth: Birth, vargas: number[], signal?: AbortSignal) =>
-    local({ op: "chart", birth, vargas }, () => post<Chart>("/v1/chart", { birth, vargas }, signal)),
+    local({ op: "chart", birth, vargas }, () => post<Chart>(lang("/v1/chart"), { birth, vargas }, signal)),
   runningDasha: (birth: Birth, atUtc: string, signal?: AbortSignal) =>
     local({ op: "running", birth, atUtc }, () => post<{ running: RunningPeriod[] }>("/v1/dasha",
       { birth, system: "vimshottari", levels: 3, at: atUtc }, signal)),
   /** Time-zone warnings for a birth record (India before 1956); never changes a chart. */
   birthWarnings: (birth: Birth, signal?: AbortSignal) =>
-    post<{ warnings: string[] }>("/v1/birth/warnings", { birth }, signal),
+    post<{ warnings: string[] }>(lang("/v1/birth/warnings"), { birth }, signal),
   boundaries: (birth: Birth, windowMin: number, vargas: number[], signal?: AbortSignal) =>
     local({ op: "boundaries", birth, windowMin, vargas }, () => post<{ changes: Boundary[] }>("/v1/boundaries",
       { birth, window_min: windowMin, step_s: 10, vargas }, signal)),
@@ -127,11 +131,11 @@ export type IndicativePeriod = {
 export const btr = {
   events: () => fetch("/api/v1/btr/events").then((r) => r.json() as Promise<{ events: EventRule[] }>),
   check: (birth: Birth, events: LifeEvent[], ruleSet: RuleSet) =>
-    post<{ checks: EventCheck[] }>("/v1/btr/check", { birth, events, rule_set: ruleSet }),
+    post<{ checks: EventCheck[] }>(lang("/v1/btr/check"), { birth, events, rule_set: ruleSet }),
   curve: (birth: Birth, events: LifeEvent[], windowMin: number, stepS: number, ruleSet: RuleSet) =>
     post<FitCurve>("/v1/btr/curve", { birth, events, window_min: windowMin, step_s: stepS, rule_set: ruleSet }),
   indicative: (birth: Birth, ruleSet: RuleSet) =>
-    post<{ periods: Record<string, IndicativePeriod[]> }>("/v1/btr/indicative", { birth, rule_set: ruleSet }),
+    post<{ periods: Record<string, IndicativePeriod[]> }>(lang("/v1/btr/indicative"), { birth, rule_set: ruleSet }),
 };
 
 // --- Analysis views -------------------------------------------------------------
@@ -212,7 +216,7 @@ export const DEFAULT_YOGA_OPTIONS: YogaOptions = { strong_lord: "dignity", gajak
 export const analysis = {
   panchanga: (birth: Birth) => post<Panchanga>("/v1/panchanga", { birth }),
   yogas: (birth: Birth, options: YogaOptions = DEFAULT_YOGA_OPTIONS) =>
-    post<{ yogas: Yoga[] }>("/v1/yogas", { birth, include_absent: true, ...options }),
+    post<{ yogas: Yoga[] }>(lang("/v1/yogas"), { birth, include_absent: true, ...options }),
   vimshopaka: (birth: Birth, saptavarga_weights: "bphs" | "jhora") =>
     post<Vimshopaka>("/v1/vimshopaka", { birth, saptavarga_weights }),
   ashtakavarga: (birth: Birth) => post<Ashtakavarga>("/v1/ashtakavarga", { birth }),
@@ -278,7 +282,7 @@ export const readings = {
   topics: () => call<{ topics: ReadingTopic[] }>("/v1/reading/topics"),
   /** `date` (local YYYY-MM-DD) adds the running Vimshottari lords; omit for the natal promise. */
   reading: (birth: Birth, topic: string, date: string | null) =>
-    post<Reading>("/v1/reading", { birth, topic, ...(date ? { date } : {}) }),
+    post<Reading>(lang("/v1/reading"), { birth, topic, ...(date ? { date } : {}) }),
   feedback: (f: { topic: string; factor: string; verdict: "accept" | "reject"; chart_id: number | null; birth: Birth }) =>
     post<{ id: number }>("/v1/reading/feedback", f),
 };
