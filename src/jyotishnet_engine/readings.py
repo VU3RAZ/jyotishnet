@@ -96,6 +96,7 @@ def sign_dignity(planet: str, sign: int) -> str:
 DIGNITY_WORDS = {"exalted": "exalted", "moolatrikona": "in its moolatrikona sign", "own": "in its own sign",
                  "friend": "in a friend's sign", "enemy": "in an enemy's sign",
                  "debilitated": "debilitated", "neutral": "", "node": ""}
+READS = {"supports": 1.0, "obstructs": -1.0, "mixed": 0.0}
 DIGNITY_SCORE = {"exalted": 1.0, "moolatrikona": 1.0, "own": 1.0, "friend": 0.5, "neutral": 0.0,
                  "enemy": -0.5, "debilitated": -1.0, "node": 0.0}
 
@@ -117,6 +118,11 @@ class Topic:
     disclaimer: str | None = None
     note: str = ""
     theme: str = ""
+    labels: dict = field(default_factory=dict)       # how the UI names supports / obstructs / mixed
+    house_rules: dict = field(default_factory=dict)  # per-house overrides of the general rules, cited
+
+    def label(self, direction: str) -> str:
+        return self.labels.get(direction, direction)
 
 
 @lru_cache(maxsize=1)
@@ -266,9 +272,10 @@ class Sheet:
 
 # ------------------------------------------------------------- planet condition
 
-def _condition(sh: Sheet, p: str, v: int = 1) -> tuple[float, list[str], list[str]]:
+def _condition(sh: Sheet, p: str, v: int = 1, lord_rule: dict | None = None) -> tuple[float, list[str], list[str]]:
     """Net classical condition of a planet as a significator: dignity, house, strength,
-    combustion. Returns (net, reasons, fact ids)."""
+    combustion. Returns (net, reasons, fact ids). `lord_rule` (a topic's house rule for
+    its lord) replaces the general kendra/trikona and dusthana points where it says so."""
     net, why, facts = 0.0, [], []
     d = sh.dignity(p, v)
     facts += [sh.placement(p, v), sh.dignity_fact(p, v)]
@@ -276,7 +283,13 @@ def _condition(sh: Sheet, p: str, v: int = 1) -> tuple[float, list[str], list[st
         net += DIGNITY_SCORE[d]
         why.append(f"{d} in D{v}")
     h = sh.house(p, v)
-    if h in KENDRA_TRIKONA:
+    place = "kendra_trikona" if h in KENDRA_TRIKONA else "dusthana" if h in DUSTHANA else None
+    rule = (lord_rule or {}).get(place) if place else None
+    if rule:
+        net += READS[rule["reads"]]
+        kind = "kendra or trikona" if place == "kendra_trikona" else "dusthana"
+        why.append(f"in the {ordinal(h)} house ({kind}; {rule['cite']})")
+    elif h in KENDRA_TRIKONA:
         net += 1.0
         why.append(f"in the {ordinal(h)} house (kendra or trikona)")
     elif h in DUSTHANA:
@@ -295,6 +308,22 @@ def _condition(sh: Sheet, p: str, v: int = 1) -> tuple[float, list[str], list[st
             net -= 1.0
             why.append("combust")
     return net, why, facts
+
+
+def _house_rule(sh: Sheet, hr: dict, kind: str, p: str) -> dict | None:
+    """A topic's rule for a planet occupying or aspecting one of its houses: by planet,
+    else by natural benefic or malefic. None: the general rule applies."""
+    r = hr.get(kind) or {}
+    return r.get(p) or r.get("benefic" if p in sh.benefics else "malefic")
+
+
+def _occupant(sh: Sheet, hr: dict, p: str, v: int) -> tuple[float, list[str]]:
+    """General rule: a natural benefic in the house supports it, a malefic obstructs it,
+    adjusted by dignity. A topic's house rule, where it has one, gives the reading instead."""
+    rule = _house_rule(sh, hr, "occupant", p)
+    if rule:
+        return READS[rule["reads"]], [rule["cite"]]
+    return (1.0 if p in sh.benefics else -1.0) + DIGNITY_SCORE[sh.dignity(p, v)], []
 
 
 def _direction(net: float) -> str:
@@ -335,34 +364,37 @@ def rank(sh: Sheet, topic: Topic, at_jd: float | None, unstable: set[int]) -> li
     out: list[Factor] = []
     u1 = 1 in unstable
     for h in topic.houses:
+        hr = topic.house_rules.get(h, {})
         lo = sh.lord(h, 1)
-        net, why, facts = _condition(sh, lo)
+        net, why, facts = _condition(sh, lo, 1, hr.get("lord"))
         out.append(_factor(f"lord.D1.H{h}", "lord", lo, 1, net, [f"lord of the {ordinal(h)}"] + why,
                            [sh.lordship(h, 1)] + facts, u1))
         for p in GRAHAS:
+            nature = "natural benefic" if p in sh.benefics else "natural malefic"
             if sh.house(p, 1) == h:
-                net = (1.0 if p in sh.benefics else -1.0) + DIGNITY_SCORE[sh.dignity(p, 1)]
+                net, why = _occupant(sh, hr, p, 1)
                 out.append(_factor(f"occupant.D1.H{h}.{p}", "occupant", p, 1, net,
-                                   [f"in the {ordinal(h)}", "natural benefic" if p in sh.benefics else "natural malefic"],
+                                   [f"in the {ordinal(h)}", nature] + why,
                                    [sh.placement(p, 1), sh.dignity_fact(p, 1)], u1))
             elif p in GRAHA_DRISHTI and (h - sh.house(p, 1)) % 12 + 1 in GRAHA_DRISHTI[p]:
-                net = 1.0 if p in sh.benefics else -1.0
+                rule = _house_rule(sh, hr, "aspect", p)
+                net = READS[rule["reads"]] if rule else (1.0 if p in sh.benefics else -1.0)
                 out.append(_factor(f"aspect.D1.H{h}.{p}", "aspect", p, 1, net,
-                                   [f"aspects the {ordinal(h)}", "natural benefic" if p in sh.benefics else "natural malefic"],
+                                   [f"aspects the {ordinal(h)}", nature] + ([rule["cite"]] if rule else []),
                                    [sh.aspect(p, h), sh.placement(p, 1)], u1))
         v = topic.varga
         if v:
             lo_v = sh.lord(h, v)
-            net, why, facts = _condition(sh, lo_v, v)
+            net, why, facts = _condition(sh, lo_v, v, hr.get("lord"))
             out.append(_factor(f"lord.D{v}.H{h}", "varga_lord", lo_v, v, net,
                                [f"lord of the {ordinal(h)} in D{v}"] + why, [sh.lordship(h, v)] + facts,
                                v in unstable))
             for p in GRAHAS:
                 if sh.house(p, v) == h:
-                    net = (1.0 if p in sh.benefics else -1.0) + DIGNITY_SCORE[sh.dignity(p, v)]
+                    net, why = _occupant(sh, hr, p, v)
                     out.append(_factor(f"occupant.D{v}.H{h}.{p}", "varga_occupant", p, v, net,
                                        [f"in the {ordinal(h)} of D{v}",
-                                        "natural benefic" if p in sh.benefics else "natural malefic"],
+                                        "natural benefic" if p in sh.benefics else "natural malefic"] + why,
                                        [sh.placement(p, v), sh.dignity_fact(p, v)], v in unstable))
     k = topic.karaka
     net, why, facts = _condition(sh, k)
@@ -648,7 +680,8 @@ def reading(birth: BirthData, topic_id: str, at: date | datetime | None = None,
     used = {fid for f in factors for fid in f.facts} | {fid for fid in sh.facts if fid.startswith(("lagna.", "stability."))}
     return Reading(
         topic={"id": t.id, "name": t.name, "group": t.group, "houses": list(t.houses), "karaka": t.karaka,
-               "varga": t.varga, "source": t.source, "status": t.status},
+               "varga": t.varga, "source": t.source, "status": t.status, "theme": _theme(t),
+               "labels": {d: t.label(d) for d in READS}},
         facts=[f for fid, f in sh.facts.items() if fid in used],
         factors=factors, sentences=sentences, dropped=dropped,
         disclaimers=[DISCLAIMERS[t.disclaimer]] if t.disclaimer else [], notes=notes)

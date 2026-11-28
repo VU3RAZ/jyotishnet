@@ -13,9 +13,6 @@ const ROLE: Record<string, string> = {
   varga_lord: "Varga lord", varga_occupant: "Varga occupant", yoga: "Yoga",
   dasha_maha: "Mahadasha lord", dasha_antar: "Antardasha lord",
 };
-const DIRECTION: Record<ReadingFactor["direction"], string> = {
-  supports: "supports", obstructs: "obstructs", mixed: "mixed",
-};
 
 function subjectName(f: ReadingFactor): string {
   return f.role === "yoga" ? f.reasons[0] ?? f.subject : GRAHA_NAME[f.subject] ?? f.subject;
@@ -104,6 +101,10 @@ export function ReadingView({ topics, topic, onTopic, scope, onScope, dateLabel,
 
           <section aria-labelledby="reading-factors-h">
             <h3 id="reading-factors-h">Ranked factors</h3>
+            <p className="muted reads-as-note">
+              “Reads as” says how the rule in “Why” reads each factor for {r.topic.theme}:
+              “{r.topic.labels.supports}”, “{r.topic.labels.obstructs}” or “{r.topic.labels.mixed}”.
+            </p>
             <div className="table-wrap">
               <table className="reading-factors">
                 <thead>
@@ -120,7 +121,7 @@ export function ReadingView({ topics, topic, onTopic, scope, onScope, dateLabel,
                         <span className="muted"> · {ROLE[f.role] ?? f.role}{f.varga !== 1 ? `, D${f.varga}` : ""}</span>
                         {f.uncertain && <span className="uncertain-mark" title="Depends on a Lagna that changes sign near the birth time"> uncertain</span>}
                       </th>
-                      <td><span className={`dir ${f.direction}`}>{DIRECTION[f.direction]}</span></td>
+                      <td><span className={`dir ${f.direction}`}>{r.topic.labels[f.direction]}</span></td>
                       <td className="weight">
                         <span className="weight-track" aria-hidden="true">
                           <span className="inline-bar" style={{ width: `${Math.min(1, f.score) * 100}%` }} />

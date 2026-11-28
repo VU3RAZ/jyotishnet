@@ -19,6 +19,17 @@
   in BPHS (`docs/research/BPHS-dasha-events.md`). The Life events panel has a
   switch between the two, and the event table shows the period's quality with
   its reasons.
+- **Readings: litigation, enemies and competition.** Each factor now reads as
+  "favours the native" or "against the native", and the draft speaks of success
+  over enemies and in disputes. Planets in the 6th follow what Phaladeepika ch. 8
+  says of each one (Mars, Jupiter, Ketu and others destroy enemies; Saturn, Rahu and
+  the Moon go against), malefic aspects on the 6th and the 6th lord in the 6th, 8th or
+  12th favour (Harsha yoga, Phaladeepika 6.57, 6.63). Before, the general rule
+  counted malefics in the 6th as obstructing and contradicted the Harsha yoga listed
+  for the same topic. Foreign travel now counts any planet in or aspecting the 12th
+  as supporting travel (BPHS 23.11-12), and the health topic reads the 6th and 8th
+  lords in a dusthana as favourable (Harsha and Sarala). Every rule cites its verse
+  in the "Why" column; see "Reading house rules" in `docs/DECISIONS.md`.
 - Indicative periods now say how much of adult life such periods cover, and that
   one match is weak evidence.
 - The fit curve is computed about twice as fast (each candidate time's chart is

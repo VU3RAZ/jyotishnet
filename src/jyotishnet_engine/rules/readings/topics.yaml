@@ -7,6 +7,16 @@
 # the user's Jyotish reviewer signs them off.
 #
 # theme: how sentences name the topic (default: the name in lower case).
+# labels: how the workbench names a factor's reading (default "supports", "obstructs",
+#   "mixed"), where those words alone would be ambiguous.
+# house_rules: where a text gives a house its own rule, it replaces the general one
+#   (benefic occupants and aspects support a house, malefic ones obstruct it; its lord
+#   in a kendra or trikona supports it, in a dusthana obstructs it). Per house:
+#     occupant / aspect: by planet code, else by "benefic" / "malefic"
+#     lord: by "kendra_trikona" / "dusthana" (where the lord is placed)
+#   each entry {reads: supports | obstructs | mixed, cite: the verse}. Applied in D1 and
+#   in the topic's varga. Verse numbers: Phaladeepika as V. Subrahmanya Sastri's
+#   translation (2nd ed., 1950); BPHS as enjoylearningsanskrit.com.
 # technical_only: factors are computed and listed for the astrologer, but no draft
 # text is written (design doc, Safety filter). disclaimer: medical, legal or financial.
 - id: personality
@@ -148,17 +158,49 @@
   houses: [12, 9]
   karaka: Ra
   varga: null
+  # BPHS 23.11-12: the 12th with malefics gives wandering from country to country, with
+  # benefics a journey from one's own country; either way, travel abroad.
+  house_rules:
+    12:
+      occupant:
+        benefic: {reads: supports, cite: "BPHS 23.12: journey from one's own country"}
+        malefic: {reads: supports, cite: "BPHS 23.11: travels from country to country"}
+      aspect:
+        benefic: {reads: supports, cite: "BPHS 23.12: journey from one's own country"}
+        malefic: {reads: supports, cite: "BPHS 23.11: travels from country to country"}
   yogas: {supports: [], obstructs: []}
   source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 12th and 9th houses"}
   status: draft
 - id: disputes
   name: Litigation, enemies and competition
-  theme: disputes and competition
+  theme: success over enemies, in disputes and in competition
   group: Disputes
   houses: [6]
   karaka: Ma
   varga: 6
   disclaimer: legal
+  labels: {supports: favours the native, obstructs: against the native}
+  # Phaladeepika 15.18 (Satyacharya) reverses the general rule for the 6th, 8th and 12th;
+  # 15.19 (Mantreswara's own view, per the translator's note) does not. Planets in the
+  # 6th follow ch. 8, which says for each one how the native fares against enemies.
+  house_rules:
+    6:
+      occupant:
+        Su: {reads: supports, cite: "Phaladeepika 8.3: victorious"}
+        Mo: {reads: obstructs, cite: "Phaladeepika 8.6: suffers humiliation"}
+        Ma: {reads: supports, cite: "Phaladeepika 8.9: victorious"}
+        Me: {reads: supports, cite: "Phaladeepika 8.12: destroys the power of enemies"}
+        Ju: {reads: supports, cite: "Phaladeepika 8.15: destroys enemies"}
+        Ve: {reads: supports, cite: "Phaladeepika 8.18: no enemies"}
+        Sa: {reads: obstructs, cite: "Phaladeepika 8.22: subdued by enemies"}
+        Ra: {reads: obstructs, cite: "Phaladeepika 8.26: troubled by enemies"}
+        Ke: {reads: supports, cite: "Phaladeepika 8.30: destroys enemies"}
+      aspect:
+        malefic: {reads: supports, cite: "Phaladeepika 6.57, 6.63: Harsha yoga, overcomes enemies"}
+        benefic: {reads: mixed, cite: "no rule found for a benefic's aspect on the 6th"}
+      lord:
+        dusthana: {reads: supports, cite: "Phaladeepika 6.57, 6.63: Harsha yoga, overcomes enemies"}
+        kendra_trikona: {reads: mixed, cite: "no rule found for the 6th lord here"}
   yogas: {supports: [harsha], obstructs: []}
   source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 6th house"}
   status: draft
@@ -180,6 +222,16 @@
   varga: 30
   technical_only: true
   disclaimer: medical
+  labels: {supports: favourable, obstructs: unfavourable}
+  # The 6th and 8th lords in a dusthana form Harsha and Sarala yogas (Phaladeepika 6.57),
+  # read as good health and strength (6.63, 6.65), not as the general rule's obstruction.
+  house_rules:
+    6:
+      lord:
+        dusthana: {reads: supports, cite: "Phaladeepika 6.57, 6.63: Harsha yoga, strong constitution"}
+    8:
+      lord:
+        dusthana: {reads: supports, cite: "Phaladeepika 6.57, 6.65: Sarala yoga"}
   yogas: {supports: [], obstructs: []}
   source: {text: Brihat Parashara Hora Shastra, section: "Effects of the 1st, 6th and 8th houses; Trimsamsa"}
   status: draft

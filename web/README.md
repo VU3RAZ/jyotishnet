@@ -43,7 +43,8 @@ Next.js + React + TypeScript front end for the JyotishNet API.
   The charts follow the time ribbon.
 - **Readings tab**: pick one of 18 topics (career, marriage, children for fertility
   only, health as technical factors only, ...) and see the factors the classical
-  rules weigh for it, ranked, with whether each supports or obstructs it, plus a
+  rules weigh for it, ranked, with whether each supports or obstructs it (named per topic where that is ambiguous:
+  for litigation and enemies, "favours the native" or "against the native"), plus a
   short draft in which every sentence cites the engine facts it rests on (hover a
   sentence to light up its factor and facts). Scope: the natal promise, or also the
   Vimshottari lords running on the event or transit date. Factors resting on a

@@ -81,6 +81,10 @@ async def main() -> int:
                 await page.wait_for_selector(".reading-notes .disclaimer:has-text('not medical advice')")
                 assert await page.locator(".draft li").count() == 0
                 await step("reading health (technical only)", 900)
+                await page.select_option(".reading-options select", "disputes")
+                await page.wait_for_selector(".reads-as-note:has-text('favours the native')")
+                await page.wait_for_selector(".reading-factors .dir:has-text('the native')")
+                await step("reading disputes (labels)", 900)
                 await page.select_option(".reading-options select", "marriage")
                 await page.wait_for_selector(".draft li .cite")
                 await step("reading marriage", 900)

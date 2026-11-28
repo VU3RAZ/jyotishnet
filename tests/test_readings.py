@@ -124,3 +124,48 @@ def test_unstable_lagna_marks_factors_uncertain():
 def test_unknown_topic():
     with pytest.raises(ValueError):
         reading(PVR, "lottery")
+
+
+def test_house_rules_cite_every_entry():
+    for t in topics().values():
+        for h, rules in t.house_rules.items():
+            assert h in t.houses, (t.id, h)
+            for kind, entries in rules.items():
+                assert kind in ("occupant", "aspect", "lord"), (t.id, kind)
+                for key, e in entries.items():
+                    assert e["reads"] in ("supports", "obstructs", "mixed") and e["cite"], (t.id, h, key)
+
+
+@pytest.mark.parametrize("c", CHARTS, ids=lambda c: c.name)
+def test_disputes_follow_the_6th_house_rules(c):
+    """Planets in the 6th read as Phaladeepika ch. 8 says; the 6th lord in a dusthana
+    (Harsha) and malefic aspects favour the native, never against them."""
+    b = BirthData(c.local, c.latitude, c.longitude, utc_offset_hours=c.utc_offset_hours,
+                  altitude_m=c.altitude_m)
+    r = reading(b, "disputes", stability_min=0, limit=100)
+    occ = topics()["disputes"].house_rules[6]["occupant"]
+    for f in r.factors:
+        if f.key.startswith(("occupant.D1.H6.", "occupant.D6.H6.")):
+            assert f.direction == occ[f.subject]["reads"], f
+        if f.key == "lord.D1.H6" and any("dusthana" in x for x in f.reasons):
+            assert "Harsha" in "; ".join(f.reasons)
+        if f.key.startswith("aspect.D1.H6.") and "natural malefic" in f.reasons:
+            assert f.direction == "supports", f
+    assert r.topic["labels"]["supports"] == "favours the native"
+    assert all("success over enemies" in s.text for s in r.sentences)
+
+
+def test_foreign_12th_occupants_support_travel_either_way():
+    for c in CHARTS:
+        b = BirthData(c.local, c.latitude, c.longitude, utc_offset_hours=c.utc_offset_hours,
+                      altitude_m=c.altitude_m)
+        for f in reading(b, "foreign", stability_min=0, limit=100).factors:
+            if f.key.startswith(("occupant.D1.H12.", "aspect.D1.H12.")):
+                assert f.direction == "supports" and "BPHS 23.1" in f.reasons[-1], f
+
+
+def test_topics_without_house_rules_keep_the_general_rule():
+    r = reading(PVR, "siblings", stability_min=0, limit=100)
+    assert not topics()["siblings"].house_rules
+    assert not [f for f in r.factors if any("Phaladeepika" in x or "BPHS" in x for x in f.reasons)]
+    assert r.topic["labels"] == {"supports": "supports", "obstructs": "obstructs", "mixed": "mixed"}

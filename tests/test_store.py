@@ -77,6 +77,8 @@ def test_validation(client):
 def test_reading_and_feedback(client):
     ts = client.get("/v1/reading/topics").json()["topics"]
     assert {"career", "marriage", "health"} <= {t["id"] for t in ts}
+    disputes = next(t for t in ts if t["id"] == "disputes")
+    assert disputes["labels"]["supports"] == "favours the native" and "enemies" in disputes["theme"]
     r = client.post("/v1/reading", json={"birth": BIRTH, "topic": "career", "date": "2026-11-25"})
     assert r.status_code == 200
     d = r.json()

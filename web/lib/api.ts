@@ -253,6 +253,8 @@ export const library = {
 export type ReadingTopic = {
   id: string; name: string; group: string; houses: number[]; karaka: string;
   varga: number | null; technical_only: boolean;
+  /** How factors' readings are named for this topic, e.g. "favours the native". */
+  theme: string; labels: Record<"supports" | "obstructs" | "mixed", string>;
 };
 export type ReadingFact = { id: string; kind: string; text: string };
 export type ReadingFactor = {

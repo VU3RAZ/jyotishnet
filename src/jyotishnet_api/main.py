@@ -478,7 +478,9 @@ class ReadingRequest(BaseModel):
 def reading_topics() -> dict:
     from jyotishnet_engine.readings import topics
     return {"topics": [{"id": t.id, "name": t.name, "group": t.group, "houses": list(t.houses),
-                        "karaka": t.karaka, "varga": t.varga, "technical_only": t.technical_only}
+                        "karaka": t.karaka, "varga": t.varga, "technical_only": t.technical_only,
+                        "theme": t.theme or t.name[0].lower() + t.name[1:],
+                        "labels": {d: t.label(d) for d in ("supports", "obstructs", "mixed")}}
                        for t in topics().values()]}
 
 
