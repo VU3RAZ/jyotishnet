@@ -177,7 +177,7 @@ The 1.0.0 rules link a dasha lord to an event through D1 and the event's varga, 
 | The antardasha lord gives the event | e.g. marriage: lords, occupies or aspects the 7th, or is Venus (Phaladeepika 10.13, 19.26); children: lords of 1, 5 or 7, in or aspecting the 5th, or Jupiter (Phaladeepika 12.25); career: the 10th lord (BPHS 48.6); property: the 4th lord (BPHS 48.3) | +1 |
 | The mahadasha lord gives the event | the same conditions | +0.5 |
 | The antardasha is good | its lord in a kendra, trikona or the 11th, exalted or in its own sign, or well placed from the mahadasha lord, with nothing against it (BPHS ch. 52-60; Phaladeepika 20.14, 20.29). Mixed scores +0.25 | +0.5 |
-| Jupiter's transit, where a text gives one | marriage: a trine to the 7th lord's sign or navamsa (Phaladeepika 10.14); children: the 5th or 11th from the Moon (Phaladeepika 26.19-20) | +0.5 |
+| Jupiter's transit, where a text gives one | marriage: a trine to the 7th lord's sign or navamsa, counted only in the dasha of the strongest by Shadbala of the lords of the 7th lord's sign and navamsa, Venus and the Moon, which also gives marriage (Phaladeepika 10.14); children: the 5th or 11th from the Moon (Phaladeepika 26.19-20) | +0.5 |
 
 - **Events with no classical timing rule** (sibling, spiritual) are scored on the period's quality alone.
 - **Check-only events** (death, illness) also score on quality alone, the reverse way. No death-timing rule is used.

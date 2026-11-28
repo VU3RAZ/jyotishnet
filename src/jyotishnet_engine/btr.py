@@ -86,8 +86,19 @@ def event_rules() -> dict[str, EventRule]:
     return out
 
 
+SHADBALA_VARGAS = (1, 2, 3, 7, 9, 12, 30)
+
+
 def required_vargas() -> list[int]:
-    return sorted({1} | {r.varga for r in event_rules().values()})
+    """Vargas a rectification chart needs: the events' vargas, and the Saptavarga and
+    Trimsamsa for Shadbala (the classical `strongest` condition)."""
+    return sorted({1} | {r.varga for r in event_rules().values()} | set(SHADBALA_VARGAS))
+
+
+def strengths(chart: Chart, birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG) -> dict[str, float]:
+    """Total Shadbala in rupas of the seven planets (chart built with required_vargas())."""
+    from .shadbala import shadbala
+    return {p: s.rupas for p, s in shadbala(chart, birth, cfg).items()}
 
 
 # ------------------------------------------------------------------ linking
@@ -165,12 +176,53 @@ def classical_rules() -> dict[str, ClassicalRule]:
             for r in rows}
 
 
-def significator_reasons(chart: Chart, rule: ClassicalRule, planet: str) -> list[str]:
-    """Why `planet` gives the event in its dasha, by the rule's cited conditions (D1)."""
+def _strongest(chart: Chart, cond: dict, st: dict[str, float]) -> tuple[str, list[tuple[str, str]]]:
+    """The strongest planet of a `strongest` condition, and the (role, planet) candidates."""
+    lord = chart.grahas[chart.house_lords[cond["house"]]]
+    h = cond["house"]
+    roles = {"sign_lord": (f"lord of the {h}th lord's sign", SIGN_LORD[lord.sign]),
+             "navamsa_lord": (f"lord of the {h}th lord's navamsa", SIGN_LORD[lord.vargas[9]])}
+    cands = [roles[x] if x in roles else (GRAHA_NAMES[x], x) for x in cond["of"]]
+    best = max(cands, key=lambda rp: (st[rp[1]], -cands.index(rp)))[1]
+    return best, cands
+
+
+def strongest_planet(chart: Chart, rule: ClassicalRule, st: dict[str, float] | None) -> str | None:
+    """The planet a rule's `strongest` condition names, if it has one."""
+    for c in rule.significators:
+        if c["kind"] == "strongest" and st:
+            return _strongest(chart, c, st)[0]
+    return None
+
+
+def transit_gate(chart: Chart, rule: ClassicalRule, st: dict[str, float] | None) -> str | None:
+    """The planet in whose dasha the rule's transit counts (None: at any time)."""
+    if rule.transit and rule.transit.get("within_dasha_of_strongest"):
+        return strongest_planet(chart, rule, st)
+    return None
+
+
+def significator_reasons(chart: Chart, rule: ClassicalRule, planet: str,
+                         st: dict[str, float] | None = None) -> list[str]:
+    """Why `planet` gives the event in its dasha, by the rule's cited conditions (D1).
+    `st`: Shadbala strengths (strengths()), needed by the `strongest` condition."""
     p = chart.grahas[planet]
     out = []
     for c in rule.significators:
         kind, cite = c["kind"], c["cite"]
+        if kind == "strongest":
+            if st:
+                best, cands = _strongest(chart, c, st)
+                if planet == best:
+                    roles: dict[str, list[str]] = {}
+                    for role, q in cands:
+                        roles.setdefault(q, [])
+                        if role != GRAHA_NAMES[q]:
+                            roles[q].append(role)
+                    names = "; ".join(f"{GRAHA_NAMES[q]} " + (f"({', '.join(r)}) " if r else "") + f"{st[q]:.2f}"
+                                      for q, r in roles.items())
+                    out.append(f"strongest by Shadbala rupas of {names} ({cite})")
+            continue
         if kind == "graha":
             if planet == c["graha"]:
                 out.append(f"is {GRAHA_NAMES[planet]} ({cite})")
@@ -309,6 +361,7 @@ class _Candidate:
     linked: dict[str, frozenset[str]]       # event type -> grahas that give it
     quality: dict[tuple[str, str], str]     # classical: (maha, antar) -> good/bad/mixed
     transit: dict[str, frozenset[int]]      # classical: event type -> Jupiter signs that hit
+    gate: dict[str, str | None] = field(default_factory=dict)  # transit counts only in this lord's dasha
 
     def lords_at(self, jd: float) -> tuple[str | None, str | None]:
         i = bisect_right(self.starts, jd) - 1
@@ -317,27 +370,31 @@ class _Candidate:
         return self.lords[i]
 
 
-def _from_chart(chart: Chart, offset_s: int, cfg: SchoolConfig, rule_set: str) -> _Candidate:
+def _from_chart(chart: Chart, offset_s: int, cfg: SchoolConfig, rule_set: str,
+                birth: BirthData | None = None) -> _Candidate:
+    """`birth`: the birth data the chart was built from (for Shadbala; classical rules)."""
     if rule_set not in RULE_SETS:
         raise ValueError(f"rule_set must be one of {RULE_SETS}")
     periods = vimshottari(chart.grahas["Mo"].longitude, chart.jd_ut, cfg, levels=2)
     flat = sorted((ad.start_jd, ad.end_jd, md.lord, ad.lord) for md in periods for ad in md.children)
     if rule_set == "modern":
         linked = {k: frozenset(g for g in GRAHAS if links(chart, r, g)) for k, r in event_rules().items()}
-        quality, transit = {}, {}
+        quality, transit, gate = {}, {}, {}
     else:
         cr = classical_rules()
-        linked = {k: frozenset(g for g in GRAHAS if significator_reasons(chart, r, g)) for k, r in cr.items()}
+        st = strengths(chart, birth, cfg) if birth is not None else None
+        linked = {k: frozenset(g for g in GRAHAS if significator_reasons(chart, r, g, st)) for k, r in cr.items()}
         quality = {(m, a): antardasha_quality(chart, m, a)[0] for m in GRAHAS for a in GRAHAS}
         transit = {k: transit_target_signs(chart, r) for k, r in cr.items()}
+        gate = {k: transit_gate(chart, r, st) for k, r in cr.items()}
     return _Candidate(offset_s, rule_set, chart.lagna.sign, [f[0] for f in flat], [f[1] for f in flat],
-                      [(f[2], f[3]) for f in flat], linked, quality, transit)
+                      [(f[2], f[3]) for f in flat], linked, quality, transit, gate)
 
 
 def _candidate(birth: BirthData, offset_s: int, cfg: SchoolConfig, vargas: list[int],
                rule_set: str) -> _Candidate:
-    chart = build_chart(birth.shifted(minutes=offset_s / 60.0), cfg, vargas)
-    return _from_chart(chart, offset_s, cfg, rule_set)
+    b = birth.shifted(minutes=offset_s / 60.0)
+    return _from_chart(build_chart(b, cfg, vargas), offset_s, cfg, rule_set, b)
 
 
 def _score(c: _Candidate, etype: str, jd: float, signs: dict[str, int]) -> float:
@@ -349,7 +406,9 @@ def _score(c: _Candidate, etype: str, jd: float, signs: dict[str, int]) -> float
         return s + (0.5 if _double_transit(c.lagna_sign, event_rules()[etype], signs) else 0.0)
     rule = classical_rules()[etype]
     q = c.quality.get((md, ad)) if md and ad else None
-    return s + _quality_points(rule, q) + (0.5 if signs["Ju"] in c.transit[etype] else 0.0)
+    gate = c.gate.get(etype)
+    hit = signs["Ju"] in c.transit[etype] and (gate is None or gate in (md, ad))
+    return s + _quality_points(rule, q) + (0.5 if hit else 0.0)
 
 
 def check_events(birth: BirthData, events: list[tuple[str, date]],
@@ -358,7 +417,8 @@ def check_events(birth: BirthData, events: list[tuple[str, date]],
     """Score each (event type, date) for the birth time in `birth`."""
     rules = event_rules()
     chart = chart or build_chart(birth, cfg, required_vargas())
-    cand = _from_chart(chart, 0, cfg, rule_set)
+    cand = _from_chart(chart, 0, cfg, rule_set, birth)
+    st = strengths(chart, birth, cfg) if rule_set == "classical" else None
     out = []
     for etype, d in events:
         rule = rules[etype]
@@ -375,12 +435,14 @@ def check_events(birth: BirthData, events: list[tuple[str, date]],
                                   verdict(score, mx), rule.check_only, rule_set, mx))
             continue
         cr = classical_rules()[etype]
-        ml = significator_reasons(chart, cr, md) if md else []
-        al = significator_reasons(chart, cr, ad) if ad else []
+        ml = significator_reasons(chart, cr, md, st) if md else []
+        al = significator_reasons(chart, cr, ad, st) if ad else []
         q, good, bad = antardasha_quality(chart, md, ad) if md and ad else (None, [], [])
         tr = []
-        if cr.transit and signs["Ju"] in cand.transit[etype]:
-            tr = [f"Jupiter in {SIGNS[signs['Ju']]} ({cr.transit['cite']})"]
+        gate = cand.gate.get(etype)
+        if cr.transit and signs["Ju"] in cand.transit[etype] and (gate is None or gate in (md, ad)):
+            within = f", in the dasha of {GRAHA_NAMES[gate]}" if gate else ""
+            tr = [f"Jupiter in {SIGNS[signs['Ju']]}{within} ({cr.transit['cite']})"]
         out.append(EventCheck(etype, rule.name, d.isoformat(), md, ad, ml, al, [], score,
                               verdict(score, mx), rule.check_only, rule_set, mx, q,
                               [f"good: {r}" for r in good] + [f"bad: {r}" for r in bad], tr))
@@ -481,19 +543,21 @@ def indicative_periods(birth: BirthData, cfg: SchoolConfig = DEFAULT_CONFIG,
     limit = chart.jd_ut + max_age_years * 365.25
     first = chart.jd_ut + min_age_years * 365.25
     out: dict[str, list[dict]] = {}
+    st: dict[str, float] | None = None
     for rule in event_rules().values():
         if not rule.indicative or rule.check_only:
             continue
         cr = classical_rules()[rule.id] if rule_set == "classical" else None
+        st = strengths(chart, birth, cfg) if cr and st is None else st
         rows = []
         for md in periods:
-            ml = significator_reasons(chart, cr, md.lord) if cr else links(chart, rule, md.lord)
+            ml = significator_reasons(chart, cr, md.lord, st) if cr else links(chart, rule, md.lord)
             if not cr and not ml:
                 continue
             for ad in md.children:
                 if ad.start_jd > limit or ad.end_jd <= first:
                     continue
-                al = significator_reasons(chart, cr, ad.lord) if cr else links(chart, rule, ad.lord)
+                al = significator_reasons(chart, cr, ad.lord, st) if cr else links(chart, rule, ad.lord)
                 if not al:
                     continue
                 row = {"mahadasha": md.lord, "antardasha": ad.lord,

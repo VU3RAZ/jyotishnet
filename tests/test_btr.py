@@ -7,7 +7,8 @@ from datetime import date, datetime, timedelta
 
 import pytest
 
-from jyotishnet_engine import BirthData, build_chart
+from jyotishnet_engine import DEFAULT_CONFIG, BirthData, build_chart
+from jyotishnet_engine.constants import SIGN_LORD
 from jyotishnet_engine.timeutil import jd_to_datetime
 from jyotishnet_engine.btr import (
     RULE_SETS, antardasha_quality, check_events, classical_rules, double_transit, event_rules,
@@ -142,7 +143,8 @@ def test_planted_events_are_found_significant():
     time: random dates should rarely fit as well."""
     rnd = random.Random(5)
     hits = 0
-    for _ in range(6):
+    tried = 0
+    for _ in range(30):     # about 90% are found (118 charts measured, 28 Nov 2026)
         b = _random_birth(rnd)
         jd0 = b.jd_ut()
         ip = indicative_periods(b)
@@ -152,9 +154,12 @@ def test_planted_events_are_found_significant():
             if rows:
                 r = rnd.choice(rows)
                 ev.append((t, jd_to_datetime(rnd.uniform(r["start_jd"], r["end_jd"])).date()))
+        if not ev:
+            continue
+        tried += 1
         f = fit_curve(b, ev, window_min=10, step_s=60, shuffles=200)
         hits += f["significance"]["p_value"] <= 0.05
-    assert hits >= 5
+    assert hits >= 0.8 * tried
 
 
 def test_random_events_are_rarely_significant():
@@ -194,3 +199,30 @@ def test_indicative_periods_start_at_16_by_default(rule_set):
     young = indicative_periods(GANDHI, rule_set=rule_set, min_age_years=0)
     assert sum(map(len, young.values())) > sum(map(len, ip.values()))
     assert min(r["start_jd"] for rows in young.values() for r in rows) < jd0 + 16 * 365.25
+
+
+def test_pd_10_14_strongest_planet_gives_marriage_and_gates_the_transit():
+    """Phaladeepika 10.14: the strongest of the lords of the 7th lord's sign and navamsa,
+    Venus and the Moon gives marriage; Jupiter's transit counts only in its dasha."""
+    from jyotishnet_engine.btr import _from_chart, strengths, strongest_planet
+    rnd = random.Random(3)
+    cr = classical_rules()["marriage"]
+    gated = 0
+    for _ in range(10):
+        b = _random_birth(rnd)
+        c = build_chart(b, vargas=required_vargas())
+        st = strengths(c, b)
+        best = strongest_planet(c, cr, st)
+        lord7 = c.grahas[c.house_lords[7]]
+        four = {SIGN_LORD[lord7.sign], SIGN_LORD[lord7.vargas[9]], "Ve", "Mo"}
+        assert best in four and st[best] == max(st[q] for q in four)
+        assert any("PD 10.14" in r for r in significator_reasons(c, cr, best, st))
+        cand = _from_chart(c, 0, DEFAULT_CONFIG, "classical", b)
+        assert cand.gate["marriage"] == best and cand.gate["child"] is None
+        for d in range(0, 60 * 365, 211):   # every check agrees with the gate
+            jd = b.jd_ut() + 18 * 365.25 + d
+            [chk] = check_events(b, [("marriage", jd_to_datetime(jd).date())], chart=c)
+            if chk.transit:
+                assert best in (chk.mahadasha, chk.antardasha) and "dasha of" in chk.transit[0]
+            gated += bool(chk.transit)
+    assert gated

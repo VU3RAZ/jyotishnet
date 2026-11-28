@@ -38,6 +38,12 @@
   as supporting travel (BPHS 23.11-12), and the health topic reads the 6th and 8th
   lords in a dusthana as favourable (Harsha and Sarala). Every rule cites its verse
   in the "Why" column; see "Reading house rules" in `docs/DECISIONS.md`.
+- **Rectification: Phaladeepika 10.14 for marriage.** The strongest by Shadbala of
+  the lords of the 7th lord's sign and navamsa, Venus and the Moon now gives marriage
+  in its dasha, and Jupiter's transit for marriage counts only in that planet's
+  mahadasha or antardasha. The event table names the four planets with their
+  strength. On planted events the fit significance finds about 89% of charts, against
+  92% before (118 random charts).
 - **Indicative periods start at age 16** (`min_age_years`, default 16). Before, they
   started at birth, so marriage and career periods showed up in childhood.
 - Indicative periods now say how much of adult life such periods cover, and that

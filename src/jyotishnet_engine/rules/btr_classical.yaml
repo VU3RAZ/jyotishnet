@@ -13,9 +13,14 @@
 #     aspects     - it aspects one of `houses` by graha drishti
 #     joined_lord - it is in the same sign as the lord of one of `houses`
 #     graha       - it is `graha`
+#     strongest   - it is the strongest, by total Shadbala in rupas, of the planets in
+#                   `of`: sign_lord / navamsa_lord (the lords of the sign and navamsa
+#                   the lord of `house` occupies) or a graha code; ties go to the first
 # polarity: good events expect a good antardasha, adverse (check-only) events a
 #   bad one. Antardasha quality conditions are fixed in btr.py and cited there.
 # transit (optional): Jupiter's sign on the event date, as the text gives it.
+#   within_dasha_of_strongest: the transit counts only in the dasha (mahadasha or
+#   antardasha) of the `strongest` significator.
 - id: marriage
   polarity: good
   significators:
@@ -23,12 +28,16 @@
     - {kind: occupies, houses: [7], cite: "PD 10.13"}
     - {kind: aspects, houses: [7], cite: "PD 10.13"}
     - {kind: graha, graha: Ve, cite: "PD 19.26"}
-  transit: {kind: jupiter_trine_lord_sign_or_navamsa, house: 7, cite: "PD 10.14"}
+    - {kind: strongest, house: 7, of: [sign_lord, navamsa_lord, Ve, Mo], cite: "PD 10.14"}
+  transit: {kind: jupiter_trine_lord_sign_or_navamsa, house: 7, within_dasha_of_strongest: true,
+            cite: "PD 10.14"}
   notes: >-
     BPHS 48.5 gives the 7th lord's own dasha as distress to the spouse (maraka); PD 10.13
-    and 20.8 give it marriage. PD 10.14 applies the Jupiter transit within the dasha of the
-    stronger of Venus, the Moon and the lords of the 7th lord's sign and navamsa; only the
-    transit part is used here.
+    and 20.8 give it marriage. PD 10.14: find the stronger of two pairs, the lords of the
+    sign and navamsa the 7th lord occupies, and Venus and the Moon; in the dasha of that
+    planet, marriage comes when Jupiter transits a trine to the 7th lord's sign or navamsa.
+    Read here as the strongest of the four by total Shadbala; the verse names no strength
+    measure, and "the stronger of each pair" (two planets) is another reading.
   status: draft
 - id: child
   polarity: good

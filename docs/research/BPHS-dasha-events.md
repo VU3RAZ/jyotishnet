@@ -208,7 +208,10 @@ Classical scoring, per event:
   PD 20.14, 20.29). Check-only events (death, illness) score the reverse, on
   quality alone; no death-timing rule is used.
 - **Jupiter's transit** (+0.5), where a text gives one:
-  - marriage: a trine to the 7th lord's sign or navamsa (PD 10.14);
+  - marriage: a trine to the 7th lord's sign or navamsa, counted only in the dasha
+    (mahadasha or antardasha) of the strongest of the lords of the 7th lord's sign and
+    navamsa, Venus and the Moon, which also gives marriage (PD 10.14; added 28 Nov 2026,
+    strength as total Shadbala in rupas);
   - children: the 5th or 11th from the Moon (PD 26.19-20).
 - **Events without a classical rule.** Sibling and spiritual events have no timing
   rule in the chapters read, so they are scored on quality alone.
@@ -233,7 +236,10 @@ flatter: within ±30 minutes it often moves only with the dasha dates.
 
 Not yet used, and open for the reviewer:
 
-- PD 10.14's choice of the strongest of four planets;
+- PD 10.14, used since 28 Nov 2026: is "the stronger of the two pairs" the strongest
+  of the four planets (used) or the stronger of each pair (two planets), and should
+  strength be total Shadbala in rupas (used), its ratio to the required strength, or
+  another measure? The verse names none;
 - PD 12.28 (the stronger of the 5th lord and Jupiter);
 - PD 10.12 and 10.13's transit rules for the Lagna lord and Venus;
 - the drekkana timing within a dasha (BPHS 47.3-4);
