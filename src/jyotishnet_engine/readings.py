@@ -97,6 +97,8 @@ DIGNITY_WORDS = {"exalted": "exalted", "moolatrikona": "in its moolatrikona sign
                  "friend": "in a friend's sign", "enemy": "in an enemy's sign",
                  "debilitated": "debilitated", "neutral": "", "node": ""}
 READS = {"supports": 1.0, "obstructs": -1.0, "mixed": 0.0}
+# How the workbench names a factor's reading, for every topic.
+DIRECTION_LABELS = {"supports": "favours the native", "obstructs": "against the native", "mixed": "mixed"}
 DIGNITY_SCORE = {"exalted": 1.0, "moolatrikona": 1.0, "own": 1.0, "friend": 0.5, "neutral": 0.0,
                  "enemy": -0.5, "debilitated": -1.0, "node": 0.0}
 
@@ -118,11 +120,10 @@ class Topic:
     disclaimer: str | None = None
     note: str = ""
     theme: str = ""
-    labels: dict = field(default_factory=dict)       # how the UI names supports / obstructs / mixed
     house_rules: dict = field(default_factory=dict)  # per-house overrides of the general rules, cited
 
     def label(self, direction: str) -> str:
-        return self.labels.get(direction, direction)
+        return DIRECTION_LABELS[direction]
 
 
 @lru_cache(maxsize=1)

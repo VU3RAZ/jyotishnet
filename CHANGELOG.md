@@ -19,8 +19,10 @@
   in BPHS (`docs/research/BPHS-dasha-events.md`). The Life events panel has a
   switch between the two, and the event table shows the period's quality with
   its reasons.
-- **Readings: litigation, enemies and competition.** Each factor now reads as
-  "favours the native" or "against the native", and the draft speaks of success
+- **Readings: "favours the native" or "against the native".** In every topic, each
+  factor now reads as favouring the native, against the native, or mixed, in place of
+  "supports" and "obstructs".
+- **Readings: litigation, enemies and competition.** The draft speaks of success
   over enemies and in disputes. Planets in the 6th follow what Phaladeepika ch. 8
   says of each one (Mars, Jupiter, Ketu and others destroy enemies; Saturn, Rahu and
   the Moon go against), malefic aspects on the 6th and the 6th lord in the 6th, 8th or

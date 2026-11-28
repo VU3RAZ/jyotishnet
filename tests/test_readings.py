@@ -168,4 +168,5 @@ def test_topics_without_house_rules_keep_the_general_rule():
     r = reading(PVR, "siblings", stability_min=0, limit=100)
     assert not topics()["siblings"].house_rules
     assert not [f for f in r.factors if any("Phaladeepika" in x or "BPHS" in x for x in f.reasons)]
-    assert r.topic["labels"] == {"supports": "supports", "obstructs": "obstructs", "mixed": "mixed"}
+    assert r.topic["labels"] == {"supports": "favours the native", "obstructs": "against the native",
+                                 "mixed": "mixed"}

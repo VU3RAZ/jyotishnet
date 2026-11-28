@@ -7,8 +7,6 @@
 # the user's Jyotish reviewer signs them off.
 #
 # theme: how sentences name the topic (default: the name in lower case).
-# labels: how the workbench names a factor's reading (default "supports", "obstructs",
-#   "mixed"), where those words alone would be ambiguous.
 # house_rules: where a text gives a house its own rule, it replaces the general one
 #   (benefic occupants and aspects support a house, malefic ones obstruct it; its lord
 #   in a kendra or trikona supports it, in a dusthana obstructs it). Per house:
@@ -179,7 +177,6 @@
   karaka: Ma
   varga: 6
   disclaimer: legal
-  labels: {supports: favours the native, obstructs: against the native}
   # Phaladeepika 15.18 (Satyacharya) reverses the general rule for the 6th, 8th and 12th;
   # 15.19 (Mantreswara's own view, per the translator's note) does not. Planets in the
   # 6th follow ch. 8, which says for each one how the native fares against enemies.
@@ -222,7 +219,6 @@
   varga: 30
   technical_only: true
   disclaimer: medical
-  labels: {supports: favourable, obstructs: unfavourable}
   # The 6th and 8th lords in a dusthana form Harsha and Sarala yogas (Phaladeepika 6.57),
   # read as good health and strength (6.63, 6.65), not as the general rule's obstruction.
   house_rules:

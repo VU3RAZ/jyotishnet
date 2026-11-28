@@ -194,7 +194,7 @@ For 18 life topics, R1 lists the factors the classical rules weigh and ranks the
 How a reading is built:
 
 1. **Fact sheet:** the engine's facts for the chart, each with an id, such as the lord of the 10th, a graha's dignity, a yoga, or a Shadbala ratio.
-2. **Ranked factors:** the house lord, occupants, aspects, karaka, yogas and the governing varga's lord. Each is weighted for the topic and marked as supporting, obstructing or mixed.
+2. **Ranked factors:** the house lord, occupants, aspects, karaka, yogas and the governing varga's lord. Each is weighted for the topic and read as favouring the native, against the native, or mixed.
 3. **Scope:** the natal promise alone, or also the Vimshottari lords running on a chosen date.
 4. **Uncertainty:** factors that rest on a varga Lagna changing sign within 5 minutes of the birth time are marked uncertain.
 5. **Cited draft:** a sentence for each factor, with links to the facts it cites. A verifier drops any sentence that fails one of three checks: every claim must rest on a cited fact, every claim is rechecked against the chart, and every graha, sign or house the sentence names must be one of its claims. Dropped sentences are listed with the reason.
@@ -202,6 +202,51 @@ How a reading is built:
 7. **Feedback:** you can accept or reject each factor. The choice is stored locally as a label for future training.
 
 All 18 topics and their factor weights are `draft` (decision #24).
+
+### Favours the native or against the native (added after 1.0.0)
+
+Each factor now reads as **favours the native**, **against the native** or **mixed**, in every topic. In 1.0.0 the labels were "supports" and "obstructs". For litigation and enemies, that left it unclear whether "supports" meant more disputes or winning them. A line above the factor table names what the readings are for. For disputes, that is success over enemies, in disputes and in competition.
+
+**The general rule** is unchanged for most topics:
+
+- A natural benefic in a topic's house, or aspecting it, favours the native. A malefic is against.
+- The house lord in a kendra or trikona favours the native, and in a dusthana is against.
+- The planet's dignity, Shadbala and combustion adjust the reading.
+
+**House rules from the texts.** Where a text gives a house its own rule, that rule replaces the general one, and the "Why" column cites the verse:
+
+| Topic | Factor | Reads as | Source |
+|---|---|---|---|
+| Litigation, enemies and competition | Sun, Mars, Mercury, Jupiter, Venus or Ketu in the 6th | favours the native | Phaladeepika 8.3, 8.9, 8.12, 8.15, 8.18, 8.30 |
+| Litigation, enemies and competition | Moon, Saturn or Rahu in the 6th | against the native | Phaladeepika 8.6, 8.22, 8.26 |
+| Litigation, enemies and competition | A malefic aspecting the 6th, or the 6th lord in the 6th, 8th or 12th | favours the native | Phaladeepika 6.57, 6.63 (Harsha yoga) |
+| Litigation, enemies and competition | A benefic aspecting the 6th, or the 6th lord in a kendra or trikona | mixed | no rule found |
+| Foreign travel and settlement | Any planet in the 12th, or aspecting it | favours the native | BPHS 23.11–12 |
+| Health indicators | The 6th or 8th lord in the 6th, 8th or 12th | favours the native | Phaladeepika 6.57, 6.63, 6.65 (Harsha, Sarala) |
+
+In 1.0.0, the general rule read malefics in the 6th as against the native. It read the 6th lord in a dusthana the same way, which contradicted the Harsha yoga listed for the same topic. Three other topics were checked and agree with the general rule: siblings (BPHS 14.1, 14.14), gains (BPHS 22.11) and spiritual practice (BPHS 23.9–10). The 6th lord's dignity and strength still count: in a kendra, a strong 6th lord can read as favouring the native.
+
+**The presets, for litigation, enemies and competition** (D1 factors):
+
+| Preset | Favours the native | Against the native | Mixed |
+|---|---|---|---|
+| Mahatma Gandhi | Jupiter, the 6th lord, in the 7th; Mars (karaka); the Sun aspects the 6th | – | – |
+| Sri Aurobindo | Jupiter, the 6th lord, in the 1st; Mars (karaka) | the Moon in the 6th; Saturn in the 6th | – |
+| Ramakrishna Paramhansa | the Moon, the 6th lord, in the 1st; Mars and Saturn aspect the 6th | Mars (karaka) | – |
+| B. V. Raman | the Moon, the 6th lord, in the 4th; Mars (karaka); the Sun in the 6th; Saturn aspects the 6th | – | Jupiter aspects the 6th |
+| Suryanarayan Rao | Venus, the 6th lord, in the 8th; Harsha yoga; Ketu in the 6th; the Moon and Rahu aspect the 6th | – | Mars (karaka); Jupiter aspects the 6th |
+| Maharshi Mahesh Yogi | Mercury, the 6th lord, in the 1st; Ketu in the 6th; Mars (karaka); Rahu and the Sun aspect the 6th | – | Venus aspects the 6th |
+| Sanjay Rath | Mercury in the 6th | – | the Sun, the 6th lord, in the 5th; Mars (karaka); the Moon aspects the 6th |
+| P. V. R. Narasimha Rao | Harsha yoga; Saturn, the 6th lord, in the 8th; Mars (karaka); Ketu aspects the 6th | the Moon in the 6th; Rahu in the 6th | Jupiter aspects the 6th |
+
+**Open for the reviewer:**
+
+- Phaladeepika disagrees with itself on the 6th, 8th and 12th houses. In 15.18 it quotes Satyacharya, who reverses the general rule there. In 15.19, Mantreswara's own view is that malefics in those houses increase their evils. Neither is used as a general rule; the per-planet verses of ch. 8 are used instead.
+- BPHS ch. 17, on the 6th house, is about illness and wounds and gives no rule for enemies. The dispute rules rest on Phaladeepika alone.
+- The 6th-house rules are also applied in the D6 chart, though the verses describe the birth chart.
+- The verse numbers follow archive.org scans of V. Subrahmanya Sastri's translation (1950) and need checking against print.
+
+The rules are in `rules/readings/topics.yaml` (`house_rules`). The decision is recorded as "Reading house rules" in `docs/DECISIONS.md`, and all of it stays draft (#24).
 
 ## The workbench
 
