@@ -2,14 +2,16 @@
 "use client";
 
 import { Chart } from "@/lib/api";
-import { GRAHA_NAME, SIGNS, dms } from "@/lib/jyotish";
+import { dms } from "@/lib/jyotish";
+import { N, t } from "@/lib/i18n";
+import { grahaName, signName, term } from "@/lib/vocab";
 
 const POINTS: [string, string][] = [
-  ["BL", "Bhava Lagna"], ["HL", "Hora Lagna"], ["GL", "Ghati Lagna"], ["ViL", "Vighati Lagna"],
-  ["PP", "Pranapada"], ["VL", "Varnada Lagna"], ["SL", "Sree Lagna"], ["IL", "Indu Lagna"],
-  ["BB", "Bhrigu Bindu"], ["Md", "Maandi"], ["Gk", "Gulika"], ["Kl", "Kaala"], ["Mr", "Mrityu"],
-  ["AP", "Artha Prahara"], ["YG", "Yama Ghantaka"], ["Dh", "Dhooma"], ["Vy", "Vyatipata"],
-  ["Pv", "Parivesha"], ["IC", "Indra Chapa"], ["UK", "Upaketu"],
+  ["BL", N("Bhava Lagna")], ["HL", N("Hora Lagna")], ["GL", N("Ghati Lagna")], ["ViL", N("Vighati Lagna")],
+  ["PP", N("Pranapada")], ["VL", N("Varnada Lagna")], ["SL", N("Sree Lagna")], ["IL", N("Indu Lagna")],
+  ["BB", N("Bhrigu Bindu")], ["Md", N("Maandi")], ["Gk", N("Gulika")], ["Kl", N("Kaala")], ["Mr", N("Mrityu")],
+  ["AP", N("Artha Prahara")], ["YG", N("Yama Ghantaka")], ["Dh", N("Dhooma")], ["Vy", N("Vyatipata")],
+  ["Pv", N("Parivesha")], ["IC", N("Indra Chapa")], ["UK", N("Upaketu")],
 ];
 
 export function SpecialPoints({ chart }: { chart: Chart }) {
@@ -18,26 +20,26 @@ export function SpecialPoints({ chart }: { chart: Chart }) {
   const y = chart.yogi;
   return (
     <details className="special-points">
-      <summary>Special lagnas and upagrahas</summary>
+      <summary>{t("Special lagnas and upagrahas")}</summary>
       {y && (
         <p>
-          Yogi point {SIGNS[Math.floor(y.point / 30)]} {dms(y.point % 30)}: Yogi {GRAHA_NAME[y.yogi]},
-          Sahayogi {GRAHA_NAME[y.sahayogi]}; Avayogi {GRAHA_NAME[y.avayogi]}.
+          {t("Yogi point {sign} {deg}: Yogi {y}, Sahayogi {s}; Avayogi {a}.", { sign: signName(Math.floor(y.point / 30)),
+            deg: dms(y.point % 30), y: grahaName(y.yogi), s: grahaName(y.sahayogi), a: grahaName(y.avayogi) })}
         </p>
       )}
       <table className="planet-table">
-        <caption className="visually-hidden">Special lagnas and upagrahas</caption>
+        <caption className="visually-hidden">{t("Special lagnas and upagrahas")}</caption>
         <thead>
           <tr>
-            <th scope="col">Point</th><th scope="col">Sign</th>
-            <th scope="col" className="num">Degree</th><th scope="col">Nakshatra</th>
+            <th scope="col">{t("Point")}</th><th scope="col">{t("Sign")}</th>
+            <th scope="col" className="num">{t("Degree")}</th><th scope="col">{t("Nakshatra")}</th>
           </tr>
         </thead>
         <tbody>
           {POINTS.filter(([k]) => sp[k]).map(([k, name]) => (
             <tr key={k}>
-              <th scope="row">{name}</th><td>{SIGNS[sp[k].sign]}</td>
-              <td className="num">{dms(sp[k].degree)}</td><td>{sp[k].nakshatra} {sp[k].pada}</td>
+              <th scope="row">{t(name)}</th><td>{signName(sp[k].sign)}</td>
+              <td className="num">{dms(sp[k].degree)}</td><td>{term(sp[k].nakshatra)} {sp[k].pada}</td>
             </tr>
           ))}
         </tbody>

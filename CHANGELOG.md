@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **Hindi and Marathi interface.** A language switch in the header (English,
+  हिन्दी, मराठी), remembered in the browser. The interface text and the Jyotish
+  vocabulary are translated: tabs, forms, tables, help text, chart labels
+  (सू चं मं … in the charts, Devanagari sign names, वक्री for retrograde), planets,
+  signs, nakshatras, vargas, panchanga names, avasthas, yoga, topic and event
+  names, dates. Text the engine writes (reading drafts, reasons, yoga evidence,
+  warnings) is still English, and a note says so. Numbers stay in Western digits.
+  The wording is a draft for review. `tests/test_web_i18n.py` checks every
+  interface string has a Hindi and a Marathi entry with the same placeholders.
 - **Rectification: is the best fit real?** The fit curve now comes with a significance
   test. The same chart is scored on 200 sets of random dates for the same event
   types, and the ribbon says how often random dates fit as well. When they often

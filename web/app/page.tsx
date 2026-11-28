@@ -28,6 +28,8 @@ import { GRAHA_ORDER, placements } from "@/lib/jyotish";
 import { PRESETS } from "@/lib/presets";
 import { formatLocal, parseLocal, prettyDate, prettyLocal, toUtcIso } from "@/lib/time";
 import { useLive } from "@/lib/useLive";
+import { isLang, Lang, LANG_KEY, LANGS, setLang, t } from "@/lib/i18n";
+import { eventName } from "@/lib/vocab";
 import type { ChartStyle } from "@/components/ChartFigure";
 
 type Mode = "rectify" | "transit";
@@ -39,6 +41,16 @@ function degreesOf(c: Chart): Record<string, number> {
 const LAST_CHART_KEY = "jyotishnet.lastChart";
 
 export default function Workbench() {
+  // The interface language: set before anything below renders (see lib/i18n.ts).
+  const [lang, setLangState] = useState<Lang>("en");
+  setLang(lang);
+  useEffect(() => {
+    try { const s = localStorage.getItem(LANG_KEY); if (isLang(s)) setLangState(s); } catch { /* storage unavailable */ }
+  }, []);
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    try { localStorage.setItem(LANG_KEY, lang); } catch { /* storage unavailable */ }
+  }, [lang]);
   const [name, setName] = useState(PRESETS[0].name);
   const [birth, setBirth] = useState<Birth>(PRESETS[0].birth);
   const [mode, setMode] = useState<Mode>("rectify");
@@ -96,7 +108,7 @@ export default function Workbench() {
     if (savedId !== null) {
       setEventSaveError("");
       library.update(savedId, { events: sorted }).catch((e) =>
-        setEventSaveError(`The events could not be saved with the chart: ${e instanceof Error ? e.message : e}`));
+        setEventSaveError(t("The events could not be saved with the chart: {why}", { why: e instanceof Error ? e.message : String(e) })));
       return;
     }
     try { localStorage.setItem(storeKey, JSON.stringify(sorted)); } catch { /* storage unavailable */ }
@@ -196,23 +208,36 @@ export default function Workbench() {
     <main className="bench">
       <header className="bench-head">
         <div className="title-block">
-          <p className="product">JyotishNet workbench</p>
+          <div className="product-row">
+            <p className="product">{t("JyotishNet workbench")}</p>
+            <div role="group" aria-label={t("Language")} className="segmented quiet lang-switch">
+              {LANGS.map((l) => (
+                <button key={l.id} type="button" lang={l.id} aria-pressed={lang === l.id}
+                  onClick={() => setLangState(l.id)}>{l.label}</button>
+              ))}
+            </div>
+          </div>
           <h1>{name}</h1>
           <p className="birth-line">
-            Born {prettyLocal(parseLocal(birth.local_datetime))} local time,
-            {" "}{birth.latitude.toFixed(2)}° {birth.latitude >= 0 ? "N" : "S"},
-            {" "}{Math.abs(birth.longitude).toFixed(2)}° {birth.longitude >= 0 ? "E" : "W"}
+            {t("Born {when} local time", { when: prettyLocal(parseLocal(birth.local_datetime)) })},
+            {" "}{Math.abs(birth.latitude).toFixed(2)}° {birth.latitude >= 0 ? t("N") : t("S")},
+            {" "}{Math.abs(birth.longitude).toFixed(2)}° {birth.longitude >= 0 ? t("E") : t("W")}
             {(mode === "rectify" ? chart : natal.data) &&
-              <>, ayanamsa {(mode === "rectify" ? chart : natal.data)!.ayanamsa.toFixed(4)}° (Lahiri)</>}
+              t(", ayanamsa {deg}° (Lahiri)", { deg: (mode === "rectify" ? chart : natal.data)!.ayanamsa.toFixed(4) })}
             {chart?.source && (
               <span className="engine-note" data-engine={chart.source}
                 title={chart.source === "browser"
-                  ? "Swiss Ephemeris running in this browser (WebAssembly); same results as the API"
-                  : "The browser engine could not start; charts come from the API"}>
-                {" "}· {chart.source === "browser" ? "computed in this browser" : "computed by the API"}
+                  ? t("Swiss Ephemeris running in this browser (WebAssembly); same results as the API")
+                  : t("The browser engine could not start; charts come from the API")}>
+                {" "}· {chart.source === "browser" ? t("computed in this browser") : t("computed by the API")}
               </span>
             )}
           </p>
+          {lang !== "en" && (
+            <p className="muted small lang-note">
+              {t("Text the engine writes (reading drafts, reasons, yoga evidence, warnings) is still in English.")}
+            </p>
+          )}
         </div>
         <BirthForm key={`${name}-${birth.local_datetime}`} name={name} birth={birth}
           onSubmit={(n, b, preset) => {
@@ -223,21 +248,21 @@ export default function Workbench() {
       </header>
 
       <LibraryPanel name={name} birth={birth} events={events} savedId={savedId}
-        eventNames={Object.fromEntries(rules.map((r) => [r.id, r.name]))}
+        eventNames={Object.fromEntries(rules.map((r) => [r.id, eventName(r.id, r.name)]))}
         onOpen={openSaved} onSaved={(c) => remember(c)} onForget={() => remember(null)} />
 
-      <nav className="mode-bar" aria-label="What the slider moves">
-        <div role="group" aria-label="Mode" className="segmented">
+      <nav className="mode-bar" aria-label={t("What the slider moves")}>
+        <div role="group" aria-label={t("Mode")} className="segmented">
           <button type="button" aria-pressed={mode === "rectify"} onClick={() => switchMode("rectify")}>
-            Rectify birth time
+            {t("Rectify birth time")}
           </button>
           <button type="button" aria-pressed={mode === "transit"} onClick={() => switchMode("transit")}>
-            Transits
+            {t("Transits")}
           </button>
         </div>
-        <div role="group" aria-label="Chart style" className="segmented quiet">
-          <button type="button" aria-pressed={style === "north"} onClick={() => setStyle("north")}>North Indian</button>
-          <button type="button" aria-pressed={style === "south"} onClick={() => setStyle("south")}>South Indian</button>
+        <div role="group" aria-label={t("Chart style")} className="segmented quiet">
+          <button type="button" aria-pressed={style === "north"} onClick={() => setStyle("north")}>{t("North Indian")}</button>
+          <button type="button" aria-pressed={style === "south"} onClick={() => setStyle("south")}>{t("South Indian")}</button>
         </div>
       </nav>
 
@@ -247,35 +272,35 @@ export default function Workbench() {
         momentMs={momentMs}
         boundaries={mode === "rectify" ? bounds.data?.changes ?? [] : []}
         highlightKeys={mode === "rectify"
-          ? [{ key: "D1.lagna", label: "the Lagna", strong: true },
-             { key: `D${varga}.lagna`, label: `the D${varga} Lagna`, strong: false }]
+          ? [{ key: "D1.lagna", label: t("the Lagna"), strong: true },
+             { key: `D${varga}.lagna`, label: t("the D{n} Lagna", { n: varga }), strong: false }]
           : []}
-        nudges={nudges} zeroLabel={mode === "rectify" ? "recorded time" : "now"}
+        nudges={nudges} zeroLabel={mode === "rectify" ? t("recorded time") : t("now")}
         curve={rectify && events.length ? curve.data : null} />
 
       {error && (
         <p className="service-error" role="alert">
-          The calculation service did not answer ({error}). Start it with
-          {" "}<code>uvicorn jyotishnet_api.main:app --port 8000</code> and try again.
+          {t("The calculation service did not answer ({error}). Start it with", { error: String(error) })}
+          {" "}<code>uvicorn jyotishnet_api.main:app --port 8000</code> {t("and try again.")}
         </p>
       )}
 
       <section className="charts" aria-live="off">
         {left && (
-          <ChartCard title={mode === "rectify" ? "Rasi (D1)" : "Birth chart (D1)"} style={style}
-            lagnaSign={left.lagnaSign} bySign={left.bySign} degrees={left.degrees} centre="Rasi" />
+          <ChartCard title={mode === "rectify" ? t("Rasi (D1)") : t("Birth chart (D1)")} style={style}
+            lagnaSign={left.lagnaSign} bySign={left.bySign} degrees={left.degrees} centre={t("Rasi")} />
         )}
         {right && (
           mode === "rectify" ? (
             <ChartCard title={`D${varga}`} style={style} lagnaSign={right.lagnaSign} bySign={right.bySign}
               varga={varga} onVarga={setVarga} centre={`D${varga}`} />
           ) : (
-            <ChartCard title="Transits over the birth chart" style={style} lagnaSign={right.lagnaSign}
+            <ChartCard title={t("Transits over the birth chart")} style={style} lagnaSign={right.lagnaSign}
               bySign={right.bySign} note={prettyDate(toUtcIso(momentMs, birth.utc_offset_hours) + "Z")}
-              centre="Gochara" />
+              centre={t("Gochara")} />
           )
         )}
-        {!left && !error && <p className="muted">Casting the chart…</p>}
+        {!left && !error && <p className="muted">{t("Casting the chart…")}</p>}
       </section>
 
       {rectify && (
@@ -294,7 +319,7 @@ export default function Workbench() {
           <div className="details">
             {chart && (
               <div className="table-wrap">
-                <h2>{mode === "rectify" ? "Positions at this birth time" : "Transit positions"}</h2>
+                <h2>{mode === "rectify" ? t("Positions at this birth time") : t("Transit positions")}</h2>
                 <PlanetTable chart={chart} varga={varga} />
                 <SpecialPoints chart={chart} />
                 <JaiminiPoints chart={chart} />
@@ -311,7 +336,7 @@ export default function Workbench() {
         )}
         {tab === "yogas" && (yogas.data
           ? <YogaView yogas={yogas.data.yogas} options={yogaOptions} onOptions={setYogaOptions} />
-          : <p className="muted">Finding yogas…</p>)}
+          : <p className="muted">{t("Finding yogas…")}</p>)}
         {tab === "readings" && (
           <ReadingView topics={readingTopics} topic={readingTopic} onTopic={setReadingTopic}
             scope={readingScope} onScope={setReadingScope} dateLabel={prettyDate(`${readingDate}T12:00:00Z`)}
@@ -322,21 +347,21 @@ export default function Workbench() {
         )}
         {tab === "ashtakavarga" && (av.data && subjectChart
           ? <AshtakavargaView av={av.data} lagnaSign={subjectChart.lagna.sign} />
-          : <p className="muted">Counting bindus…</p>)}
+          : <p className="muted">{t("Counting bindus…")}</p>)}
         {tab === "shadbala" && (sb.data ? (
           <>
             <ShadbalaView sb={sb.data} />
             {vim.data && <VimshopakaView v={vim.data} weights={vimWeights} onWeights={setVimWeights} />}
           </>
-        ) : <p className="muted">Working out strengths…</p>)}
+        ) : <p className="muted">{t("Working out strengths…")}</p>)}
         {tab === "transits" && (gochara.data
-          ? <GocharaView tr={gochara.data} when={rectify ? `the event date (${eventDate})` : transitAt.local_datetime.replace("T", " ")} />
-          : <p className="muted">Working out transits…</p>)}
+          ? <GocharaView tr={gochara.data} when={rectify ? t("the event date ({date})", { date: prettyDate(`${eventDate}T12:00:00Z`) }) : transitAt.local_datetime.replace("T", " ")} />
+          : <p className="muted">{t("Working out transits…")}</p>)}
         {tab === "dashas" && (dashas.data
           ? <DashaTimeline system={dashaSystem} onSystem={setDashaSystem} periods={dashas.data.periods}
               applicable={dashas.data.applicable} birthIso={birthUtc} refIso={refUtc}
-              refLabel={rectify ? `the event date (${prettyDate(refUtc)})` : `the transit date (${prettyDate(refUtc)})`} />
-          : <p className="muted">Laying out the periods…</p>)}
+              refLabel={rectify ? t("the event date ({date})", { date: prettyDate(refUtc) }) : t("the transit date ({date})", { date: prettyDate(refUtc) })} />
+          : <p className="muted">{t("Laying out the periods…")}</p>)}
       </AnalysisTabs>
       {rectify && <IndicativePanel periods={indicative.data?.periods ?? null} loading={indicative.loading}
         ruleSet={ruleSet} />}

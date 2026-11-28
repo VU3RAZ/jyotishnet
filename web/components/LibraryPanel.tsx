@@ -7,6 +7,7 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { Birth, library, LifeEvent, SavedChart } from "@/lib/api";
 import { parseLocal, prettyLocal } from "@/lib/time";
+import { t } from "@/lib/i18n";
 
 type Props = {
   name: string;
@@ -20,7 +21,7 @@ type Props = {
 };
 
 function eventCount(events: LifeEvent[]): string {
-  return events.length ? ` · ${events.length} life event${events.length > 1 ? "s" : ""}` : "";
+  return events.length ? ` · ${events.length === 1 ? t("1 life event") : t("{n} life events", { n: events.length })}` : "";
 }
 
 const sameBirth = (a: Birth, b: Birth) =>
@@ -65,7 +66,7 @@ export function LibraryPanel({ name, birth, events, savedId, eventNames, onOpen,
     setCurrent(c); onOpen(c);
   });
   const remove = (c: SavedChart) => run(async () => {
-    if (!window.confirm(`Delete the saved chart "${c.name}" and its notes?`)) return;
+    if (!window.confirm(t("Delete the saved chart “{name}” and its notes?", { name: c.name }))) return;
     await library.remove(c.id);
     if (current?.id === c.id) { setCurrent(null); onForget(); }
     refresh();
@@ -94,17 +95,17 @@ export function LibraryPanel({ name, birth, events, savedId, eventNames, onOpen,
 
   return (
     <details className="library">
-      <summary>Saved charts and notes{current ? `: ${current.name}` : ""}</summary>
+      <summary>{t("Saved charts and notes")}{current ? `: ${current.name}` : ""}</summary>
       <div className="library-head">
         <div className="library-actions">
           {current ? (
             <>
-              <span className="muted">Saved as “{current.name}”{dirty ? " (changed)" : ""}</span>
-              {dirty && <button type="button" className="primary" onClick={saveChanges}>Save changes</button>}
-              <button type="button" className="quiet-button" onClick={saveNew}>Save as new</button>
+              <span className="muted">{t("Saved as “{name}”", { name: current.name })}{dirty ? ` (${t("changed")})` : ""}</span>
+              {dirty && <button type="button" className="primary" onClick={saveChanges}>{t("Save changes")}</button>}
+              <button type="button" className="quiet-button" onClick={saveNew}>{t("Save as new")}</button>
             </>
           ) : (
-            <button type="button" className="primary" onClick={saveNew}>Save this chart</button>
+            <button type="button" className="primary" onClick={saveNew}>{t("Save this chart")}</button>
           )}
         </div>
       </div>
@@ -113,11 +114,11 @@ export function LibraryPanel({ name, birth, events, savedId, eventNames, onOpen,
       <div className="library-body">
         <div>
           <label className="field">
-            Find a saved chart
-            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name or place" />
+            {t("Find a saved chart")}
+            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t("Name or place")} />
           </label>
-          {charts === null ? <p className="muted">Loading…</p> : charts.length === 0 ? (
-            <p className="muted">{query ? "No saved chart matches." : "No saved charts yet."}</p>
+          {charts === null ? <p className="muted">{t("Loading…")}</p> : charts.length === 0 ? (
+            <p className="muted">{query ? t("No saved chart matches.") : t("No saved charts yet.")}</p>
           ) : (
             <ul className="library-list">
               {charts.map((c) => (
@@ -125,11 +126,11 @@ export function LibraryPanel({ name, birth, events, savedId, eventNames, onOpen,
                   <button type="button" className="library-open" onClick={() => open(c.id)}>
                     <strong>{c.name}</strong>
                     <span className="muted">{prettyLocal(parseLocal(c.birth.local_datetime))}
-                      {c.note_count ? ` · ${c.note_count} note${c.note_count > 1 ? "s" : ""}` : ""}
+                      {c.note_count ? ` · ${c.note_count === 1 ? t("1 note") : t("{n} notes", { n: c.note_count })}` : ""}
                       {eventCount(c.id === current?.id ? events : c.events)}</span>
                   </button>
-                  <button type="button" className="link-button" aria-label={`Delete ${c.name}`} onClick={() => remove(c)}>
-                    Delete
+                  <button type="button" className="link-button" aria-label={t("Delete {name}", { name: c.name })} onClick={() => remove(c)}>
+                    {t("Delete")}
                   </button>
                 </li>
               ))}
@@ -138,39 +139,38 @@ export function LibraryPanel({ name, birth, events, savedId, eventNames, onOpen,
         </div>
 
         <div className="notes">
-          <h3>Notes{current ? ` on ${current.name}` : ""}</h3>
-          {!current ? <p className="muted">Save the chart to keep notes and life events with it.</p> : (
+          <h3>{current ? t("Notes on {name}", { name: current.name }) : t("Notes")}</h3>
+          {!current ? <p className="muted">{t("Save the chart to keep notes and life events with it.")}</p> : (
             <>
               <ul className="note-list">
                 {(current.notes ?? []).map((n) => (
                   <li key={n.id}>
                     {editing?.id === n.id ? (
                       <>
-                        <textarea aria-label="Edit note" value={editing.text}
+                        <textarea aria-label={t("Edit note")} value={editing.text}
                           onChange={(e) => setEditing({ id: n.id, text: e.target.value })} rows={3} />
-                        <button type="button" className="link-button" onClick={saveNote}>Save</button>{" "}
-                        <button type="button" className="link-button" onClick={() => setEditing(null)}>Cancel</button>
+                        <button type="button" className="link-button" onClick={saveNote}>{t("Save")}</button>{" "}
+                        <button type="button" className="link-button" onClick={() => setEditing(null)}>{t("Cancel")}</button>
                       </>
                     ) : (
                       <>
                         <p>{n.text}</p>
                         <span className="muted note-meta">{n.updated.slice(0, 10)}</span>{" "}
-                        <button type="button" className="link-button" onClick={() => setEditing({ id: n.id, text: n.text })}>Edit</button>{" "}
-                        <button type="button" className="link-button" onClick={() => removeNote(n.id)}>Delete</button>
+                        <button type="button" className="link-button" onClick={() => setEditing({ id: n.id, text: n.text })}>{t("Edit")}</button>{" "}
+                        <button type="button" className="link-button" onClick={() => removeNote(n.id)}>{t("Delete")}</button>
                       </>
                     )}
                   </li>
                 ))}
               </ul>
               <form onSubmit={addNote} className="note-form">
-                <textarea aria-label="New note" value={draft} onChange={(e) => setDraft(e.target.value)} rows={3}
-                  placeholder="A note on this chart" />
-                <button type="submit" className="primary" disabled={!draft.trim()}>Add note</button>
+                <textarea aria-label={t("New note")} value={draft} onChange={(e) => setDraft(e.target.value)} rows={3}
+                  placeholder={t("A note on this chart")} />
+                <button type="submit" className="primary" disabled={!draft.trim()}>{t("Add note")}</button>
               </form>
-              <h3 className="library-events-h">Life events on {current.name}</h3>
+              <h3 className="library-events-h">{t("Life events on {name}", { name: current.name })}</h3>
               {events.length === 0 ? (
-                <p className="muted">None yet. Add them in the Life events panel (Rectify birth time); they are
-                  saved with this chart as you add them.</p>
+                <p className="muted">{t("None yet. Add them in the Life events panel (Rectify birth time); they are saved with this chart as you add them.")}</p>
               ) : (
                 <ul className="library-events">
                   {events.map((e, i) => (

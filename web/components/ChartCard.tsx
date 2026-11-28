@@ -3,7 +3,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChartFigure, ChartStyle } from "./ChartFigure";
-import { Placement, VARGAS, VARGA_NAME } from "@/lib/jyotish";
+import { Placement, VARGAS } from "@/lib/jyotish";
+import { t } from "@/lib/i18n";
+import { vargaName } from "@/lib/vocab";
 
 type Props = {
   title: string;
@@ -47,10 +49,10 @@ export function ChartCard({ title, lagnaSign, bySign, degrees, style, varga, onV
       <figcaption>
         {onVarga ? (
           <label className="varga-pick">
-            <span className="visually-hidden">Divisional chart</span>
+            <span className="visually-hidden">{t("Divisional chart")}</span>
             <select value={varga} onChange={(e) => onVarga(Number(e.target.value))}>
               {VARGAS.filter((v) => v !== 1).map((v) => (
-                <option key={v} value={v}>D{v} {VARGA_NAME[v]}</option>
+                <option key={v} value={v}>D{v} {vargaName(v)}</option>
               ))}
             </select>
           </label>

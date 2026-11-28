@@ -2,13 +2,14 @@
 "use client";
 
 import { KeyboardEvent, ReactNode, useRef } from "react";
+import { N, t } from "@/lib/i18n";
 
 export type TabId = "positions" | "vargas" | "yogas" | "readings" | "ashtakavarga" | "shadbala" | "dashas" | "transits";
 const TABS: { id: TabId; label: string }[] = [
-  { id: "positions", label: "Positions" }, { id: "vargas", label: "Vargas" },
-  { id: "yogas", label: "Yogas" }, { id: "readings", label: "Readings" },
-  { id: "ashtakavarga", label: "Ashtakavarga" }, { id: "shadbala", label: "Strengths" },
-  { id: "dashas", label: "Dashas" }, { id: "transits", label: "Transits" },
+  { id: "positions", label: N("Positions") }, { id: "vargas", label: N("Vargas") },
+  { id: "yogas", label: N("Yogas") }, { id: "readings", label: N("Readings") },
+  { id: "ashtakavarga", label: N("Ashtakavarga") }, { id: "shadbala", label: N("Strengths") },
+  { id: "dashas", label: N("Dashas") }, { id: "transits", label: N("Transits") },
 ];
 
 export function AnalysisTabs({ tab, onTab, children, busy }: {
@@ -24,12 +25,12 @@ export function AnalysisTabs({ tab, onTab, children, busy }: {
   }
   return (
     <section className="analysis">
-      <div role="tablist" aria-label="Analysis" className="tabs">
-        {TABS.map((t, i) => (
-          <button key={t.id} ref={(el) => { refs.current[i] = el; }} role="tab" type="button"
-            id={`tab-${t.id}`} aria-selected={tab === t.id} aria-controls="analysis-panel"
-            tabIndex={tab === t.id ? 0 : -1} onClick={() => onTab(t.id)} onKeyDown={(e) => key(e, i)}>
-            {t.label}
+      <div role="tablist" aria-label={t("Analysis")} className="tabs">
+        {TABS.map((tab_, i) => (
+          <button key={tab_.id} ref={(el) => { refs.current[i] = el; }} role="tab" type="button"
+            id={`tab-${tab_.id}`} aria-selected={tab === tab_.id} aria-controls="analysis-panel"
+            tabIndex={tab === tab_.id ? 0 : -1} onClick={() => onTab(tab_.id)} onKeyDown={(e) => key(e, i)}>
+            {t(tab_.label)}
           </button>
         ))}
       </div>

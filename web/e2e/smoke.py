@@ -214,6 +214,31 @@ async def main() -> int:
                 print(f"FAIL: tab {tab} widens the page to {width}px at a 420px viewport")
                 raise SystemExit(1)
         await step("phone width, every tab")
+
+        # Hindi and Marathi (interface text and vocabulary; engine text stays English).
+        tabs_by_lang = {"हिन्दी": ["स्थिति", "वर्ग", "योग", "फलादेश", "अष्टकवर्ग", "बल", "दशाएँ", "गोचर"],
+                        "मराठी": ["स्थिती", "वर्ग", "योग", "फलादेश", "अष्टकवर्ग", "बल", "दशा", "गोचर"]}
+        for lang, tabs in tabs_by_lang.items():
+            await page.click(f".lang-switch button:has-text('{lang}')")
+            await page.wait_for_function("(l) => document.documentElement.lang === l",
+                                         arg="hi" if lang == "हिन्दी" else "mr")
+            labels = await page.eval_on_selector_all("[role=tab]", "els => els.map(e => e.innerText.trim())")
+            assert labels == tabs, labels
+            planets = await page.eval_on_selector_all(".charts .planet", "els => els.map(e => e.textContent)")
+            assert planets and all(any("\u0900" <= ch <= "\u097f" for ch in t) for t in planets), planets
+            for tab in tabs:
+                await page.click(f"[role=tab]:has-text('{tab}')")
+                await page.wait_for_timeout(1200)
+                width = await page.evaluate("document.documentElement.scrollWidth")
+                if width > 420:
+                    print(f"FAIL: {lang} tab {tab} widens the page to {width}px at a 420px viewport")
+                    raise SystemExit(1)
+            await step(f"{lang}: tabs, chart labels, phone width")
+        await page.reload()
+        await page.wait_for_selector("[role=tab]:has-text('दशा')")
+        await page.click(".lang-switch button:has-text('English')")
+        await page.wait_for_selector("[role=tab]:has-text('Positions')")
+        await step("language kept across a reload, back to English")
         await browser.close()
     print("smoke test passed")
     return 0

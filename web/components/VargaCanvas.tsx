@@ -8,7 +8,9 @@ import { useState } from "react";
 import { ChartCard } from "./ChartCard";
 import type { ChartStyle } from "./ChartFigure";
 import { Chart } from "@/lib/api";
-import { GRAHA_NAME, GRAHA_ORDER, placements, SIGNS, VARGAS, VARGA_NAME } from "@/lib/jyotish";
+import { GRAHA_ORDER, placements, VARGAS } from "@/lib/jyotish";
+import { t } from "@/lib/i18n";
+import { grahaName, grahaShort, signShort, vargaName } from "@/lib/vocab";
 
 export const VARGA_SETS: { name: string; vargas: number[] }[] = [
   { name: "Shadvarga", vargas: [1, 2, 3, 9, 12, 30] },
@@ -42,15 +44,15 @@ export function VargaCanvas({ chart, vargas, onVargas, style }: Props) {
   return (
     <div className="varga-canvas">
       <div className="canvas-controls">
-        <div role="group" aria-label="Varga sets" className="segmented quiet">
+        <div role="group" aria-label={t("Varga sets")} className="segmented quiet">
           {VARGA_SETS.map((s) => (
             <button key={s.name} type="button"
               aria-pressed={s.vargas.length === vargas.length && s.vargas.every((v) => vargas.includes(v))}
-              onClick={() => onVargas(s.vargas)}>{s.name}</button>
+              onClick={() => onVargas(s.vargas)}>{t(s.name)}</button>
           ))}
         </div>
         <details className="varga-choose">
-          <summary>Choose vargas</summary>
+          <summary>{t("Choose vargas")}</summary>
           <div className="varga-checks">
             {VARGAS.map((v) => (
               <label key={v}>
@@ -63,25 +65,25 @@ export function VargaCanvas({ chart, vargas, onVargas, style }: Props) {
         </details>
       </div>
 
-      <div role="group" aria-label="Follow a planet" className="follow-chips">
-        <span className="muted">Follow</span>
+      <div role="group" aria-label={t("Follow a planet")} className="follow-chips">
+        <span className="muted">{t("Follow")}</span>
         {codes.map((c) => (
           <button key={c} type="button" aria-pressed={pinned === c} className={highlight === c ? "lit" : ""}
             onClick={() => setPinned((p) => (p === c ? null : c))}
             onMouseEnter={() => setHover(c)} onMouseLeave={() => setHover(null)}>
-            {c === "La" ? "Lagna" : c}
+            {c === "La" ? grahaName("La") : grahaShort(c)}
           </button>
         ))}
       </div>
 
-      {!chart ? <p className="muted">Casting the vargas…</p> : (
+      {!chart ? <p className="muted">{t("Casting the vargas…")}</p> : (
         <>
           <div className="canvas-grid">
             {vargas.map((v) => {
               const pl = placements(chart, v);
               if (!pl) return null;
               return (
-                <ChartCard key={v} title={`D${v} ${VARGA_NAME[v] ?? ""}`.trim()} style={style}
+                <ChartCard key={v} title={`D${v} ${vargaName(v)}`.trim()} style={style}
                   lagnaSign={pl.lagnaSign} bySign={pl.bySign} centre={`D${v}`}
                   highlight={highlight} onHighlight={onHighlight} />
               );
@@ -91,12 +93,12 @@ export function VargaCanvas({ chart, vargas, onVargas, style }: Props) {
             <div className="table-wrap">
               <table className="planet-table follow-table">
                 <caption>
-                  {highlight === "La" ? "The Lagna" : GRAHA_NAME[highlight] ?? highlight} in each varga
+                  {t("{who} in each varga", { who: highlight === "La" ? t("The Lagna") : grahaName(highlight) })}
                 </caption>
                 <thead><tr>{vargas.map((v) => <th key={v} scope="col">D{v}</th>)}</tr></thead>
                 <tbody><tr>{vargas.map((v) => {
                   const s = signIn(highlight, v);
-                  return <td key={v}>{s === undefined ? "–" : SIGNS[s].slice(0, 3)}</td>;
+                  return <td key={v}>{s === undefined ? "–" : signShort(s)}</td>;
                 })}</tr></tbody>
               </table>
             </div>

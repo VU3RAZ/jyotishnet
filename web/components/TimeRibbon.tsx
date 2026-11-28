@@ -3,22 +3,23 @@
 
 import { Boundary, FitCurve } from "@/lib/api";
 import { describeOffset, prettyLocal } from "@/lib/time";
+import { N, t } from "@/lib/i18n";
 
 export type RibbonRange = { id: string; label: string; seconds: number; step: number };
 
 export const RECTIFY_RANGES: RibbonRange[] = [
-  { id: "20m", label: "±20 min", seconds: 1200, step: 1 },
-  { id: "30m", label: "±30 min", seconds: 1800, step: 1 },
-  { id: "2h", label: "±2 h", seconds: 7200, step: 5 },
+  { id: "20m", label: N("±20 min"), seconds: 1200, step: 1 },
+  { id: "30m", label: N("±30 min"), seconds: 1800, step: 1 },
+  { id: "2h", label: N("±2 h"), seconds: 7200, step: 5 },
 ];
 // Default rectification window: ±30 min, as in the design's BTR section
 // (unrated or C-rated birth times); widen to ±2 h when the time is doubtful.
 export const DEFAULT_RECTIFY_RANGE = RECTIFY_RANGES[1];
 
 export const TRANSIT_RANGES: RibbonRange[] = [
-  { id: "3d", label: "±3 days", seconds: 3 * 86400, step: 60 },
-  { id: "1y", label: "±1 year", seconds: 366 * 86400, step: 3600 },
-  { id: "12y", label: "±12 years", seconds: 12 * 366 * 86400, step: 86400 },
+  { id: "3d", label: N("±3 days"), seconds: 3 * 86400, step: 60 },
+  { id: "1y", label: N("±1 year"), seconds: 366 * 86400, step: 3600 },
+  { id: "12y", label: N("±12 years"), seconds: 12 * 366 * 86400, step: 86400 },
 ];
 
 type Props = {
@@ -56,10 +57,10 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
       <div className="ribbon-readout">
         <output className="ribbon-moment" htmlFor="ribbon-input">{prettyLocal(momentMs)}</output>
         <span className="ribbon-offset">{value === 0 ? zeroLabel : describeOffset(value)}</span>
-        <div className="ribbon-ranges" role="group" aria-label="Slider range">
+        <div className="ribbon-ranges" role="group" aria-label={t("Slider range")}>
           {ranges.map((r) => (
             <button key={r.id} type="button" aria-pressed={r.id === range.id}
-              onClick={() => onRange(r)}>{r.label}</button>
+              onClick={() => onRange(r)}>{t(r.label)}</button>
           ))}
         </div>
       </div>
@@ -75,10 +76,10 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
           </svg>
         )}
         <div className="ribbon-ticks" aria-hidden="true">
-          {ticks.map((t, i) => (
-            <span key={i} className={t.strong ? "tick strong" : "tick"}
-              style={{ left: `${pct(t.offset_min * 60)}%` }}
-              title={`${t.label} changes at ${describeOffset(t.offset_min * 60)}`} />
+          {ticks.map((tk, i) => (
+            <span key={i} className={tk.strong ? "tick strong" : "tick"}
+              style={{ left: `${pct(tk.offset_min * 60)}%` }}
+              title={t("{what} changes at {when}", { what: tk.label, when: describeOffset(tk.offset_min * 60) })} />
           ))}
           <span className="tick zero" style={{ left: "50%" }} />
         </div>
@@ -88,33 +89,33 @@ export function TimeRibbon({ value, onChange, range, ranges, onRange, momentMs, 
       </div>
 
       <div className="ribbon-controls">
-        <div className="nudges" role="group" aria-label="Step the time">
+        <div className="nudges" role="group" aria-label={t("Step the time")}>
           {nudges.map((n) => (
             <button key={n} type="button" onClick={() => onChange(clamp(value + n))}>
               {describeOffset(n)}
             </button>
           ))}
-          <button type="button" onClick={() => onChange(0)} disabled={value === 0}>Reset</button>
+          <button type="button" onClick={() => onChange(0)} disabled={value === 0}>{t("Reset")}</button>
           {best && (
             <button type="button" className={`best-fit ${sig && sig.verdict !== "unlikely by chance" ? "doubtful" : ""}`}
               onClick={() => onChange(best.offset_s)} disabled={value === best.offset_s}
               aria-describedby={sig ? "fit-significance" : undefined}>
-              Jump to best fit ({best.offset_s === 0 ? "recorded time" : describeOffset(best.offset_s)})
+              {t("Jump to best fit ({at})", { at: best.offset_s === 0 ? t("recorded time") : describeOffset(best.offset_s) })}
             </button>
           )}
         </div>
         {sig && (
           <p id="fit-significance" className={`fit-significance ${sig.verdict.replace(/ /g, "-")}`}>
-            {sig.verdict === "unlikely by chance" ? "Life-event fit unlikely by chance"
-              : sig.verdict === "weak" ? "Weak life-event fit" : "No signal in the life events"}
-            {": "}random dates fit as well in {sig.random_at_least} of {sig.shuffles} tries (p = {sig.p_value.toFixed(3)})
-            {sig.verdict === "no signal" ? ", so the best fit says nothing about the birth time." : "."}
+            {sig.verdict === "unlikely by chance" ? t("Life-event fit unlikely by chance")
+              : sig.verdict === "weak" ? t("Weak life-event fit") : t("No signal in the life events")}
+            {": "}{t("random dates fit as well in {k} of {n} tries (p = {p})", { k: sig.random_at_least, n: sig.shuffles, p: sig.p_value.toFixed(3) })}
+            {sig.verdict === "no signal" ? t(", so the best fit says nothing about the birth time.") : "."}
           </p>
         )}
         {highlightKeys.length > 0 && (
           <p className="ribbon-legend">
-            Marks show where {highlightKeys.map((k) => k.label).join(" and ")} change sign
-            {pts.length > 1 ? "; the shaded curve is the life-event fit" : ""}.
+            {t("Marks show where {what} change sign", { what: highlightKeys.map((k) => k.label).join(t(" and ")) })}
+            {pts.length > 1 ? t("; the shaded curve is the life-event fit") : ""}.
           </p>
         )}
       </div>

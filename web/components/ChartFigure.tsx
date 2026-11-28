@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 "use client";
 
-import { Placement, SIGN_SHORT } from "@/lib/jyotish";
+import { Placement } from "@/lib/jyotish";
+import { t } from "@/lib/i18n";
+import { grahaShort, retroMark, signShort } from "@/lib/vocab";
 
 export type ChartStyle = "north" | "south";
 
@@ -69,8 +71,8 @@ function PlanetLines({ items, x, y, compact, degrees, flash, flashKey, highlight
             onMouseEnter={onHighlight && (() => onHighlight(p.code, false))}
             onMouseLeave={onHighlight && (() => onHighlight(null, false))}
             onClick={onHighlight && (() => onHighlight(p.code, true))}>
-            {p.label}{deg}
-            {p.retro && <tspan className="retro" dy={-5} fontSize="9">R</tspan>}
+            {grahaShort(p.code)}{deg}
+            {p.retro && <tspan className="retro" dy={-5} fontSize="9">{retroMark()}</tspan>}
           </text>
         );
       })}
@@ -84,7 +86,7 @@ export function ChartFigure({ style, lagnaSign, bySign, degrees, flash, flashKey
     (highlight === "La" ? sign === lagnaSign : bySign[sign].some((p) => p.code === highlight));
   return (
     <svg viewBox="-2 -2 404 404" className="chart-svg" role="img"
-      aria-label={`${title}, ${style === "north" ? "North" : "South"} Indian style`}>
+      aria-label={`${title}, ${style === "north" ? t("North Indian style") : t("South Indian style")}`}>
       {style === "north" ? (
         <g>
           <rect x={0} y={0} width={400} height={400} className="chart-frame" />
@@ -116,7 +118,7 @@ export function ChartFigure({ style, lagnaSign, bySign, degrees, flash, flashKey
               <g key={sign}>
                 <rect x={x} y={y} width={100} height={100}
                   className={`${isLagna ? "house lagna-house" : "house"}${lit(sign) ? " linked-house" : ""}`} />
-                <text x={x + 8} y={y + 14} className="sign-label">{SIGN_SHORT[sign]}</text>
+                <text x={x + 8} y={y + 14} className="sign-label">{signShort(sign)}</text>
                 {isLagna && <line x1={x + 74} y1={y} x2={x + 100} y2={y + 26} className="lagna-mark" />}
                 {isLagna && flash.has("La") && (
                   <rect key={`la-${flashKey}`} x={x} y={y} width={100} height={100} className="lagna-flash" />
